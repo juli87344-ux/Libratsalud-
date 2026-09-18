@@ -133,7 +133,9 @@ input{
 <h1>♎ Libratsalud</h1>
 <p>Control de habitaciones y camas</p>
 </header>
-
+<button id="btnNotificaciones" onclick="activarNotificaciones()">
+  🔔 Activar notificaciones
+</button>
 <main>
 
 <div class="leyenda">
@@ -403,5 +405,23 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
+  <script>
+async function activarNotificaciones() {
+  if (!("Notification" in window)) {
+    alert("Este teléfono no admite notificaciones.");
+    return;
+  }
+
+  const permiso = await Notification.requestPermission();
+
+  if (permiso === "granted") {
+    document.getElementById("btnNotificaciones").textContent =
+      "🔔 Notificaciones activadas";
+    alert("Notificaciones activadas correctamente.");
+  } else {
+    alert("No se concedió permiso para las notificaciones.");
+  }
+}
+  </script>
 </body>
 </html>
