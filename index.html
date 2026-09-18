@@ -384,9 +384,7 @@ async function cambiar(estado){
 
   }catch(e){
 
-    alert(
-      "No se pudo guardar el cambio."
-    );
+    alert("ERROR: " + e.message);
 
     console.error(e);
   }
