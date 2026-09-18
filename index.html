@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Libratsalud · Control de habitaciones</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#172033;background:#f4f6f9}
+*{box-sizing:border-box}body{margin:0}.top{background:#18243a;color:white;padding:18px 16px;position:sticky;top:0;z-index:2}
+.top h1{margin:0;font-size:22px}.top p{margin:3px 0 0;opacity:.8;font-size:13px}
+main{max-width:760px;margin:auto;padding:14px}.legend{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
+.tag{background:white;border-radius:10px;padding:8px;font-size:12px;box-shadow:0 1px 4px #0001}
+.room{background:white;border-radius:16px;margin:10px 0;padding:12px;box-shadow:0 2px 8px #0001}
+.room h2{font-size:16px;margin:0 0 9px}.beds{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.beds.one{grid-template-columns:1fr}
+.bed{border:0;border-radius:14px;padding:14px 10px;text-align:left;min-height:92px;font-weight:700;color:#182033}
+.bed small{display:block;font-weight:500;margin-top:6px}.lista{background:#b9efc7}.liberada{background:#ffe68a}.limpieza{background:#ffc28c}.reservada{background:#a9d7ff}
+dialog{border:0;border-radius:18px;padding:0;width:min(92vw,420px);box-shadow:0 15px 50px #0005}dialog::backdrop{background:#0008}
+.modal{padding:18px}.modal h3{margin-top:0}.modal input{width:100%;padding:12px;border:1px solid #ccd3dd;border-radius:10px;font-size:16px;margin:5px 0 12px}
+.actions{display:grid;gap:8px}.actions button,.close{border:0;border-radius:10px;padding:12px;font-size:15px;font-weight:700}.close{margin-top:12px;width:100%}
+.note{text-align:center;font-size:11px;color:#667085;margin:18px 4px}
+</style></head>
+<body><header class="top"><h1>♎ Libratsalud</h1><p>Control de habitaciones y camas · Piloto</p></header>
+<main><section class="legend">
+<div class="tag">🟡 Liberada · pendiente</div><div class="tag">🟠 En limpieza</div>
+<div class="tag">🟢 Lista</div><div class="tag">🔵 Reservada</div></section>
+<div id="rooms"></div><p class="note">No ingresar nombres, DNI, diagnósticos ni otros datos de pacientes.</p></main>
+<dialog id="dlg"><div class="modal"><h3 id="sel"></h3><label>Nombre de quien realiza el cambio</label><input id="actor" maxlength="40" placeholder="Ej.: Julieta">
+<div class="actions"><button class="liberada" data-s="liberada">🟡 LIBERADA</button><button class="limpieza" data-s="limpieza">🟠 EN LIMPIEZA</button><button class="lista" data-s="lista">🟢 LISTA</button><button class="reservada" data-s="reservada">🔵 RESERVADA</button></div>
+<button class="close" id="close">Cancelar</button></div></dialog>
+<script>
+const rooms={201:["A","B"],202:["A","B"],203:["A","B"],204:["A","B"],205:["A","B"],206:["A","B"],207:["A","B"],208:["A","B"],209:["A","B"],210:[""],211:[""],212:[""],213:[""],214:[""]};
+const labels={lista:"LISTA",liberada:"LIBERADA",limpieza:"EN LIMPIEZA",reservada:"RESERVADA"};
+let state=JSON.parse(localStorage.getItem("libratsalud-v1")||"{}"), selected="";
+function key(r,b){return String(r)+(b?b:"")}
+function render(){let out="";for(const [r,bs] of Object.entries(rooms)){out+=`<section class="room"><h2>Habitación ${r}</h2><div class="beds ${bs.length===1?"one":""}">`;for(const b of bs){const k=key(r,b),x=state[k]||{s:"lista",actor:"",time:""};out+=`<button class="bed ${x.s}" data-k="${k}">Cama ${r}${b?" "+b:""}<small>${labels[x.s]}${x.actor?" · "+esc(x.actor):""}${x.time?"<br>"+x.time:""}</small></button>`}out+="</div></section>"}document.querySelector("#rooms").innerHTML=out;document.querySelectorAll(".bed").forEach(b=>b.onclick=()=>openBed(b.dataset.k))}
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function openBed(k){selected=k;document.querySelector("#sel").textContent="Cama "+k.replace(/([AB])$/," $1");document.querySelector("#actor").value="";document.querySelector("#dlg").showModal()}
+document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const a=document.querySelector("#actor").value.trim();if(!a){alert("Ingresá el nombre de quien realiza el cambio.");return}state[selected]={s:b.dataset.s,actor:a,time:new Date().toLocaleString("es-AR",{dateStyle:"short",timeStyle:"short"})};localStorage.setItem("libratsalud-v1",JSON.stringify(state));document.querySelector("#dlg").close();render()});
+document.querySelector("#close").onclick=()=>document.querySelector("#dlg").close();render();
+</script></body></html>
