@@ -165,7 +165,7 @@ Piloto Libratsalud · No ingresar nombres ni datos clínicos de pacientes.
 </button>
 
 <button class="opcion limpieza"
-        onclick="cambiar('limpieza')">
+        onclick="cambiar('en_limpieza')">
 🟠 EN LIMPIEZA
 </button>
 
@@ -276,13 +276,13 @@ function mostrar(){
           document.createElement("button");
 
         b.className =
-          "cama " + c.estado;
+          "cama " + (c.estado === "en_limpieza" ? "limpieza" : c.estado);
 
         b.innerHTML =
           "Cama " + c.cama +
           "<span class='detalle'>" +
           estadoTexto(c.estado) +
-          (c.persona ? " · " + c.persona : "") +
+          (c.responsable ? " · " + c.responsable : "") +
           "</span>";
 
         b.onclick = () => abrir(c);
@@ -302,7 +302,7 @@ function estadoTexto(e){
     return "Liberada / limpiar";
   }
 
-  if(e === "limpieza"){
+  if(e === "en_limpieza"){
     return "En limpieza";
   }
 
@@ -370,7 +370,7 @@ async function cambiar(estado){
 
         body:JSON.stringify({
           estado:estado,
-          persona:persona
+          responsable:persona
         })
       }
     );
