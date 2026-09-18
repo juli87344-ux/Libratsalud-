@@ -1,39 +1,402 @@
+
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Libratsalud · Control de habitaciones</title>
+
 <style>
-:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#172033;background:#f4f6f9}
-*{box-sizing:border-box}body{margin:0}.top{background:#18243a;color:white;padding:18px 16px;position:sticky;top:0;z-index:2}
-.top h1{margin:0;font-size:22px}.top p{margin:3px 0 0;opacity:.8;font-size:13px}
-main{max-width:760px;margin:auto;padding:14px}.legend{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
-.tag{background:white;border-radius:10px;padding:8px;font-size:12px;box-shadow:0 1px 4px #0001}
-.room{background:white;border-radius:16px;margin:10px 0;padding:12px;box-shadow:0 2px 8px #0001}
-.room h2{font-size:16px;margin:0 0 9px}.beds{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.beds.one{grid-template-columns:1fr}
-.bed{border:0;border-radius:14px;padding:14px 10px;text-align:left;min-height:92px;font-weight:700;color:#182033}
-.bed small{display:block;font-weight:500;margin-top:6px}.lista{background:#b9efc7}.liberada{background:#ffe68a}.limpieza{background:#ffc28c}.reservada{background:#a9d7ff}
-dialog{border:0;border-radius:18px;padding:0;width:min(92vw,420px);box-shadow:0 15px 50px #0005}dialog::backdrop{background:#0008}
-.modal{padding:18px}.modal h3{margin-top:0}.modal input{width:100%;padding:12px;border:1px solid #ccd3dd;border-radius:10px;font-size:16px;margin:5px 0 12px}
-.actions{display:grid;gap:8px}.actions button,.close{border:0;border-radius:10px;padding:12px;font-size:15px;font-weight:700}.close{margin-top:12px;width:100%}
-.note{text-align:center;font-size:11px;color:#667085;margin:18px 4px}
-</style></head>
-<body><header class="top"><h1>♎ Libratsalud</h1><p>Control de habitaciones y camas · Piloto</p></header>
-<main><section class="legend">
-<div class="tag">🟡 Liberada · pendiente</div><div class="tag">🟠 En limpieza</div>
-<div class="tag">🟢 Lista</div><div class="tag">🔵 Reservada</div></section>
-<div id="rooms"></div><p class="note">No ingresar nombres, DNI, diagnósticos ni otros datos de pacientes.</p></main>
-<dialog id="dlg"><div class="modal"><h3 id="sel"></h3><label>Nombre de quien realiza el cambio</label><input id="actor" maxlength="40" placeholder="Ej.: Julieta">
-<div class="actions"><button class="liberada" data-s="liberada">🟡 LIBERADA</button><button class="limpieza" data-s="limpieza">🟠 EN LIMPIEZA</button><button class="lista" data-s="lista">🟢 LISTA</button><button class="reservada" data-s="reservada">🔵 RESERVADA</button></div>
-<button class="close" id="close">Cancelar</button></div></dialog>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+  background:#f4f6f9;
+  color:#172033
+}
+header{
+  background:#18243a;
+  color:white;
+  padding:18px 16px
+}
+header h1{margin:0;font-size:25px}
+header p{margin:4px 0 0;opacity:.8;font-size:13px}
+main{max-width:760px;margin:auto;padding:15px}
+
+.leyenda{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:16px
+}
+.leyenda div{
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  font-size:13px
+}
+.habitacion{
+  background:white;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+  box-shadow:0 2px 8px #00000010
+}
+.habitacion h2{
+  margin:0 0 9px;
+  font-size:18px
+}
+.camas{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap
+}
+.cama{
+  border:0;
+  border-radius:12px;
+  padding:13px;
+  min-width:110px;
+  font-weight:700;
+  cursor:pointer;
+  color:#172033
+}
+.lista{background:#82e29c}
+.liberada{background:#ffe36e}
+.limpieza{background:#ffb15c}
+.reservada{background:#76b7ff}
+
+.detalle{
+  display:block;
+  font-size:11px;
+  font-weight:500;
+  margin-top:4px
+}
+#mensaje{
+  padding:10px;
+  text-align:center;
+  font-size:13px
+}
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0008;
+  align-items:center;
+  justify-content:center;
+  padding:18px
+}
+.modal.activo{display:flex}
+.panel{
+  background:white;
+  width:100%;
+  max-width:420px;
+  border-radius:18px;
+  padding:18px
+}
+.panel h2{margin-top:0}
+input{
+  width:100%;
+  padding:13px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  margin-bottom:12px;
+  font-size:16px
+}
+.opcion{
+  width:100%;
+  padding:13px;
+  margin:5px 0;
+  border:0;
+  border-radius:10px;
+  font-weight:700
+}
+.cerrar{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border:0;
+  border-radius:10px
+}
+.aviso{
+  font-size:12px;
+  color:#666;
+  margin-top:18px;
+  text-align:center
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>♎ Libratsalud</h1>
+<p>Control de habitaciones y camas</p>
+</header>
+
+<main>
+
+<div class="leyenda">
+  <div>🟡 Liberada / limpiar</div>
+  <div>🟠 En limpieza</div>
+  <div>🟢 Lista</div>
+  <div>🔵 Reservada</div>
+</div>
+
+<div id="mensaje">Conectando...</div>
+<div id="habitaciones"></div>
+
+<p class="aviso">
+Piloto Libratsalud · No ingresar nombres ni datos clínicos de pacientes.
+</p>
+
+</main>
+
+<div class="modal" id="modal">
+<div class="panel">
+
+<h2 id="titulo"></h2>
+
+<input id="persona"
+       placeholder="Nombre de quien realiza el cambio">
+
+<button class="opcion liberada"
+        onclick="cambiar('liberada')">
+🟡 LIBERADA / LIMPIAR
+</button>
+
+<button class="opcion limpieza"
+        onclick="cambiar('limpieza')">
+🟠 EN LIMPIEZA
+</button>
+
+<button class="opcion lista"
+        onclick="cambiar('lista')">
+🟢 LISTA
+</button>
+
+<button class="opcion reservada"
+        onclick="cambiar('reservada')">
+🔵 RESERVADA
+</button>
+
+<button class="cerrar" onclick="cerrar()">
+Cancelar
+</button>
+
+</div>
+</div>
+
 <script>
-const rooms={201:["A","B"],202:["A","B"],203:["A","B"],204:["A","B"],205:["A","B"],206:["A","B"],207:["A","B"],208:["A","B"],209:["A","B"],210:[""],211:[""],212:[""],213:[""],214:[""]};
-const labels={lista:"LISTA",liberada:"LIBERADA",limpieza:"EN LIMPIEZA",reservada:"RESERVADA"};
-let state=JSON.parse(localStorage.getItem("libratsalud-v1")||"{}"), selected="";
-function key(r,b){return String(r)+(b?b:"")}
-function render(){let out="";for(const [r,bs] of Object.entries(rooms)){out+=`<section class="room"><h2>Habitación ${r}</h2><div class="beds ${bs.length===1?"one":""}">`;for(const b of bs){const k=key(r,b),x=state[k]||{s:"lista",actor:"",time:""};out+=`<button class="bed ${x.s}" data-k="${k}">Cama ${r}${b?" "+b:""}<small>${labels[x.s]}${x.actor?" · "+esc(x.actor):""}${x.time?"<br>"+x.time:""}</small></button>`}out+="</div></section>"}document.querySelector("#rooms").innerHTML=out;document.querySelectorAll(".bed").forEach(b=>b.onclick=()=>openBed(b.dataset.k))}
-function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function openBed(k){selected=k;document.querySelector("#sel").textContent="Cama "+k.replace(/([AB])$/," $1");document.querySelector("#actor").value="";document.querySelector("#dlg").showModal()}
-document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const a=document.querySelector("#actor").value.trim();if(!a){alert("Ingresá el nombre de quien realiza el cambio.");return}state[selected]={s:b.dataset.s,actor:a,time:new Date().toLocaleString("es-AR",{dateStyle:"short",timeStyle:"short"})};localStorage.setItem("libratsalud-v1",JSON.stringify(state));document.querySelector("#dlg").close();render()});
-document.querySelector("#close").onclick=()=>document.querySelector("#dlg").close();render();
-</script></body></html>
+
+const SUPABASE_URL =
+"https://wxgqfycnjwryidnedbni.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_XZQEiAZsC2cVk5liN3fu6g_6UN3K9-3";
+
+let camas = [];
+let seleccion = null;
+
+async function cargar(){
+
+  try{
+
+    const r = await fetch(
+      SUPABASE_URL +
+      "/rest/v1/camas?select=*&order=habitacion,cama",
+      {
+        headers:{
+          "apikey":SUPABASE_KEY,
+          "Authorization":"Bearer " + SUPABASE_KEY
+        }
+      }
+    );
+
+    if(!r.ok){
+      throw new Error(await r.text());
+    }
+
+    camas = await r.json();
+
+    document.getElementById("mensaje").textContent =
+      "● Sistema conectado";
+
+    mostrar();
+
+  }catch(e){
+
+    document.getElementById("mensaje").textContent =
+      "No se pudo conectar con la base";
+
+    console.error(e);
+  }
+}
+
+function mostrar(){
+
+  const cont =
+    document.getElementById("habitaciones");
+
+  cont.innerHTML = "";
+
+  const grupos = {};
+
+  camas.forEach(c => {
+
+    if(!grupos[c.habitacion]){
+      grupos[c.habitacion] = [];
+    }
+
+    grupos[c.habitacion].push(c);
+  });
+
+  Object.keys(grupos)
+    .sort((a,b) => Number(a) - Number(b))
+    .forEach(h => {
+
+      const box =
+        document.createElement("div");
+
+      box.className = "habitacion";
+
+      const titulo =
+        document.createElement("h2");
+
+      titulo.textContent =
+        "Habitación " + h;
+
+      const zona =
+        document.createElement("div");
+
+      zona.className = "camas";
+
+      grupos[h].forEach(c => {
+
+        const b =
+          document.createElement("button");
+
+        b.className =
+          "cama " + c.estado;
+
+        b.innerHTML =
+          "Cama " + c.cama +
+          "<span class='detalle'>" +
+          estadoTexto(c.estado) +
+          (c.persona ? " · " + c.persona : "") +
+          "</span>";
+
+        b.onclick = () => abrir(c);
+
+        zona.appendChild(b);
+      });
+
+      box.appendChild(titulo);
+      box.appendChild(zona);
+      cont.appendChild(box);
+    });
+}
+
+function estadoTexto(e){
+
+  if(e === "liberada"){
+    return "Liberada / limpiar";
+  }
+
+  if(e === "limpieza"){
+    return "En limpieza";
+  }
+
+  if(e === "reservada"){
+    return "Reservada";
+  }
+
+  return "Lista";
+}
+
+function abrir(c){
+
+  seleccion = c;
+
+  document.getElementById("titulo").textContent =
+    "Cama " + c.cama;
+
+  document.getElementById("persona").value = "";
+
+  document
+    .getElementById("modal")
+    .classList.add("activo");
+}
+
+function cerrar(){
+
+  document
+    .getElementById("modal")
+    .classList.remove("activo");
+}
+
+async function cambiar(estado){
+
+  const persona =
+    document
+      .getElementById("persona")
+      .value
+      .trim();
+
+  if(!persona){
+
+    alert(
+      "Ingresá tu nombre antes de cambiar el estado."
+    );
+
+    return;
+  }
+
+  try{
+
+    const r = await fetch(
+      SUPABASE_URL +
+      "/rest/v1/camas?cama=eq." +
+      encodeURIComponent(seleccion.cama),
+      {
+        method:"PATCH",
+
+        headers:{
+          "apikey":SUPABASE_KEY,
+          "Authorization":
+            "Bearer " + SUPABASE_KEY,
+          "Content-Type":"application/json",
+          "Prefer":"return=minimal"
+        },
+
+        body:JSON.stringify({
+          estado:estado,
+          persona:persona
+        })
+      }
+    );
+
+    if(!r.ok){
+      throw new Error(await r.text());
+    }
+
+    cerrar();
+    await cargar();
+
+  }catch(e){
+
+    alert(
+      "No se pudo guardar el cambio."
+    );
+
+    console.error(e);
+  }
+}
+
+cargar();
+
+setInterval(cargar,5000);
+
+</script>
+
+</body>
+</html>
