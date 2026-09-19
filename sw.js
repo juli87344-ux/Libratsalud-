@@ -7,19 +7,35 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("push", event => {
-  const data = event.data ? event.data.json() : {};
+  let data = {};
 
-  const title = data.title || "Libratsalud";
-  const options = {
-    body: data.body || "Hay una actualización de habitación."
-  };
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (e) {
+    data = {
+      title: "Libratsalud",
+      body: event.data ? event.data.text() : "Nueva actualización"
+    };
+  }
 
   event.waitUntil(
-    self.registration.showNotification(title, options)
+    self.registration.showNotification(
+      data.title || "Libratsalud",
+      {
+        body: data.body || "Hay una actualización de habitación.",
+        icon: "./icon-192.png",
+        badge: "./icon-192.png",
+        tag: "libratsalud",
+        renotify: true
+      }
+    )
   );
 });
 
 self.addEventListener("notificationclick", event => {
   event.notification.close();
-  event.waitUntil(clients.openWindow("./"));
+
+  event.waitUntil(
+    clients.openWindow("./")
+  );
 });
