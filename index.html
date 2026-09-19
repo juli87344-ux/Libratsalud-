@@ -134,7 +134,7 @@ input{
 <p>Control de habitaciones y camas</p>
 </header>
 <button id="btnNotificaciones" onclick="activarNotificaciones()">
-  🔔 Activar notificaciones
+  🔔 Activar notificaciones nueva 
 </button>
 <main>
 
@@ -424,4 +424,46 @@ async function activarNotificaciones() {
 }
   </script>
 </body>
+  <script>
+const VAPID_PUBLIC_KEY = "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
+async function activarNotificacionesNueva() {
+  try {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      alert("Este teléfono no admite notificaciones push.");
+      return;
+    }
+
+    const permiso = await Notification.requestPermission();
+
+    if (permiso !== "granted") {
+      alert("No se concedió permiso para las notificaciones.");
+      return;
+    }
+
+    const registro = await navigator.serviceWorker.ready;
+
+    const suscripcion = await registro.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+
+    alert("Teléfono preparado para recibir notificaciones.");
+    console.log(suscripcion);
+
+  } catch (e) {
+    alert("Error al activar notificaciones: " + e.message);
+  }
+}
+  </script>
 </html>
