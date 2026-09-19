@@ -407,19 +407,36 @@ if ("serviceWorker" in navigator) {
 </script>
   <script>
 async function activarNotificaciones() {
-  if (!("Notification" in window)) {
-    alert("Este teléfono no admite notificaciones.");
-    return;
-  }
+  try {
+    if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+      alert("Este teléfono no admite notificaciones.");
+      return;
+    }
 
-  const permiso = await Notification.requestPermission();
+    const permiso = await Notification.requestPermission();
 
-  if (permiso === "granted") {
-    document.getElementById("btnNotificaciones").textContent =
-      "🔔 Notificaciones activadas";
-    alert("Notificaciones activadas correctamente.");
-  } else {
-    alert("No se concedió permiso para las notificaciones.");
+    if (permiso !== "granted") {
+      alert("No se concedió permiso para las notificaciones.");
+      return;
+    }
+
+    const registro = await navigator.serviceWorker.ready;
+
+    const VAPID_PUBLIC_KEY =
+      "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
+
+    const suscripcion = await registro.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: VAPID_PUBLIC_KEY
+    });
+
+    alert("Teléfono suscripto correctamente a Libratsalud 🔔");
+
+    console.log(JSON.stringify(suscripcion));
+
+  } catch (e) {
+    alert("ERROR: " + e.message);
+    console.error(e);
   }
 }
   </script>
