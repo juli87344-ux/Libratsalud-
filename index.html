@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Libratsalud · Control de habitaciones</title>
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#17243d">ni
+<meta name="theme-color" content="#17243d">
 <style>
 *{box-sizing:border-box}
 body{
@@ -435,21 +435,25 @@ async function activarNotificaciones() {
       });
     }
     const datos = suscripcion.toJSON();
-    const respuesta = await fetch(SUPABASE_URL + "/rest/v1/notificaciones", {
-      method: "POST",
-      headers: {
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        nombre: "Julieta",
-        rol: "coordinacion",
-        endpoint: datos.endpoint,
-        p256dh: datos.keys.p256dh,
-        auth: datos.keys.auth
-      })
-    });
+    const respuesta = await fetch(
+      SUPABASE_URL + "/rest/v1/notificaciones?on_conflict=endpoint",
+      {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "resolution=merge-duplicates,return=minimal"
+        },
+        body: JSON.stringify({
+          nombre: "Julieta",
+          rol: "coordinacion",
+          endpoint: datos.endpoint,
+          p256dh: datos.keys.p256dh,
+          auth: datos.keys.auth
+        })
+      }
+    );
     if (!respuesta.ok) throw new Error(await respuesta.text());
     alert("Teléfono registrado correctamente en Libratsalud 🔔");
   } catch (e) {
