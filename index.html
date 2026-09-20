@@ -406,56 +406,58 @@ if ("serviceWorker" in navigator) {
 }
 </script>
   <script>
+const VAPID_PUBLIC_KEY = "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
 async function activarNotificaciones() {
   try {
-    if (!("Notification" in window) || !("serviceWorker" in navigator)) {
-      alert("Este teléfono no admite notificaciones.");
+    if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+      alert("Este teléfono no admite notificaciones push.");
       return;
     }
-
     const permiso = await Notification.requestPermission();
-
     if (permiso !== "granted") {
       alert("No se concedió permiso para las notificaciones.");
       return;
     }
-
     const registro = await navigator.serviceWorker.ready;
-
-    const VAPID_PUBLIC_KEY =
-      "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
-
-    const suscripcion = await registro.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: VAPID_PUBLIC_KEY
-    });
-
-
-
+    let suscripcion = await registro.pushManager.getSubscription();
+    if (!suscripcion) {
+      suscripcion = await registro.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
     const datos = suscripcion.toJSON();
-
-await fetch(SUPABASE_URL + "/rest/v1/notificaciones", {
-  method: "POST",
-  headers: {
-    "apikey": SUPABASE_KEY,
-    "Authorization": "Bearer " + SUPABASE_KEY,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    nombre: "Julieta",
-    rol: "coordinacion",
-    endpoint: datos.endpoint,
-    p256dh: datos.keys.p256dh,
-    auth: datos.keys.auth
-  })
-});
-alert("Teléfono registrado correctamente en Libratsalud 🔔");
+    const respuesta = await fetch(SUPABASE_URL + "/rest/v1/notificaciones", {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombre: "Julieta",
+        rol: "coordinacion",
+        endpoint: datos.endpoint,
+        p256dh: datos.keys.p256dh,
+        auth: datos.keys.auth
+      })
+    });
+    if (!respuesta.ok) throw new Error(await respuesta.text());
+    alert("Teléfono registrado correctamente en Libratsalud 🔔");
   } catch (e) {
     alert("ERROR: " + e.message);
     console.error(e);
   }
 }
-  </script>
+</script>
 </body>
   <script>
 const VAPID_PUBLIC_KEY = "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
