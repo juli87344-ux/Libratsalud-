@@ -531,6 +531,17 @@ input{
   .cama .reloj{display:block;margin-top:5px;font-size:10px;font-weight:900;color:#163b60}
   .franja-estado-cama{height:4px!important;top:0!important;left:0!important;right:0!important;border-radius:12px 12px 0 0!important}
 }
+
+/* reference-design-mobile-v4 — cabecera de habitaciones como maqueta */
+@media(max-width:700px){
+  .habitacion{padding:0 10px 11px!important}
+  .habitacion h2{margin:0 -10px 10px!important;padding:11px 82px 9px 12px!important;background:linear-gradient(90deg,#eaf6ff,#f8fcff);border-bottom:1px solid #d4e8f5;border-radius:13px 13px 0 0;color:#123b62!important;font-size:16px!important;font-weight:900!important}
+  .habitacion::after{top:13px!important;right:11px!important;color:#4e7898!important;background:#fff;border:1px solid #d7e8f3;border-radius:999px;padding:3px 6px;letter-spacing:.08em}
+  .habitacion-alerta-tiempo h2{background:linear-gradient(90deg,#fff3dc,#fffaf1)}
+  .habitacion-disponible h2{background:linear-gradient(90deg,#e8f8ef,#f7fcf9)}
+  .habitacion-ocupada h2{background:linear-gradient(90deg,#ffedef,#fff8f8)}
+  .camas{gap:8px!important}
+}
 </style>
 </head>
 
