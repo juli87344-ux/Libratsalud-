@@ -40,12 +40,13 @@
 @media(max-width:700px){.toolbar{display:grid;grid-template-columns:1fr auto;gap:8px}.toolbar>div:first-child{grid-column:1}.toolbar .notify{grid-column:2;grid-row:1;align-self:center}.toolbar .views{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);width:100%}.toolbar .view{width:100%;padding:8px 5px}.toolbar h1{font-size:22px}.roomsub{font-size:9px}}
 @media(max-width:700px){.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible;padding:4px 0 12px}.filter{justify-content:center;width:100%;padding:8px 5px;font-size:9px}.filter strong{min-width:18px;height:18px;font-size:9px}.filter-dot{width:7px;height:7px}}
 .rooms.compacto .bedpic{display:none}.rooms.compacto .operator{display:none}.rooms.compacto .bed{min-height:68px;padding:6px 4px}.rooms.compacto .timer{margin-top:3px;padding:2px 5px}.rooms.compacto .roomscene{height:38px}.rooms.compacto .scene-label{top:6px;font-size:16px}.rooms.compacto .sectionlabel{margin-top:6px}
+.notify.refresh{font-size:18px;font-weight:950;line-height:1}.notify:disabled{opacity:.5;cursor:default}@media(max-width:700px){.toolbar .refresh{grid-column:2;grid-row:2;justify-self:end}.toolbar .notify:not(.refresh){grid-column:2;grid-row:1}}
 </style></head>
 <body><div class="app">
 <header class="top"><div class="brandmark">✚</div><div class="logo">Libratsalud<small>Gestión de Camas · Camas listas, pacientes mejor</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn" onclick="abrirAjustes()">🔔</button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
 <main class="content">
 
-<div class="toolbar"><div><h1>Habitaciones</h1><div class="roomsub" id="roomSub">Seguimiento operativo de camas</div></div><div class="views"><button id="viewPantalla" class="view active" onclick="setView(\'pantalla\')">Pantalla</button><button id="viewPrioridad" class="view" onclick="setView(\'prioridad\')">Prioridad</button><button id="viewCompacto" class="view" onclick="setView(\'compacto\')">Compacto</button></div><button class="notify" id="notifyBtn" onclick="abrirAjustes()">🔔</button></div>
+<div class="toolbar"><div><h1>Habitaciones</h1><div class="roomsub" id="roomSub">Seguimiento operativo de camas</div></div><div class="views"><button id="viewPantalla" class="view active" onclick="setView(\'pantalla\')">Pantalla</button><button id="viewPrioridad" class="view" onclick="setView(\'prioridad\')">Prioridad</button><button id="viewCompacto" class="view" onclick="setView(\'compacto\')">Compacto</button></div><button class="notify refresh" id="refreshBtn" onclick="refrescarManual(this)" aria-label="Actualizar">↻</button><button class="notify" id="notifyBtn" onclick="abrirAjustes()">🔔</button></div>
 <div class="filters" id="filters"></div><div class="status" id="status">Conectando…</div><section class="rooms" id="rooms"></section>
 <div class="footer">◷ El tiempo cuenta para un mejor cuidado · Organización hoy, bienestar siempre</div>
 </main>
@@ -98,6 +99,7 @@ function setView(v){
  if(sub)sub.textContent=v==="prioridad"?"Ordenadas por prioridad y mayor espera":v==="compacto"?"Vista rápida de camas":"Seguimiento operativo de camas";
  render();
 }
+async function refrescarManual(btn){if(btn){btn.disabled=true;btn.textContent="…"}try{await cargar()}finally{if(btn){btn.disabled=false;btn.textContent="↻"}}}
 async function cargar(){try{const r=await fetch(SUPABASE_URL+"/rest/v1/camas?select=*&order=habitacion,cama",{headers});if(!r.ok)throw new Error(await r.text());camas=await r.json();const st=document.getElementById("status");st.className="status connection-ok";st.textContent="● Sistema conectado · "+camas.length+" camas · Actualizado "+new Date().toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"});render()}catch(e){const st=document.getElementById("status");st.className="status connection-bad";st.textContent="● Sin conexión · se reintentará automáticamente";console.error(e)}}
 function render(){
  renderFilters();
