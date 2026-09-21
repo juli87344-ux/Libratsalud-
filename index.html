@@ -2322,7 +2322,12 @@ if(seleccion.estado === estado){
     cerrar();
 
 
-    await actualizarConexion();\nactualizarFecha();\nsetInterval(actualizarFecha,30000);\nsetInterval(actualizarTiempoCarga,1000);\n\ncargar();
+    await actualizarConexion();
+actualizarFecha();
+setInterval(actualizarFecha,30000);
+setInterval(actualizarTiempoCarga,1000);
+
+cargar();
 
 
 
