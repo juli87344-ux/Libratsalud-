@@ -52,7 +52,7 @@ main{
   padding:15px;
 }
 
-.resumen-estados{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:4px 0 12px}.resumen-item{background:white;border:1px solid #e3edf5;border-radius:14px;padding:10px;text-align:center;box-shadow:0 4px 12px #244c7010}.resumen-numero{font-size:23px;font-weight:900}.resumen-label{font-size:10px;color:#6f8095;font-weight:700;margin-top:2px}\n\n.leyenda{
+.resumen-estados{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:4px 0 12px}.resumen-item{background:white;border:1px solid #e3edf5;border-radius:14px;padding:10px;text-align:center;box-shadow:0 4px 12px #244c7010}.resumen-icono{font-size:16px;margin-bottom:2px}.resumen-numero{font-size:23px;font-weight:900}.resumen-label{font-size:10px;color:#6f8095;font-weight:700;margin-top:2px}\n\n.leyenda{
   display:grid;
   grid-template-columns:repeat(6,1fr);
   gap:8px;
@@ -484,7 +484,7 @@ async function cargar(){
 ========================= */
 
 
-function actualizarResumen(){\n  const estados=[['ocupada','Ocupadas'],['alta_espera','Alta/Traslado'],['liberada','Liberadas'],['en_limpieza','En limpieza'],['lista','Listas'],['reservada','Reservadas']];\n  const el=document.getElementById('resumenEstados');\n  if(!el) return;\n  el.innerHTML=estados.map(([estado,label])=>{const total=camas.filter(c=>c.estado===estado).length;return `<div class="resumen-item"><div class="resumen-numero">${total}</div><div class="resumen-label">${label}</div></div>`}).join('');\n}\n\nlet filtroActual='todas';\nlet busquedaActual='';\nfunction buscarCamas(valor){busquedaActual=(valor||'').trim().toLowerCase();mostrar();}\nfunction filtrarCamas(estado,boton){filtroActual=estado;document.querySelectorAll('.filtro').forEach(b=>b.classList.remove('activo'));if(boton)boton.classList.add('activo');mostrar();}\n\nfunction mostrar(){\n\n  actualizarResumen();
+function actualizarResumen(){\n  const estados=[['ocupada','Ocupadas'],['alta_espera','Alta/Traslado'],['liberada','Liberadas'],['en_limpieza','En limpieza'],['lista','Listas'],['reservada','Reservadas']];\n  const el=document.getElementById('resumenEstados');\n  if(!el) return;\n  el.innerHTML=estados.map(([estado,label])=>{const total=camas.filter(c=>c.estado===estado).length;const iconos={ocupada:'🔴',alta_espera:'🟣',liberada:'🟡',en_limpieza:'🟠',lista:'🟢',reservada:'🔵'};return `<div class="resumen-item"><div class="resumen-icono">${iconos[estado]}</div><div class="resumen-numero">${total}</div><div class="resumen-label">${label}</div></div>`}).join('');\n}\n\nlet filtroActual='todas';\nlet busquedaActual='';\nfunction buscarCamas(valor){busquedaActual=(valor||'').trim().toLowerCase();mostrar();}\nfunction filtrarCamas(estado,boton){filtroActual=estado;document.querySelectorAll('.filtro').forEach(b=>b.classList.remove('activo'));if(boton)boton.classList.add('activo');mostrar();}\n\nfunction mostrar(){\n\n  actualizarResumen();
 
 
   const cont =
