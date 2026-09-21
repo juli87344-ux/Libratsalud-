@@ -92,7 +92,7 @@ const SUPABASE_KEY="sb_publishable_XZQEiAZsC2cVk5liN3fu6g_6UN3K9-3";
 const STATES={ocupada:["Ocupada","🔴"],alta_espera:["Alta / Traslado","🟣"],liberada:["Liberada / limpiar","🟡"],en_limpieza:["En limpieza","🟠"],lista:["Lista","🟢"],reservada:["Reservada","🔵"]};
 let camas=[],filtro=localStorage.getItem("libratsalud_filtro")||"todas",seleccion=null,vista=localStorage.getItem("libratsalud_vista")||"pantalla";const cambiosEnCurso=new Set();
 let superPeriodo="7";
-const headers={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"return=minimal"};
+const headers={"apikey":SUPABASE_KEY,"Content-Type":"application/json","Prefer":"return=minimal"};
 
 const VAPID_PUBLIC_KEY="BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
 const EDGE_NOTIFICATION_URL=SUPABASE_URL+"/functions/v1/Enviar-notificacion";
