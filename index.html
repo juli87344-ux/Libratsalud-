@@ -605,6 +605,18 @@ input{
   .cama .reloj{background:#edf5fa;border-radius:8px;padding:4px 6px;width:max-content;max-width:100%}
   .cama.urgente .reloj,.cama.prioridad-demora .reloj{background:#fff0cf;color:#8a5700}
 }
+
+/* reference-design-mobile-v10 — separación visual y acabado clínico */
+@media(max-width:700px){
+  #habitaciones{padding-bottom:8px}
+  .habitacion{margin-bottom:3px!important}
+  .habitacion h2::before{content:'▣';display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin-right:7px;border-radius:7px;background:#dff0fb;color:#1675b8;font-size:12px;vertical-align:middle}
+  .habitacion-disponible h2::before{background:#dcf5e6;color:#128052}.habitacion-alerta-tiempo h2::before{background:#fff0cf;color:#9b6809}.habitacion-ocupada h2::before{background:#ffe2e5;color:#b8323c}
+  .cama{border-top:4px solid #cbdce8!important}
+  .cama.ocupada{border-top-color:#df4c55!important}.cama.alta_espera{border-top-color:#8a55d8!important}.cama.liberada{border-top-color:#e1b323!important}.cama.limpieza{border-top-color:#ed853f!important}.cama.lista{border-top-color:#39a86b!important}.cama.reservada{border-top-color:#3d8dcc!important}
+  .franja-estado-cama{display:none!important}
+  footer{margin:12px 4px 5px!important;padding:12px!important;border-radius:14px!important;background:#f8fcff!important;border:1px solid #d8e8f3!important;color:#55738a!important}
+}
 </style>
 </head>
 
