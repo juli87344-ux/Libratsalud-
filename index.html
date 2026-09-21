@@ -958,6 +958,19 @@ input{
   .cama{box-shadow:inset 0 0 0 1px #ffffffaa,0 5px 13px rgba(28,82,123,.07)}
   .pie-app{border-color:#d8e8f3}
 }
+
+/* reference-design-supervision-v1 — estadísticas con la misma estética clínica */
+.panel-supervision{color:#173b5b!important}
+.panel-supervision h1{color:#123d64!important}
+.panel-supervision>div>div{border-color:#d8e8f3!important}
+.panel-supervision .btnPeriodo{background:#fff;border:1px solid #d7e8f3!important;color:#365673}
+.panel-supervision .btnPeriodo.activo{background:#0878d1!important;color:#fff!important;border-color:#0878d1!important}
+@media(max-width:700px){
+ .panel-supervision{padding-bottom:20px!important}
+ .panel-supervision h1{font-size:21px!important}
+ .panel-supervision>div:first-child{position:sticky;top:0;z-index:4;background:#eef7fc;padding:8px 0}
+ .panel-supervision .btnPeriodo{min-height:40px!important;border-radius:10px!important}
+}
 </style>
 </head>
 
@@ -2724,7 +2737,7 @@ function mostrarSupervision(historial){
   };
 
   pantalla.innerHTML = `
-    <div style="max-width:900px;margin:auto;">
+    <div class="panel-supervision" style="max-width:900px;margin:auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
         <div>
           <h1 style="margin:0;">🔐 Supervisión</h1>
