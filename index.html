@@ -1793,9 +1793,6 @@ async function activarNotificaciones(){
 
 const CLAVE_SUPERVISION = "Libratsalud2026";
 
-function abrirSupervision(){
-const CLAVE_SUPERVISION = "Libratsalud2026";
-
 async function abrirSupervision(){
 
   const clave = prompt(
@@ -2050,48 +2047,18 @@ function cerrarSupervision(){
     pantalla.remove();
   }
 }
-  const clave = prompt(
-    "🔐 Supervisión\n\nIngresá la clave:"
-  );
 
-  if(clave === null){
-    return;
-  }
 
-  if(clave !== CLAVE_SUPERVISION){
-
-    alert("❌ Clave incorrecta.");
-
-    return;
-  }
-
-  alert(
-    "✅ Acceso autorizado.\n\n" +
-    "Panel de Supervisión en preparación."
-  );
-}
 /* =========================
    INICIO
 ========================= */
 
-
 cargar();
 
-
-
-/*
-  Sincroniza las camas
-  cada 5 segundos.
-*/
-
 setInterval(
-
   cargar,
-
   5000
-
 );
-
 
 
 /*
