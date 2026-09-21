@@ -646,6 +646,16 @@ input{
   .controles-vista button:active,.btn-solo-demoras:active{transform:scale(.98)}
   #habitaciones{gap:11px!important}
 }
+
+/* reference-design-mobile-v13 — detalle visual hospitalario */
+@media(max-width:700px){
+  .cama::before{content:'🛏️';font-family:Arial,sans-serif;filter:none!important;background:linear-gradient(180deg,#f8fcff,#e8f3fa)!important;border:1px solid #d3e4ef!important;border-radius:9px!important;box-shadow:inset 0 -3px 0 rgba(70,115,145,.05)!important}
+  .cama.ocupada::before{background:linear-gradient(180deg,#fff5f6,#ffe4e7)!important;border-color:#f2cdd1!important}.cama.alta_espera::before{background:linear-gradient(180deg,#fbf7ff,#eee3ff)!important;border-color:#decdf5!important}.cama.liberada::before{background:linear-gradient(180deg,#fffdf5,#fff1bf)!important;border-color:#eadc9f!important}.cama.limpieza::before{background:linear-gradient(180deg,#fff9f5,#ffe5d4)!important;border-color:#efceb9!important}.cama.lista::before{background:linear-gradient(180deg,#f8fffa,#dff5e7)!important;border-color:#c8e7d3!important}.cama.reservada::before{background:linear-gradient(180deg,#f8fcff,#dfefff)!important;border-color:#c8dff2!important}
+  .cama{padding-top:61px!important}
+  .cama .detalle{box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+  .habitacion h2{letter-spacing:-.01em}
+  .habitacion::after{font-size:6.5px!important}
+}
 </style>
 </head>
 
