@@ -102,7 +102,13 @@ function render(){
  const groups={};data.forEach(c=>(groups[c.habitacion]??=[]).push(c));
  const roomSizes={};camas.forEach(c=>roomSizes[c.habitacion]=(roomSizes[c.habitacion]||0)+1);
  const roomsEl=document.getElementById("rooms");roomsEl.className="rooms "+vista;
- const keys=Object.keys(groups).sort((a,b)=>Number(a)-Number(b));
+ let keys=Object.keys(groups).sort((a,b)=>Number(a)-Number(b));
+ if(vista==="prioridad"){
+  const rp={liberada:0,en_limpieza:1,alta_espera:2,reservada:3,ocupada:4,lista:5};
+  const score=h=>Math.min(...groups[h].map(c=>rp[c.estado]??9));
+  const oldest=h=>Math.min(...groups[h].map(c=>new Date(c.estado_desde||c.actualizado||Date.now()).getTime()));
+  keys.sort((a,b)=>score(a)-score(b)||oldest(a)-oldest(b)||Number(a)-Number(b));
+ }
  const doubles=keys.filter(h=>(roomSizes[h]||0)>1), singles=keys.filter(h=>(roomSizes[h]||0)===1);
  const card=h=>{const bs=groups[h];const delayed=bs.some(c=>c.estado==="liberada"&&Date.now()-new Date(c.estado_desde||c.actualizado).getTime()>=1800000);const order=["liberada","en_limpieza","alta_espera","reservada","ocupada","lista"];const roomState=order.find(st=>bs.some(c=>c.estado===st))||"lista";return '<article class="room roomstate-'+roomState+' '+(delayed?'delayed':'')+'"><div class="roomscene '+((roomSizes[h]||bs.length)>1?'double-room':'single-room')+'"><span class="scene-label">'+esc(h)+'<small>'+((roomSizes[h]||bs.length)===1?'Individual':'Doble')+'</small></span><i class="scene-bed"></i><i class="scene-bed second-bed"></i></div>'+(delayed?'<div class="room-alert"><span class="delaybadge">⚠ +30 min</span></div>':'')+'<div class="beds '+(bs.length===1?'one':'')+'">'+bs.map(c=>'<button class="bed '+esc(c.estado)+'" onclick="abrirModal(\''+esc(c.habitacion)+'\',\''+esc(c.cama)+'\')"><span class="bedpic"></span><span class="bed-name">'+esc(c.cama)+'</span><span class="pill">'+(STATES[c.estado]?.[1]||"")+" "+esc(STATES[c.estado]?.[0]||c.estado)+'</span>'+(c.estado!=="lista"?'<span class="timer">⏱ '+elapsed(c.estado_desde||c.actualizado)+'</span>':'')+((c.operador_estado||c.responsable)?'<span class="operator">👤 '+esc(c.operador_estado||c.responsable)+'</span>':'')+'</button>').join("")+'</div></article>'};
  const section=(title,list)=>list.length?'<div class="sectionlabel">'+title+'<small>'+list.length+' habitaciones</small></div>'+list.map(card).join(""):"";
