@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Libratsalud · Control de habitaciones</title>
+
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#17243d">
 
@@ -23,8 +24,16 @@ header{
   padding:18px 16px;
 }
 
-header h1{margin:0;font-size:25px}
-header p{margin:4px 0 0;opacity:.8;font-size:13px}
+header h1{
+  margin:0;
+  font-size:25px;
+}
+
+header p{
+  margin:4px 0 0;
+  opacity:.8;
+  font-size:13px;
+}
 
 #btnNotificaciones{
   margin:12px 15px 0;
@@ -78,22 +87,50 @@ main{
   border:0;
   border-radius:12px;
   padding:13px;
-  min-width:110px;
+  min-width:130px;
   font-weight:700;
   cursor:pointer;
   color:#172033;
 }
 
-.lista{background:#82e29c}
-.liberada{background:#ffe36e}
-.limpieza{background:#ffb15c}
-.reservada{background:#76b7ff}
+/* ESTADOS */
+
+.ocupada{
+  background:#ff8585;
+}
+
+.alta_espera{
+  background:#d9a7ff;
+}
+
+.liberada{
+  background:#ffe36e;
+}
+
+.limpieza{
+  background:#ffb15c;
+}
+
+.lista{
+  background:#82e29c;
+}
+
+.reservada{
+  background:#76b7ff;
+}
 
 .detalle{
   display:block;
   font-size:11px;
   font-weight:500;
   margin-top:4px;
+}
+
+.reloj{
+  display:block;
+  font-size:13px;
+  font-weight:800;
+  margin-top:6px;
 }
 
 #mensaje{
@@ -112,7 +149,9 @@ main{
   padding:18px;
 }
 
-.modal.activo{display:flex}
+.modal.activo{
+  display:flex;
+}
 
 .panel{
   background:white;
@@ -122,7 +161,9 @@ main{
   padding:18px;
 }
 
-.panel h2{margin-top:0}
+.panel h2{
+  margin-top:0;
+}
 
 input{
   width:100%;
@@ -140,6 +181,7 @@ input{
   border:0;
   border-radius:10px;
   font-weight:700;
+  cursor:pointer;
 }
 
 .cerrar{
@@ -148,6 +190,7 @@ input{
   padding:12px;
   border:0;
   border-radius:10px;
+  cursor:pointer;
 }
 
 .aviso{
@@ -166,13 +209,16 @@ input{
   <p>Control de habitaciones y camas</p>
 </header>
 
-<button id="btnNotificaciones" onclick="activarNotificaciones()">
+<button id="btnNotificaciones"
+        onclick="activarNotificaciones()">
   🔔 Activar notificaciones
 </button>
 
 <main>
 
 <div class="leyenda">
+  <div>🔴 Ocupada</div>
+  <div>🟣 Alta / espera traslado</div>
   <div>🟡 Liberada / limpiar</div>
   <div>🟠 En limpieza</div>
   <div>🟢 Lista</div>
@@ -180,6 +226,7 @@ input{
 </div>
 
 <div id="mensaje">Conectando...</div>
+
 <div id="habitaciones"></div>
 
 <p class="aviso">
@@ -188,42 +235,71 @@ Piloto Libratsalud · No ingresar nombres ni datos clínicos de pacientes.
 
 </main>
 
+
+<!-- MODAL -->
+
 <div class="modal" id="modal">
+
 <div class="panel">
 
 <h2 id="titulo"></h2>
 
-<input id="persona"
-       placeholder="Nombre de quien realiza el cambio">
+<input
+  id="persona"
+  placeholder="Nombre de quien realiza el cambio"
+>
 
-<button class="opcion liberada"
-        onclick="cambiar('liberada')">
-🟡 LIBERADA / LIMPIAR
+<button
+  class="opcion ocupada"
+  onclick="cambiar('ocupada')">
+  🔴 OCUPADA
 </button>
 
-<button class="opcion limpieza"
-        onclick="cambiar('en_limpieza')">
-🟠 EN LIMPIEZA
+<button
+  class="opcion alta_espera"
+  onclick="cambiar('alta_espera')">
+  🟣 ALTA / ESPERA TRASLADO
 </button>
 
-<button class="opcion lista"
-        onclick="cambiar('lista')">
-🟢 LISTA
+<button
+  class="opcion liberada"
+  onclick="cambiar('liberada')">
+  🟡 LIBERADA / LIMPIAR
 </button>
 
-<button class="opcion reservada"
-        onclick="cambiar('reservada')">
-🔵 RESERVADA
+<button
+  class="opcion limpieza"
+  onclick="cambiar('en_limpieza')">
+  🟠 EN LIMPIEZA
 </button>
 
-<button class="cerrar" onclick="cerrar()">
-Cancelar
+<button
+  class="opcion lista"
+  onclick="cambiar('lista')">
+  🟢 LISTA
+</button>
+
+<button
+  class="opcion reservada"
+  onclick="cambiar('reservada')">
+  🔵 RESERVADA
+</button>
+
+<button
+  class="cerrar"
+  onclick="cerrar()">
+  Cancelar
 </button>
 
 </div>
 </div>
+
 
 <script>
+
+/* =========================
+   CONFIGURACIÓN
+========================= */
 
 const SUPABASE_URL =
 "https://wxgqfycnjwryidnedbni.supabase.co";
@@ -232,7 +308,8 @@ const SUPABASE_KEY =
 "sb_publishable_XZQEiAZsC2cVk5liN3fu6g_6UN3K9-3";
 
 const EDGE_NOTIFICATION_URL =
-SUPABASE_URL + "/functions/v1/Enviar-notificacion";
+SUPABASE_URL +
+"/functions/v1/Enviar-notificacion";
 
 const VAPID_PUBLIC_KEY =
 "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
@@ -255,7 +332,8 @@ async function cargar(){
       {
         headers:{
           "apikey":SUPABASE_KEY,
-          "Authorization":"Bearer " + SUPABASE_KEY
+          "Authorization":
+            "Bearer " + SUPABASE_KEY
         }
       }
     );
@@ -266,14 +344,18 @@ async function cargar(){
 
     camas = await r.json();
 
-    document.getElementById("mensaje").textContent =
+    document
+      .getElementById("mensaje")
+      .textContent =
       "● Sistema conectado";
 
     mostrar();
 
   }catch(e){
 
-    document.getElementById("mensaje").textContent =
+    document
+      .getElementById("mensaje")
+      .textContent =
       "No se pudo conectar con la base";
 
     console.error(e);
@@ -329,19 +411,32 @@ function mostrar(){
           document.createElement("button");
 
         b.className =
-          "cama " +
-          (c.estado === "en_limpieza"
-            ? "limpieza"
-            : c.estado);
+          "cama " + claseEstado(c.estado);
+
+        let relojHTML = "";
+
+        if(
+          c.estado_desde &&
+          mostrarReloj(c.estado)
+        ){
+          relojHTML =
+            "<span class='reloj' " +
+            "data-desde='" +
+            c.estado_desde +
+            "'>⏱️ " +
+            calcularTiempo(c.estado_desde) +
+            "</span>";
+        }
 
         b.innerHTML =
-          "Cama " + c.cama +
+          "Cama " +
+          c.cama +
+
           "<span class='detalle'>" +
           estadoTexto(c.estado) +
-          (c.responsable
-            ? " · " + c.responsable
-            : "") +
-          "</span>";
+          "</span>" +
+
+          relojHTML;
 
         b.onclick = () => abrir(c);
 
@@ -356,10 +451,48 @@ function mostrar(){
 
 
 /* =========================
+   CLASE / COLOR
+========================= */
+
+function claseEstado(e){
+
+  if(e === "ocupada"){
+    return "ocupada";
+  }
+
+  if(e === "alta_espera"){
+    return "alta_espera";
+  }
+
+  if(e === "liberada"){
+    return "liberada";
+  }
+
+  if(e === "en_limpieza"){
+    return "limpieza";
+  }
+
+  if(e === "reservada"){
+    return "reservada";
+  }
+
+  return "lista";
+}
+
+
+/* =========================
    TEXTO DE ESTADOS
 ========================= */
 
 function estadoTexto(e){
+
+  if(e === "ocupada"){
+    return "Ocupada";
+  }
+
+  if(e === "alta_espera"){
+    return "Alta / espera traslado";
+  }
 
   if(e === "liberada"){
     return "Liberada / limpiar";
@@ -378,6 +511,80 @@ function estadoTexto(e){
 
 
 /* =========================
+   RELOJES
+========================= */
+
+function mostrarReloj(estado){
+
+  return [
+    "ocupada",
+    "alta_espera",
+    "liberada",
+    "en_limpieza"
+  ].includes(estado);
+}
+
+
+function calcularTiempo(desde){
+
+  if(!desde){
+    return "";
+  }
+
+  const inicio =
+    new Date(desde).getTime();
+
+  const ahora =
+    Date.now();
+
+  let segundos =
+    Math.floor(
+      (ahora - inicio) / 1000
+    );
+
+  if(segundos < 0){
+    segundos = 0;
+  }
+
+  const horas =
+    Math.floor(segundos / 3600);
+
+  const minutos =
+    Math.floor(
+      (segundos % 3600) / 60
+    );
+
+  if(horas > 0){
+    return horas +
+      " h " +
+      minutos +
+      " min";
+  }
+
+  return minutos + " min";
+}
+
+
+/* Actualiza los relojes sin
+   consultar nuevamente Supabase */
+
+function actualizarRelojes(){
+
+  document
+    .querySelectorAll(".reloj")
+    .forEach(el => {
+
+      const desde =
+        el.dataset.desde;
+
+      el.textContent =
+        "⏱️ " +
+        calcularTiempo(desde);
+    });
+}
+
+
+/* =========================
    MODAL
 ========================= */
 
@@ -385,18 +592,23 @@ function abrir(c){
 
   seleccion = c;
 
-  document.getElementById("titulo").textContent =
-    "Habitación " +
-    c.habitacion +
-    " · Cama " +
-    c.cama;
+  document
+    .getElementById("titulo")
+    .textContent =
+      "Habitación " +
+      c.habitacion +
+      " · Cama " +
+      c.cama;
 
-  document.getElementById("persona").value = "";
+  document
+    .getElementById("persona")
+    .value = "";
 
   document
     .getElementById("modal")
     .classList.add("activo");
 }
+
 
 function cerrar(){
 
@@ -410,30 +622,40 @@ function cerrar(){
    ENVIAR PUSH
 ========================= */
 
-async function enviarNotificacion(title, body){
+async function enviarNotificacion(
+  title,
+  body
+){
 
   try{
 
-    const respuesta = await fetch(
-      EDGE_NOTIFICATION_URL,
-      {
-        method:"POST",
+    const respuesta =
+      await fetch(
+        EDGE_NOTIFICATION_URL,
+        {
+          method:"POST",
 
-        headers:{
-          "apikey":SUPABASE_KEY,
-          "Authorization":
-            "Bearer " + SUPABASE_KEY,
-          "Content-Type":"application/json"
-        },
+          headers:{
+            "apikey":
+              SUPABASE_KEY,
 
-        body:JSON.stringify({
-          title:title,
-          body:body
-        })
-      }
-    );
+            "Authorization":
+              "Bearer " +
+              SUPABASE_KEY,
+
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+            title:title,
+            body:body
+          })
+        }
+      );
 
     if(!respuesta.ok){
+
       console.error(
         "No se pudo enviar la notificación:",
         await respuesta.text()
@@ -442,10 +664,6 @@ async function enviarNotificacion(title, body){
 
   }catch(e){
 
-    /*
-      El cambio de estado de la cama ya quedó guardado.
-      Un problema con el push no debe impedir el uso de Libratsalud.
-    */
     console.error(
       "Error enviando notificación:",
       e
@@ -479,64 +697,145 @@ async function cambiar(estado){
     return;
   }
 
+  const habitacion =
+    seleccion.habitacion;
+
+  const cama =
+    seleccion.cama;
+
   /*
-    Guardamos estos datos antes de recargar las camas.
+    Cada cambio inicia un nuevo reloj.
+    Supabase guarda la hora real.
   */
-  const habitacion = seleccion.habitacion;
-  const cama = seleccion.cama;
+
+  const ahora =
+    new Date().toISOString();
 
   try{
 
-    const r = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/camas?habitacion=eq." +
-      encodeURIComponent(habitacion) +
-      "&cama=eq." +
-      encodeURIComponent(cama),
-      {
-        method:"PATCH",
+    const r =
+      await fetch(
 
-        headers:{
-          "apikey":SUPABASE_KEY,
-          "Authorization":
-            "Bearer " + SUPABASE_KEY,
-          "Content-Type":"application/json",
-          "Prefer":"return=minimal"
-        },
+        SUPABASE_URL +
+        "/rest/v1/camas?habitacion=eq." +
+        encodeURIComponent(habitacion) +
+        "&cama=eq." +
+        encodeURIComponent(cama),
 
-        body:JSON.stringify({
-          estado:estado,
-          responsable:persona
-        })
-      }
-    );
+        {
+          method:"PATCH",
+
+          headers:{
+
+            "apikey":
+              SUPABASE_KEY,
+
+            "Authorization":
+              "Bearer " +
+              SUPABASE_KEY,
+
+            "Content-Type":
+              "application/json",
+
+            "Prefer":
+              "return=minimal"
+          },
+
+          body:JSON.stringify({
+
+            estado:estado,
+
+            responsable:
+              persona,
+
+            estado_desde:
+              ahora
+          })
+        }
+      );
 
     if(!r.ok){
-      throw new Error(await r.text());
-    }
-
-    /*
-      Por ahora enviamos push solamente cuando
-      una cama queda LIBERADA y necesita limpieza.
-    */
-    if(estado === "liberada"){
-
-      await enviarNotificacion(
-        "🔔 Libratsalud · Limpieza",
-        "Habitación " +
-          habitacion +
-          " · Cama " +
-          cama +
-          " está liberada y requiere limpieza."
+      throw new Error(
+        await r.text()
       );
     }
 
+
+    /* =========================
+       NOTIFICACIONES
+    ========================= */
+
+    if(estado === "alta_espera"){
+
+      await enviarNotificacion(
+
+        "🟣 Libratsalud · Alta",
+
+        "Habitación " +
+        habitacion +
+        " · Cama " +
+        cama +
+        " está en alta / espera traslado."
+      );
+    }
+
+
+    if(estado === "liberada"){
+
+      await enviarNotificacion(
+
+        "🔔 Libratsalud · Limpieza",
+
+        "Habitación " +
+        habitacion +
+        " · Cama " +
+        cama +
+        " está liberada y requiere limpieza."
+      );
+    }
+
+
+    if(estado === "en_limpieza"){
+
+      await enviarNotificacion(
+
+        "🟠 Libratsalud · Limpieza",
+
+        "Habitación " +
+        habitacion +
+        " · Cama " +
+        cama +
+        " comenzó la limpieza."
+      );
+    }
+
+
+    if(estado === "lista"){
+
+      await enviarNotificacion(
+
+        "🟢 Libratsalud · Lista",
+
+        "Habitación " +
+        habitacion +
+        " · Cama " +
+        cama +
+        " está limpia y disponible."
+      );
+    }
+
+
     cerrar();
+
     await cargar();
+
 
   }catch(e){
 
-    alert("ERROR: " + e.message);
+    alert(
+      "ERROR: " +
+      e.message
+    );
 
     console.error(e);
   }
@@ -544,14 +843,18 @@ async function cambiar(estado){
 
 
 /* =========================
-   NOTIFICACIONES DEL TELÉFONO
+   NOTIFICACIONES TELÉFONO
 ========================= */
 
-function urlBase64ToUint8Array(base64String){
+function urlBase64ToUint8Array(
+  base64String
+){
 
   const padding =
     "=".repeat(
-      (4 - base64String.length % 4) % 4
+      (4 -
+       base64String.length % 4)
+       % 4
     );
 
   const base64 =
@@ -559,9 +862,11 @@ function urlBase64ToUint8Array(base64String){
       .replace(/-/g, "+")
       .replace(/_/g, "/");
 
-  const rawData = atob(base64);
+  const rawData =
+    atob(base64);
 
   return Uint8Array.from(
+
     [...rawData].map(
       c => c.charCodeAt(0)
     )
@@ -586,8 +891,11 @@ async function activarNotificaciones(){
       return;
     }
 
+
     const permiso =
-      await Notification.requestPermission();
+      await Notification
+        .requestPermission();
+
 
     if(permiso !== "granted"){
 
@@ -598,68 +906,104 @@ async function activarNotificaciones(){
       return;
     }
 
+
     const registro =
-      await navigator.serviceWorker.ready;
+      await navigator
+        .serviceWorker
+        .ready;
+
 
     let suscripcion =
-      await registro.pushManager.getSubscription();
+      await registro
+        .pushManager
+        .getSubscription();
+
 
     if(!suscripcion){
 
       suscripcion =
-        await registro.pushManager.subscribe({
-          userVisibleOnly:true,
-          applicationServerKey:
-            urlBase64ToUint8Array(
-              VAPID_PUBLIC_KEY
-            )
-        });
+        await registro
+          .pushManager
+          .subscribe({
+
+            userVisibleOnly:true,
+
+            applicationServerKey:
+              urlBase64ToUint8Array(
+                VAPID_PUBLIC_KEY
+              )
+          });
     }
+
 
     const datos =
       suscripcion.toJSON();
 
+
     const respuesta =
       await fetch(
+
         SUPABASE_URL +
         "/rest/v1/notificaciones?on_conflict=endpoint",
+
         {
           method:"POST",
 
           headers:{
-            "apikey":SUPABASE_KEY,
+
+            "apikey":
+              SUPABASE_KEY,
+
             "Authorization":
-              "Bearer " + SUPABASE_KEY,
-            "Content-Type":"application/json",
+              "Bearer " +
+              SUPABASE_KEY,
+
+            "Content-Type":
+              "application/json",
+
             "Prefer":
               "resolution=merge-duplicates,return=minimal"
           },
 
           body:JSON.stringify({
+
             nombre:"Julieta",
+
             rol:"coordinacion",
-            endpoint:datos.endpoint,
-            p256dh:datos.keys.p256dh,
-            auth:datos.keys.auth,
+
+            endpoint:
+              datos.endpoint,
+
+            p256dh:
+              datos.keys.p256dh,
+
+            auth:
+              datos.keys.auth,
+
             activo:true
           })
         }
       );
 
+
     if(!respuesta.ok){
+
       throw new Error(
         await respuesta.text()
       );
     }
 
+
     alert(
       "Teléfono registrado correctamente en Libratsalud 🔔"
     );
 
+
   }catch(e){
 
     alert(
-      "ERROR: " + e.message
+      "ERROR: " +
+      e.message
     );
 
     console.error(e);
@@ -673,9 +1017,25 @@ async function activarNotificaciones(){
 
 cargar();
 
-setInterval(cargar,5000);
+/* Sincroniza las camas */
+setInterval(
+  cargar,
+  5000
+);
 
-if("serviceWorker" in navigator){
+/* Hace avanzar visualmente
+   los cronómetros */
+setInterval(
+  actualizarRelojes,
+  1000
+);
+
+
+/* SERVICE WORKER */
+
+if(
+  "serviceWorker" in navigator
+){
 
   window.addEventListener(
     "load",
