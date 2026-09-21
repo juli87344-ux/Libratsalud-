@@ -1,3 +1,5 @@
+const LIBRATSALUD_SW_VERSION = "libratsalud-sw-v3";
+
 self.addEventListener("install", () => {
   self.skipWaiting();
 });
@@ -25,8 +27,9 @@ self.addEventListener("push", event => {
         body: data.body || "Hay una actualización de habitación.",
         icon: "./icon-192.png",
         badge: "./icon-192.png",
-        tag: "libratsalud",
-        renotify: true
+        tag: data.tag || "libratsalud",
+        renotify: true,
+        data: data.data || { url: "./" }
       }
     )
   );
