@@ -1031,6 +1031,13 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
 #panelUbicacion button{min-height:38px;border:1px solid #cfe3f0;border-radius:9px;background:#fff;color:#173b5b;padding:7px 9px;font-weight:750}
 #estadoUbicacion{display:block;margin-top:6px;color:#60778d;font-size:11px;line-height:1.35}
 @media(max-width:700px){#panelUbicacion button{width:100%}}
+
+/* reference-design-notifications-collapse-v1 — panel desplegable */
+#panelNotificaciones{margin:8px 12px 0}
+#btnAbrirNotificaciones{width:100%;min-height:44px;border:1px solid #cfe3f0;border-radius:12px;background:#fff;color:#123d64;font-weight:900;font-size:14px;box-shadow:0 3px 10px rgba(28,82,123,.05);cursor:pointer}
+#panelNotificacionesContenido{display:none;margin-top:8px}
+#panelNotificacionesContenido.abierto{display:block}
+@media(max-width:700px){#btnAbrirNotificaciones{font-size:13px}}
 </style>
 </head>
 
@@ -3106,6 +3113,14 @@ async function actualizarPanelUbicacion(){
  if(u.activo){if(b)b.textContent="📍 Ubicación activada";if(e)e.textContent="📍 Activada · radio "+(u.radio||300)+" m · solo mientras la app está abierta.";}
 }
 window.addEventListener("load",()=>{setTimeout(actualizarPanelUbicacion,600);setInterval(comprobarUbicacionNotificaciones,120000);});
+
+function alternarPanelNotificaciones(){
+ const panel=document.getElementById("panelNotificacionesContenido");
+ const flecha=document.getElementById("flechaNotificaciones");
+ if(!panel)return;
+ const abierto=panel.classList.toggle("abierto");
+ if(flecha)flecha.textContent=abierto?"▴":"▾";
+}
 </script>
 
 
