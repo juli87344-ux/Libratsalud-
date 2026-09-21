@@ -3177,6 +3177,11 @@ function alternarPanelNotificaciones(){
  const abierto=panel.classList.toggle("abierto");
  if(flecha)flecha.textContent=abierto?"▴":"▾";
 }
+function actualizarConexion(){
+  const mensaje=document.getElementById("mensaje");
+  if(mensaje) mensaje.textContent="● Sistema conectado";
+}
+
 </script>
 
 
