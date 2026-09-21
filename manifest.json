@@ -2,7 +2,7 @@
   "name": "LibraCare",
   "short_name": "LibraCare",
   "description": "Sistema de gestión de camas",
-  "start_url": "./",
+  "start_url": "./?appv=6",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f6fa",
