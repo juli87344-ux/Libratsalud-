@@ -66,7 +66,7 @@ main{
   font-size:13px;
 }
 
-.habitacion{
+#habitaciones{\n  display:grid;\n  grid-template-columns:repeat(3,minmax(0,1fr));\n  gap:14px;\n  align-items:start;\n}\n\n.habitacion{
   background:white;
   border-radius:14px;
   padding:12px;
@@ -202,7 +202,7 @@ input{
   text-align:center;
 }
 
-@media(max-width:800px){.leyenda{grid-template-columns:repeat(3,1fr)}}\n@media(max-width:560px){.leyenda{grid-template-columns:repeat(2,1fr)} main{padding:10px}.habitacion{border-radius:18px}.cama{min-height:126px}}\n</style>
+@media(max-width:900px){#habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))}.leyenda{grid-template-columns:repeat(3,1fr)}}\n@media(max-width:560px){#habitaciones{grid-template-columns:1fr}.leyenda{grid-template-columns:repeat(2,1fr)} main{padding:10px}.habitacion{border-radius:18px}.cama{min-height:126px}}\n</style>
 </head>
 
 
