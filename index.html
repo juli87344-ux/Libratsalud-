@@ -2360,10 +2360,11 @@ if(seleccion.estado === estado){
 
     cerrar();
 
+    mostrarToast("✓ Cama " + cama + " actualizada");
 
     await actualizarConexion();
-actualizarFecha();
-await cargar();
+    actualizarFecha();
+    await cargar();
 
 
 
