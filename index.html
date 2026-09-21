@@ -1082,6 +1082,36 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
 #panelNotificacionesContenido{display:none;margin-top:8px}
 #panelNotificacionesContenido.abierto{display:block}
 @media(max-width:700px){#btnAbrirNotificaciones{font-size:13px}}
+
+/* definitive-reference-desktop-v1 — maqueta elegida */
+@media(min-width:901px){
+  body{background:#eef7fc!important;padding-left:126px}
+  header{height:96px;background:#fff!important;color:#123d64!important;padding:18px 28px!important;border-bottom:1px solid #d5e7f2!important;box-shadow:0 2px 10px rgba(24,75,112,.05)}
+  header h1{font-size:34px!important;color:#0878d1!important;letter-spacing:-.03em}
+  header p{font-size:14px!important;color:#315e7e!important;font-weight:800}
+  header::before{content:'✚';display:inline-grid;place-items:center;float:left;width:54px;height:54px;margin-right:12px;border:4px solid #2bb673;border-radius:50%;color:#0878d1;font-size:35px;font-weight:950}
+  body::before{content:'⌂  Inicio\A\A◷  Historial\A\A▥  Supervisión\A\A⚙  Configuración\A\A?  Ayuda';white-space:pre;position:fixed;z-index:80;left:0;top:0;bottom:0;width:126px;padding:155px 16px 20px;background:linear-gradient(180deg,#12365b,#0c2b4b);color:#dcecff;font-size:15px;font-weight:750;line-height:2.2;box-shadow:4px 0 18px rgba(15,52,85,.12)}
+  #panelNotificaciones{position:absolute;right:28px;top:22px;width:210px;z-index:90;margin:0!important}
+  #btnAbrirNotificaciones{border-radius:999px!important}
+  main{max-width:1320px!important;padding:18px 20px 28px!important}
+  .orden-habitaciones{margin:0 0 10px!important}
+  .leyenda-ayuda,.leyenda{display:none!important}
+  .cabecera-sticky{position:relative!important;top:auto!important;background:transparent!important;backdrop-filter:none!important;border:0!important;padding:0!important}
+  .panel-titulo{margin:2px 0 10px!important}
+  .panel-titulo strong{font-size:28px!important;color:#102f50!important}
+  .barra-filtros{padding:0 0 12px!important;gap:8px!important}
+  .filtro{font-size:12px!important;padding:9px 15px!important}
+  #habitaciones{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+  .habitacion{border:2px solid #d1e5f1!important;border-radius:13px!important;padding:10px!important;margin:0!important;box-shadow:0 4px 12px rgba(31,91,132,.06)!important;background:linear-gradient(180deg,#fff,#eefaff)!important}
+  .habitacion h2{font-size:25px!important;color:#102f50!important;margin:0 0 8px!important;border-bottom:1px solid #dcebf4!important;padding-bottom:7px!important}
+  .camas{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .cama{position:relative!important;min-width:0!important;min-height:172px!important;padding:92px 8px 9px!important;border:1px solid #d6e6f0!important;border-radius:12px!important;background:#fff!important;box-shadow:0 3px 9px rgba(25,76,112,.07)!important;text-align:left!important;overflow:hidden!important}
+  .cama::before{content:'🛏️'!important;position:absolute!important;top:12px!important;left:50%!important;transform:translateX(-50%)!important;width:88%!important;height:70px!important;display:grid!important;place-items:center!important;background:linear-gradient(180deg,#f8fcff,#e4f1f8)!important;border:1px solid #cfe2ed!important;border-radius:9px!important;font-size:55px!important}
+  .cama .detalle{display:block!important;border-radius:999px!important;padding:5px 8px!important;font-size:11px!important;font-weight:900!important;background:#f4f8fb!important}
+  .cama .reloj{margin:5px 0 0!important;font-size:12px!important;background:#fff!important;border:1px solid #d9e7ef!important;padding:5px 7px!important}
+  .responsable-cama,.hora-cambio-cama,.fecha-cambio-cama,.antiguedad-estado{font-size:9px!important}
+  .pie-app{margin-top:14px!important}
+}
 </style>
 </head>
 
