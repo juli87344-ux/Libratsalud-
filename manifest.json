@@ -1,7 +1,7 @@
 {
-  "name": "Libratsalud",
-  "short_name": "Libratsalud",
-  "description": "Control de habitaciones y camas",
+  "name": "LibraCare Bed",
+  "short_name": "LibraCare",
+  "description": "Sistema de gestión de habitaciones y camas",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
