@@ -999,6 +999,18 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
 
 /* reference-design-load-guard-v1 — evitar cargas simultáneas */
 .estado-cargando{opacity:.72;pointer-events:none}
+
+/* reference-design-modal-v1 — cambio de estado clínico */
+#modal .contenido-modal{background:#fff;border:1px solid #d7e8f3;border-radius:18px;box-shadow:0 14px 35px rgba(18,61,100,.18);color:#173b5b}
+#modal #titulo{color:#123d64;font-weight:950}
+#modal #persona{border:1px solid #cfe3f0;border-radius:10px;min-height:42px}
+#modal .opcion{min-height:48px;border-radius:11px!important;border:1px solid transparent!important;font-weight:900!important}
+@media(max-width:700px){
+ #modal{padding:12px!important}
+ #modal .contenido-modal{width:min(100%,430px)!important;max-height:88vh;overflow:auto;padding:16px!important;border-radius:18px!important}
+ #modal .opcion{width:100%!important;margin-bottom:7px!important}
+ #modal #persona{width:100%!important;box-sizing:border-box;padding:10px!important;font-size:16px!important}
+}
 </style>
 </head>
 
