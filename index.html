@@ -1,508 +1,104 @@
+import webpush from "npm:web-push@3.6.7";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Libratsalud · Control de habitaciones</title>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#17243d">
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,sans-serif;
-  background:#f4f6f9;
-  color:#172033
-}
-header{
-  background:#18243a;
-  color:white;
-  padding:18px 16px
-}
-header h1{margin:0;font-size:25px}
-header p{margin:4px 0 0;opacity:.8;font-size:13px}
-main{max-width:760px;margin:auto;padding:15px}
+export default {
+  fetch: async (req: Request) => {
+    try {
+      const publicKey = Deno.env.get("VAPID_PUBLIC_KEY");
+      const privateKey = Deno.env.get("VAPID_PRIVATE_KEY");
+      const supabaseUrl = Deno.env.get("SUPABASE_URL");
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-.leyenda{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-bottom:16px
-}
-.leyenda div{
-  background:white;
-  padding:10px;
-  border-radius:10px;
-  font-size:13px
-}
-.habitacion{
-  background:white;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:12px;
-  box-shadow:0 2px 8px #00000010
-}
-.habitacion h2{
-  margin:0 0 9px;
-  font-size:18px
-}
-.camas{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap
-}
-.cama{
-  border:0;
-  border-radius:12px;
-  padding:13px;
-  min-width:110px;
-  font-weight:700;
-  cursor:pointer;
-  color:#172033
-}
-.lista{background:#82e29c}
-.liberada{background:#ffe36e}
-.limpieza{background:#ffb15c}
-.reservada{background:#76b7ff}
+      if (!publicKey || !privateKey || !supabaseUrl || !serviceKey) {
+        throw new Error("Faltan variables necesarias");
+      }
 
-.detalle{
-  display:block;
-  font-size:11px;
-  font-weight:500;
-  margin-top:4px
-}
-#mensaje{
-  padding:10px;
-  text-align:center;
-  font-size:13px
-}
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#0008;
-  align-items:center;
-  justify-content:center;
-  padding:18px
-}
-.modal.activo{display:flex}
-.panel{
-  background:white;
-  width:100%;
-  max-width:420px;
-  border-radius:18px;
-  padding:18px
-}
-.panel h2{margin-top:0}
-input{
-  width:100%;
-  padding:13px;
-  border:1px solid #ccc;
-  border-radius:10px;
-  margin-bottom:12px;
-  font-size:16px
-}
-.opcion{
-  width:100%;
-  padding:13px;
-  margin:5px 0;
-  border:0;
-  border-radius:10px;
-  font-weight:700
-}
-.cerrar{
-  width:100%;
-  margin-top:12px;
-  padding:12px;
-  border:0;
-  border-radius:10px
-}
-.aviso{
-  font-size:12px;
-  color:#666;
-  margin-top:18px;
-  text-align:center
-}
-</style>
-</head>
+      let payload = {
+        title: "Libratsalud",
+        body: "Nueva actualización en Libratsalud"
+      };
 
-<body>
+      try {
+        const recibido = await req.json();
 
-<header>
-<h1>♎ Libratsalud</h1>
-<p>Control de habitaciones y camas</p>
-</header>
-<button id="btnNotificaciones" onclick="activarNotificaciones()">
-  🔔 Activar notificaciones nueva 
-</button>
-<main>
+        if (recibido?.title) {
+          payload.title = recibido.title;
+        }
 
-<div class="leyenda">
-  <div>🟡 Liberada / limpiar</div>
-  <div>🟠 En limpieza</div>
-  <div>🟢 Lista</div>
-  <div>🔵 Reservada</div>
-</div>
+        if (recibido?.body) {
+          payload.body = recibido.body;
+        }
+      } catch {
+        // Si no llega un cuerpo JSON, usa el mensaje predeterminado.
+      }
 
-<div id="mensaje">Conectando...</div>
-<div id="habitaciones"></div>
+      webpush.setVapidDetails(
+        "mailto:admin@libratsalud.app",
+        publicKey,
+        privateKey
+      );
 
-<p class="aviso">
-Piloto Libratsalud · No ingresar nombres ni datos clínicos de pacientes.
-</p>
+      const supabase = createClient(supabaseUrl, serviceKey);
 
-</main>
+      const { data, error } = await supabase
+        .from("notificaciones")
+        .select("id, endpoint, p256dh, auth")
+        .eq("activo", true);
 
-<div class="modal" id="modal">
-<div class="panel">
+      if (error) throw error;
 
-<h2 id="titulo"></h2>
+      const resultados = [];
 
-<input id="persona"
-       placeholder="Nombre de quien realiza el cambio">
+      for (const s of data ?? []) {
+        try {
+          await webpush.sendNotification(
+            {
+              endpoint: s.endpoint,
+              keys: {
+                p256dh: s.p256dh,
+                auth: s.auth
+              }
+            },
+            JSON.stringify(payload)
+          );
 
-<button class="opcion liberada"
-        onclick="cambiar('liberada')">
-🟡 LIBERADA / LIMPIAR
-</button>
+          resultados.push({
+            id: s.id,
+            enviado: true
+          });
 
-<button class="opcion limpieza"
-        onclick="cambiar('en_limpieza')">
-🟠 EN LIMPIEZA
-</button>
+        } catch (e: any) {
 
-<button class="opcion lista"
-        onclick="cambiar('lista')">
-🟢 LISTA
-</button>
+          if (e?.statusCode === 410 || e?.statusCode === 404) {
+            await supabase
+              .from("notificaciones")
+              .update({ activo: false })
+              .eq("id", s.id);
+          }
 
-<button class="opcion reservada"
-        onclick="cambiar('reservada')">
-🔵 RESERVADA
-</button>
-
-<button class="cerrar" onclick="cerrar()">
-Cancelar
-</button>
-
-</div>
-</div>
-
-<script>
-
-const SUPABASE_URL =
-"https://wxgqfycnjwryidnedbni.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_XZQEiAZsC2cVk5liN3fu6g_6UN3K9-3";
-
-let camas = [];
-let seleccion = null;
-
-async function cargar(){
-
-  try{
-
-    const r = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/camas?select=*&order=habitacion,cama",
-      {
-        headers:{
-          "apikey":SUPABASE_KEY,
-          "Authorization":"Bearer " + SUPABASE_KEY
+          resultados.push({
+            id: s.id,
+            enviado: false,
+            error: String(e),
+            statusCode: e?.statusCode ?? null,
+            body: e?.body ?? null
+          });
         }
       }
-    );
 
-    if(!r.ok){
-      throw new Error(await r.text());
-    }
-
-    camas = await r.json();
-
-    document.getElementById("mensaje").textContent =
-      "● Sistema conectado";
-
-    mostrar();
-
-  }catch(e){
-
-    document.getElementById("mensaje").textContent =
-      "No se pudo conectar con la base";
-
-    console.error(e);
-  }
-}
-
-function mostrar(){
-
-  const cont =
-    document.getElementById("habitaciones");
-
-  cont.innerHTML = "";
-
-  const grupos = {};
-
-  camas.forEach(c => {
-
-    if(!grupos[c.habitacion]){
-      grupos[c.habitacion] = [];
-    }
-
-    grupos[c.habitacion].push(c);
-  });
-
-  Object.keys(grupos)
-    .sort((a,b) => Number(a) - Number(b))
-    .forEach(h => {
-
-      const box =
-        document.createElement("div");
-
-      box.className = "habitacion";
-
-      const titulo =
-        document.createElement("h2");
-
-      titulo.textContent =
-        "Habitación " + h;
-
-      const zona =
-        document.createElement("div");
-
-      zona.className = "camas";
-
-      grupos[h].forEach(c => {
-
-        const b =
-          document.createElement("button");
-
-        b.className =
-          "cama " + (c.estado === "en_limpieza" ? "limpieza" : c.estado);
-
-        b.innerHTML =
-          "Cama " + c.cama +
-          "<span class='detalle'>" +
-          estadoTexto(c.estado) +
-          (c.responsable ? " · " + c.responsable : "") +
-          "</span>";
-
-        b.onclick = () => abrir(c);
-
-        zona.appendChild(b);
+      return Response.json({
+        ok: true,
+        resultados
       });
 
-      box.appendChild(titulo);
-      box.appendChild(zona);
-      cont.appendChild(box);
-    });
-}
-
-function estadoTexto(e){
-
-  if(e === "liberada"){
-    return "Liberada / limpiar";
-  }
-
-  if(e === "en_limpieza"){
-    return "En limpieza";
-  }
-
-  if(e === "reservada"){
-    return "Reservada";
-  }
-
-  return "Lista";
-}
-
-function abrir(c){
-
-  seleccion = c;
-
-  document.getElementById("titulo").textContent =
-    "Cama " + c.cama;
-
-  document.getElementById("persona").value = "";
-
-  document
-    .getElementById("modal")
-    .classList.add("activo");
-}
-
-function cerrar(){
-
-  document
-    .getElementById("modal")
-    .classList.remove("activo");
-}
-
-async function cambiar(estado){
-
-  const persona =
-    document
-      .getElementById("persona")
-      .value
-      .trim();
-
-  if(!persona){
-
-    alert(
-      "Ingresá tu nombre antes de cambiar el estado."
-    );
-
-    return;
-  }
-
-  try{
-
-    const r = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/camas?cama=eq." +
-      encodeURIComponent(seleccion.cama),
-      {
-        method:"PATCH",
-
-        headers:{
-          "apikey":SUPABASE_KEY,
-          "Authorization":
-            "Bearer " + SUPABASE_KEY,
-          "Content-Type":"application/json",
-          "Prefer":"return=minimal"
+    } catch (e) {
+      return Response.json(
+        {
+          ok: false,
+          error: String(e)
         },
-
-        body:JSON.stringify({
-          estado:estado,
-          responsable:persona
-        })
-      }
-    );
-
-    if(!r.ok){
-      throw new Error(await r.text());
+        { status: 500 }
+      );
     }
-
-    cerrar();
-    await cargar();
-
-  }catch(e){
-
-    alert("ERROR: " + e.message);
-
-    console.error(e);
   }
-}
-
-cargar();
-
-setInterval(cargar,5000);
-
-</script>
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js");
-  });
-}
-</script>
-  <script>
-const VAPID_PUBLIC_KEY = "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
-
-function urlBase64ToUint8Array(base64String) {
-  const padding = "=".repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-  const rawData = atob(base64);
-  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
-}
-
-async function activarNotificaciones() {
-  try {
-    if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
-      alert("Este teléfono no admite notificaciones push.");
-      return;
-    }
-    const permiso = await Notification.requestPermission();
-    if (permiso !== "granted") {
-      alert("No se concedió permiso para las notificaciones.");
-      return;
-    }
-    const registro = await navigator.serviceWorker.ready;
-    let suscripcion = await registro.pushManager.getSubscription();
-    if (!suscripcion) {
-      suscripcion = await registro.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-      });
-    }
-    const datos = suscripcion.toJSON();
-    const respuesta = await fetch(
-      SUPABASE_URL + "/rest/v1/notificaciones?on_conflict=endpoint",
-      {
-        method: "POST",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY,
-          "Content-Type": "application/json",
-          "Prefer": "resolution=merge-duplicates,return=minimal"
-        },
-        body: JSON.stringify({
-          nombre: "Julieta",
-          rol: "coordinacion",
-          endpoint: datos.endpoint,
-          p256dh: datos.keys.p256dh,
-          auth: datos.keys.auth
-        })
-      }
-    );
-    if (!respuesta.ok) throw new Error(await respuesta.text());
-    alert("Teléfono registrado correctamente en Libratsalud 🔔");
-  } catch (e) {
-    alert("ERROR: " + e.message);
-    console.error(e);
-  }
-}
-</script>
-</body>
-  <script>
-const VAPID_PUBLIC_KEY = "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
-
-function urlBase64ToUint8Array(base64String) {
-  const padding = "=".repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/-/g, "+")
-    .replace(/_/g, "/");
-
-  const rawData = atob(base64);
-  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
-}
-
-async function activarNotificacionesNueva() {
-  try {
-    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      alert("Este teléfono no admite notificaciones push.");
-      return;
-    }
-
-    const permiso = await Notification.requestPermission();
-
-    if (permiso !== "granted") {
-      alert("No se concedió permiso para las notificaciones.");
-      return;
-    }
-
-    const registro = await navigator.serviceWorker.ready;
-
-    const suscripcion = await registro.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-    });
-
-    alert("Teléfono preparado para recibir notificaciones.");
-    console.log(suscripcion);
-
-  } catch (e) {
-    alert("Error al activar notificaciones: " + e.message);
-  }
-}
-  </script>
-</html>
+};
