@@ -124,10 +124,10 @@ function renderFilters(){
  const counts={};camas.forEach(c=>counts[c.estado]=(counts[c.estado]||0)+1);
  const qs=document.getElementById("quickStats");
  if(qs)qs.innerHTML=
-  '<button class="quickstat ocupadas" onclick="setQuickFilter('ocupada')"><span>Ocupadas</span><b>'+(counts.ocupada||0)+'</b></button>'+ 
-  '<button class="quickstat altas" onclick="setQuickFilter('alta_espera')"><span>Alta / traslado</span><b>'+(counts.alta_espera||0)+'</b></button>'+ 
-  '<button class="quickstat limpiar" onclick="setQuickFilter('por_limpiar')"><span>Por limpiar</span><b>'+((counts.liberada||0)+(counts.en_limpieza||0))+'</b></button>'+ 
-  '<button class="quickstat libres" onclick="setQuickFilter('lista')"><span>Libres listas</span><b>'+(counts.lista||0)+'</b></button>';
+  '<button class="quickstat ocupadas" onclick="setQuickFilter(\'ocupada\')"><span>Ocupadas</span><b>'+(counts.ocupada||0)+'</b></button>'+ 
+  '<button class="quickstat altas" onclick="setQuickFilter(\'alta_espera\')"><span>Alta / traslado</span><b>'+(counts.alta_espera||0)+'</b></button>'+ 
+  '<button class="quickstat limpiar" onclick="setQuickFilter(\'por_limpiar\')"><span>Por limpiar</span><b>'+((counts.liberada||0)+(counts.en_limpieza||0))+'</b></button>'+ 
+  '<button class="quickstat libres" onclick="setQuickFilter(\'lista\')"><span>Libres listas</span><b>'+(counts.lista||0)+'</b></button>';
  const f=[["todas","Todas",camas.length],["por_limpiar","Por limpiar",(counts.liberada||0)+(counts.en_limpieza||0)],...Object.entries(STATES).map(([k,v])=>[k,v[0],counts[k]||0])];
  document.getElementById("filters").innerHTML=f.map(([k,t,n])=>'<button class="filter filter-'+k+' '+(filtro===k?'active':'')+'" onclick="setFilter(\''+k+'\')"><span class="filter-dot"></span><span>'+t+'</span><strong>'+n+'</strong></button>').join("");
 }
