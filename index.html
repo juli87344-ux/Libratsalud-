@@ -254,9 +254,10 @@ async function cargarSupervision(){
  if(opEl)opEl.innerHTML=ops.length?ops.map(o=>'<div class="oprow"><div class="opmeta"><span>'+esc(o.name)+'</span><b>'+o.mov+' movimientos</b></div><div class="optrack"><div class="opfill" style="width:'+Math.round(o.mov/maxOp*100)+'%"></div></div><div class="opsub">'+(o.avgClean!==null?'Limpieza prom. '+o.avgClean+' min':'Sin tiempos completos de limpieza')+'</div></div>').join(""):'<div class="status">Sin actividad de operadores en este período.</div>';
 
  const estados=Object.entries(STATES).map(([k,v])=>'<div class="superrow"><span>'+v[1]+' '+v[0]+'</span><b>'+(counts[k]||0)+'</b></div>').join("");
+ const actuales=camas.filter(c=>c.estado!=="lista").sort((a,b)=>new Date(a.estado_desde||a.actualizado)-new Date(b.estado_desde||b.actualizado)).map(c=>'<div class="superrow"><span><b>Hab. '+esc(c.habitacion)+' · '+esc(c.cama)+'</b><br><small>'+esc(STATES[c.estado]?.[0]||c.estado)+' · '+esc(c.operador_estado||c.responsable||"—")+'</small></span><b>⏱ '+elapsed(c.estado_desde||c.actualizado)+'</b></div>').join("");
  const actividad=hist.slice(0,20).map(x=>{const m=mins(x);return '<div class="superrow"><span><b>Hab. '+esc(x.habitacion)+' · '+esc(x.cama)+'</b><br><small>'+esc(STATES[x.estado]?.[0]||x.estado)+(m!==null?' · '+m+' min':' · en curso')+'</small></span><span>'+esc(x.operador||"—")+'</span></div>'}).join("");
  const periodoTxt=superPeriodo==="hoy"?"Hoy":superPeriodo+" días";
- document.getElementById("superList").innerHTML='<h3>Estados actuales</h3>'+estados+'<h3>Actividad · '+periodoTxt+'</h3>'+(actividad||'<div class="status">Sin movimientos en este período.</div>');
+ document.getElementById("superList").innerHTML='<h3>Camas con tiempo activo</h3>'+(actuales||'<div class="status">No hay camas con tiempo activo.</div>')+'<h3>Estados actuales</h3>'+estados+'<h3>Actividad · '+periodoTxt+'</h3>'+(actividad||'<div class="status">Sin movimientos en este período.</div>');
 }
 function cerrarSupervision(){document.getElementById("superModal").classList.remove("show")}
 function salirSupervision(){sessionStorage.removeItem("libratsalud_super");cerrarSupervision()} 
