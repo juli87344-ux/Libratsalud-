@@ -198,7 +198,9 @@ async function cargarSupervision(){
   '<div class="superstat">Por limpiar<b>'+((counts.liberada||0)+(counts.en_limpieza||0))+'</b></div>'+
   '<div class="superstat">Espera prom.<b>'+avgWait+' min</b></div>'+
   '<div class="superstat">Limpieza prom.<b>'+avgClean+' min</b></div>'+
-  '<div class="superstat">Mayor espera<b>'+(wait.length?Math.max(...wait):0)+' min</b></div>'+\n  '<div class="superstat">Limpiezas finalizadas<b>'+hist.filter(x=>x.estado==="en_limpieza"&&x.fin).length+'</b></div>'+\n  '<div class="superstat">Demoras +30 min<b>'+hist.filter(x=>x.estado==="liberada"&&mins(x)!==null&&mins(x)>=30).length+'</b></div>';
+  '<div class="superstat">Mayor espera<b>'+(wait.length?Math.max(...wait):0)+' min</b></div>'+
+  '<div class="superstat">Limpiezas finalizadas<b>'+hist.filter(x=>x.estado==="en_limpieza"&&x.fin).length+'</b></div>'+
+  '<div class="superstat">Demoras +30 min<b>'+hist.filter(x=>x.estado==="liberada"&&mins(x)!==null&&mins(x)>=30).length+'</b></div>';
 
  const hc={};Object.keys(STATES).forEach(k=>hc[k]=0);hist.forEach(x=>{if(hc[x.estado]!==undefined)hc[x.estado]++});
  const totalMoves=Object.values(hc).reduce((a,b)=>a+b,0);
