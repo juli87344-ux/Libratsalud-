@@ -52,7 +52,7 @@ main{
   padding:15px;
 }
 
-.resumen-cabecera{display:flex;justify-content:space-between;align-items:center;margin:12px 2px 7px;font-size:12px;font-weight:800;color:#516b84}.demoras-activas{display:none;font-weight:850;color:#9a5b00;background:#fff4d8;border:1px solid #f4d58d;padding:5px 8px;border-radius:999px;margin-right:5px}.contador-visible{font-weight:700;color:#7b8da0;background:#fff;border:1px solid #e1ebf3;padding:5px 8px;border-radius:999px}\n.resumen-estados{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:4px 0 12px}.resumen-item{background:white;border:1px solid #e3edf5;border-radius:14px;padding:10px;text-align:center;box-shadow:0 4px 12px #244c7010}.resumen-icono{font-size:16px;margin-bottom:2px}.resumen-numero{font-size:23px;font-weight:900}.resumen-label{font-size:10px;color:#6f8095;font-weight:700;margin-top:2px}\n\n.leyenda{
+.resumen-cabecera{display:flex;justify-content:space-between;align-items:center;margin:12px 2px 7px;font-size:12px;font-weight:800;color:#516b84}.btn-solo-demoras{display:none;border:1px solid #f4d58d;background:#fff9e9;color:#8a5700;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:850;cursor:pointer;margin-right:5px}.btn-solo-demoras.activo{background:#8a5700;color:white;border-color:#8a5700}.demoras-activas{display:none;font-weight:850;color:#9a5b00;background:#fff4d8;border:1px solid #f4d58d;padding:5px 8px;border-radius:999px;margin-right:5px}.contador-visible{font-weight:700;color:#7b8da0;background:#fff;border:1px solid #e1ebf3;padding:5px 8px;border-radius:999px}\n.resumen-estados{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:4px 0 12px}.resumen-item{background:white;border:1px solid #e3edf5;border-radius:14px;padding:10px;text-align:center;box-shadow:0 4px 12px #244c7010}.resumen-icono{font-size:16px;margin-bottom:2px}.resumen-numero{font-size:23px;font-weight:900}.resumen-label{font-size:10px;color:#6f8095;font-weight:700;margin-top:2px}\n\n.leyenda{
   display:grid;
   grid-template-columns:repeat(6,1fr);
   gap:8px;
@@ -246,7 +246,7 @@ onclick="activarNotificaciones()">
   🔐 Supervisión
 </button>
 
-<div class="resumen-cabecera"><span>Resumen general</span><span><span id="demorasActivas" class="demoras-activas"></span><span id="contadorVisible" class="contador-visible"></span></span></div><div id="resumenEstados" class="resumen-estados"></div>\n\n<div class="leyenda">
+<div class="resumen-cabecera"><span>Resumen general</span><span><button id="btnSoloDemoras" class="btn-solo-demoras" onclick="alternarSoloDemoras()">⚠️ Ver demoras</button><span id="demorasActivas" class="demoras-activas"></span><span id="contadorVisible" class="contador-visible"></span></span></div><div id="resumenEstados" class="resumen-estados"></div>\n\n<div class="leyenda">
 
 <div>🔴 Ocupada</div>
 
@@ -479,7 +479,7 @@ async function cargar(){
 ========================= */
 
 
-function actualizarResumen(){\n  const estados=[['ocupada','Ocupadas'],['alta_espera','Alta/Traslado'],['liberada','Liberadas'],['en_limpieza','En limpieza'],['lista','Listas'],['reservada','Reservadas']];\n  const el=document.getElementById('resumenEstados');\n  if(!el) return;\n  el.innerHTML=estados.map(([estado,label])=>{const total=camas.filter(c=>c.estado===estado).length;const iconos={ocupada:'🔴',alta_espera:'🟣',liberada:'🟡',en_limpieza:'🟠',lista:'🟢',reservada:'🔵'};return `<div class="resumen-item"><div class="resumen-icono">${iconos[estado]}</div><div class="resumen-numero">${total}</div><div class="resumen-label">${label}</div></div>`}).join('');\n}\n\nlet filtroActual='todas';\nlet busquedaActual='';\nfunction buscarCamas(valor){busquedaActual=(valor||'').trim().toLowerCase();mostrar();}
+function actualizarResumen(){\n  const estados=[['ocupada','Ocupadas'],['alta_espera','Alta/Traslado'],['liberada','Liberadas'],['en_limpieza','En limpieza'],['lista','Listas'],['reservada','Reservadas']];\n  const el=document.getElementById('resumenEstados');\n  if(!el) return;\n  el.innerHTML=estados.map(([estado,label])=>{const total=camas.filter(c=>c.estado===estado).length;const iconos={ocupada:'🔴',alta_espera:'🟣',liberada:'🟡',en_limpieza:'🟠',lista:'🟢',reservada:'🔵'};return `<div class="resumen-item"><div class="resumen-icono">${iconos[estado]}</div><div class="resumen-numero">${total}</div><div class="resumen-label">${label}</div></div>`}).join('');\n}\n\nlet filtroActual='todas';\nlet soloDemoras=false;\nfunction alternarSoloDemoras(){soloDemoras=!soloDemoras;const b=document.getElementById('btnSoloDemoras');if(b)b.classList.toggle('activo',soloDemoras);mostrar();}\nlet busquedaActual='';\nfunction buscarCamas(valor){busquedaActual=(valor||'').trim().toLowerCase();mostrar();}
 function limpiarFiltros(){
   filtroActual='todas';
   busquedaActual='';
@@ -489,7 +489,8 @@ function limpiarFiltros(){
   const primero=document.querySelector('.filtro');
   if(primero) primero.classList.add('activo');
   mostrar();
-}\nfunction filtrarCamas(estado,boton){filtroActual=estado;document.querySelectorAll('.filtro').forEach(b=>b.classList.remove('activo'));if(boton)boton.classList.add('activo');mostrar();}\n\nfunction mostrar(){\n\n  actualizarResumen();\n  const visibles=camas.filter(c => (filtroActual==='todas' || c.estado===filtroActual) && (!busquedaActual || String(c.habitacion).toLowerCase().includes(busquedaActual) || String(c.cama).toLowerCase().includes(busquedaActual)));\n  const contador=document.getElementById('contadorVisible');\n  if(contador) contador.textContent=visibles.length+' camas visibles';
+}\nfunction filtrarCamas(estado,boton){filtroActual=estado;document.querySelectorAll('.filtro').forEach(b=>b.classList.remove('activo'));if(boton)boton.classList.add('activo');mostrar();}\n\nfunction mostrar(){\n\n  actualizarResumen();\n  const esDemorada=c=>c.estado_desde && mostrarReloj(c.estado) && ((Date.now()-new Date(c.estado_desde).getTime())/1000)>=1800;
+  const visibles=camas.filter(c => (filtroActual==='todas' || c.estado===filtroActual) && (!busquedaActual || String(c.habitacion).toLowerCase().includes(busquedaActual) || String(c.cama).toLowerCase().includes(busquedaActual)) && (!soloDemoras || esDemorada(c)));\n  const contador=document.getElementById('contadorVisible');\n  if(contador) contador.textContent=visibles.length+' camas visibles';
 
 
   const cont =
@@ -505,7 +506,7 @@ function limpiarFiltros(){
   const grupos = {};
 
 
-  camas.filter(c => (filtroActual==='todas' || c.estado===filtroActual) && (!busquedaActual || String(c.habitacion).toLowerCase().includes(busquedaActual) || String(c.cama).toLowerCase().includes(busquedaActual))).forEach(c => {
+  visibles.forEach(c => {
 
 
     if(!grupos[c.habitacion]){
