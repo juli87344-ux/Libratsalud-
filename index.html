@@ -1025,6 +1025,12 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
 @media(max-width:700px){#panelSilencio{margin:8px 12px 0}#panelSilencio .silencio-controles{display:grid;grid-template-columns:1fr 1fr;gap:7px}#panelSilencio button{grid-column:1/-1}}
 
 #panelSilencio .silencio-manana{background:#eaf3fa;border-color:#bcd7e8;color:#245574}
+
+/* reference-design-location-v1 — ubicación opcional en notificaciones */
+#panelUbicacion{margin-top:8px;padding-top:10px;border-top:1px solid #dceaf3}
+#panelUbicacion button{min-height:38px;border:1px solid #cfe3f0;border-radius:9px;background:#fff;color:#173b5b;padding:7px 9px;font-weight:750}
+#estadoUbicacion{display:block;margin-top:6px;color:#60778d;font-size:11px;line-height:1.35}
+@media(max-width:700px){#panelUbicacion button{width:100%}}
 </style>
 </head>
 
@@ -1059,6 +1065,10 @@ onclick="activarNotificaciones()">
     <button id="btnSilencioManana" class="silencio-manana" onclick="silenciarHastaManana()">🌙 Silenciar hasta mañana</button>
   </div>
   <small id="estadoSilencio">Las notificaciones están activas.</small>
+  <div id="panelUbicacion">
+    <button id="btnUbicacion" onclick="configurarUbicacionNotificaciones()">📍 Activar según ubicación</button>
+    <span id="estadoUbicacion">Opcional: se comprueba mientras Libratsalud está abierta.</span>
+  </div>
 </div>
 
 <main>
@@ -3047,6 +3057,52 @@ async function silenciarHastaManana(){
   await actualizarPanelSilencio();
   mostrarToast("🌙 Silenciadas hasta mañana a las 07:00");
 }
+
+const UBICACION_DB="libratsalud-notificaciones";
+async function guardarUbicacionConfig(config){await guardarSilencioConfig({...await leerSilencioConfig(),ubicacion:config});}
+async function leerUbicacionConfig(){const c=await leerSilencioConfig();return c.ubicacion||{activo:false};}
+function distanciaMetros(lat1,lon1,lat2,lon2){
+ const R=6371000,rad=Math.PI/180;
+ const dLat=(lat2-lat1)*rad,dLon=(lon2-lon1)*rad;
+ const a=Math.sin(dLat/2)**2+Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(dLon/2)**2;
+ return 2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+async function configurarUbicacionNotificaciones(){
+ if(!("geolocation" in navigator)){mostrarToast("📍 Este dispositivo no permite ubicación");return;}
+ navigator.geolocation.getCurrentPosition(async pos=>{
+   const radio=300;
+   await guardarUbicacionConfig({activo:true,lat:pos.coords.latitude,lon:pos.coords.longitude,radio});
+   const e=document.getElementById("estadoUbicacion");
+   if(e)e.textContent="📍 Activada · radio "+radio+" m · solo mientras la app está abierta.";
+   const b=document.getElementById("btnUbicacion");
+   if(b)b.textContent="📍 Ubicación activada";
+   mostrarToast("📍 Ubicación configurada");
+   comprobarUbicacionNotificaciones();
+ },()=>{
+   mostrarToast("No se pudo obtener la ubicación");
+ },{enableHighAccuracy:false,maximumAge:300000,timeout:10000});
+}
+async function comprobarUbicacionNotificaciones(){
+ const u=await leerUbicacionConfig();
+ if(!u.activo || !("geolocation" in navigator)) return;
+ navigator.geolocation.getCurrentPosition(async pos=>{
+   const distancia=distanciaMetros(pos.coords.latitude,pos.coords.longitude,u.lat,u.lon);
+   const silencio=await leerSilencioConfig();
+   if(distancia>u.radio){
+     await guardarSilencioConfig({...silencio,activo:true,inicio:"00:00",fin:"00:00",ubicacion:u});
+     const e=document.getElementById("estadoUbicacion");if(e)e.textContent="📍 Fuera de la zona configurada · notificaciones silenciadas en este dispositivo.";
+   }else{
+     const ahora=new Date(); const hh=String(ahora.getHours()).padStart(2,"0")+":"+String(ahora.getMinutes()).padStart(2,"0");
+     await guardarSilencioConfig({...silencio,activo:false,inicio:hh,fin:hh,ubicacion:u});
+     const e=document.getElementById("estadoUbicacion");if(e)e.textContent="📍 Dentro de la zona configurada · notificaciones activas.";
+   }
+ },()=>{});
+}
+async function actualizarPanelUbicacion(){
+ const u=await leerUbicacionConfig(); const b=document.getElementById("btnUbicacion"),e=document.getElementById("estadoUbicacion");
+ if(u.activo){if(b)b.textContent="📍 Ubicación activada";if(e)e.textContent="📍 Activada · radio "+(u.radio||300)+" m · solo mientras la app está abierta.";}
+}
+window.addEventListener("load",()=>{setTimeout(actualizarPanelUbicacion,600);setInterval(comprobarUbicacionNotificaciones,120000);});
 </script>
 
 
