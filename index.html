@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Libratsalud · Control de habitaciones</title>
 
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#17243d">
 
 <style>
+
 *{box-sizing:border-box}
 
 body{
@@ -93,7 +95,7 @@ main{
   color:#172033;
 }
 
-/* ESTADOS */
+/* COLORES DE ESTADOS */
 
 .ocupada{
   background:#ff8585;
@@ -199,443 +201,924 @@ input{
   margin-top:18px;
   text-align:center;
 }
+
 </style>
 </head>
+
 
 <body>
 
 <header>
-  <h1>♎ Libratsalud</h1>
-  <p>Control de habitaciones y camas</p>
+
+<h1>♎ Libratsalud</h1>
+
+<p>
+Control de habitaciones y camas
+</p>
+
 </header>
 
-<button id="btnNotificaciones"
-        onclick="activarNotificaciones()">
-  🔔 Activar notificaciones
+
+<button
+id="btnNotificaciones"
+onclick="activarNotificaciones()">
+
+🔔 Activar notificaciones
+
 </button>
+
 
 <main>
 
+
 <div class="leyenda">
-  <div>🔴 Ocupada</div>
-  <div>🟣 Alta / espera traslado</div>
-  <div>🟡 Liberada / limpiar</div>
-  <div>🟠 En limpieza</div>
-  <div>🟢 Lista</div>
-  <div>🔵 Reservada</div>
+
+<div>🔴 Ocupada</div>
+
+<div>🟣 Alta / espera traslado</div>
+
+<div>🟡 Liberada / limpiar</div>
+
+<div>🟠 En limpieza</div>
+
+<div>🟢 Lista</div>
+
+<div>🔵 Reservada</div>
+
 </div>
 
-<div id="mensaje">Conectando...</div>
+
+<div id="mensaje">
+Conectando...
+</div>
+
 
 <div id="habitaciones"></div>
 
+
 <p class="aviso">
-Piloto Libratsalud · No ingresar nombres ni datos clínicos de pacientes.
+
+Piloto Libratsalud ·
+No ingresar nombres ni datos clínicos de pacientes.
+
 </p>
+
 
 </main>
 
 
-<!-- MODAL -->
 
-<div class="modal" id="modal">
+<!-- =====================
+     MODAL
+===================== -->
+
+
+<div
+class="modal"
+id="modal">
+
 
 <div class="panel">
 
+
 <h2 id="titulo"></h2>
 
+
 <input
-  id="persona"
-  placeholder="Nombre de quien realiza el cambio"
->
+id="persona"
+placeholder="Nombre de quien realiza el cambio">
+
 
 <button
-  class="opcion ocupada"
-  onclick="cambiar('ocupada')">
-  🔴 OCUPADA
+class="opcion ocupada"
+onclick="cambiar('ocupada')">
+
+🔴 OCUPADA
+
 </button>
 
-<button
-  class="opcion alta_espera"
-  onclick="cambiar('alta_espera')">
-  🟣 ALTA / ESPERA TRASLADO
-</button>
 
 <button
-  class="opcion liberada"
-  onclick="cambiar('liberada')">
-  🟡 LIBERADA / LIMPIAR
+class="opcion alta_espera"
+onclick="cambiar('alta_espera')">
+
+🟣 ALTA / ESPERA TRASLADO
+
 </button>
 
-<button
-  class="opcion limpieza"
-  onclick="cambiar('en_limpieza')">
-  🟠 EN LIMPIEZA
-</button>
 
 <button
-  class="opcion lista"
-  onclick="cambiar('lista')">
-  🟢 LISTA
+class="opcion liberada"
+onclick="cambiar('liberada')">
+
+🟡 LIBERADA / LIMPIAR
+
 </button>
 
-<button
-  class="opcion reservada"
-  onclick="cambiar('reservada')">
-  🔵 RESERVADA
-</button>
 
 <button
-  class="cerrar"
-  onclick="cerrar()">
-  Cancelar
+class="opcion limpieza"
+onclick="cambiar('en_limpieza')">
+
+🟠 EN LIMPIEZA
+
 </button>
+
+
+<button
+class="opcion lista"
+onclick="cambiar('lista')">
+
+🟢 LISTA
+
+</button>
+
+
+<button
+class="opcion reservada"
+onclick="cambiar('reservada')">
+
+🔵 RESERVADA
+
+</button>
+
+
+<button
+class="cerrar"
+onclick="cerrar()">
+
+Cancelar
+
+</button>
+
 
 </div>
+
 </div>
+
 
 
 <script>
+
 
 /* =========================
    CONFIGURACIÓN
 ========================= */
 
+
 const SUPABASE_URL =
 "https://wxgqfycnjwryidnedbni.supabase.co";
 
+
 const SUPABASE_KEY =
 "sb_publishable_XZQEiAZsC2cVk5liN3fu6g_6UN3K9-3";
+
 
 const EDGE_NOTIFICATION_URL =
 SUPABASE_URL +
 "/functions/v1/Enviar-notificacion";
 
+
 const VAPID_PUBLIC_KEY =
 "BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
 
+
 let camas = [];
+
 let seleccion = null;
+
 
 
 /* =========================
    CARGAR CAMAS
 ========================= */
 
+
 async function cargar(){
 
   try{
 
-    const r = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/camas?select=*&order=habitacion,cama",
-      {
-        headers:{
-          "apikey":SUPABASE_KEY,
-          "Authorization":
-            "Bearer " + SUPABASE_KEY
+    const r =
+      await fetch(
+
+        SUPABASE_URL +
+        "/rest/v1/camas?select=*&order=habitacion,cama",
+
+        {
+
+          headers:{
+
+            "apikey":
+              SUPABASE_KEY,
+
+            "Authorization":
+              "Bearer " +
+              SUPABASE_KEY
+          }
+
         }
-      }
-    );
+
+      );
+
 
     if(!r.ok){
-      throw new Error(await r.text());
+
+      throw new Error(
+        await r.text()
+      );
+
     }
 
-    camas = await r.json();
+
+    camas =
+      await r.json();
+
 
     document
       .getElementById("mensaje")
       .textContent =
       "● Sistema conectado";
 
+
     mostrar();
 
+
   }catch(e){
+
 
     document
       .getElementById("mensaje")
       .textContent =
       "No se pudo conectar con la base";
 
+
     console.error(e);
+
   }
+
 }
+
 
 
 /* =========================
    MOSTRAR CAMAS
 ========================= */
 
+
 function mostrar(){
 
+
   const cont =
-    document.getElementById("habitaciones");
+    document
+      .getElementById(
+        "habitaciones"
+      );
+
 
   cont.innerHTML = "";
 
+
   const grupos = {};
+
 
   camas.forEach(c => {
 
+
     if(!grupos[c.habitacion]){
+
       grupos[c.habitacion] = [];
+
     }
 
-    grupos[c.habitacion].push(c);
+
+    grupos[c.habitacion]
+      .push(c);
+
   });
 
-  Object.keys(grupos)
-    .sort((a,b) => Number(a) - Number(b))
+
+
+  Object
+    .keys(grupos)
+
+    .sort(
+      (a,b) =>
+        Number(a) -
+        Number(b)
+    )
+
     .forEach(h => {
 
-      const box =
-        document.createElement("div");
 
-      box.className = "habitacion";
+      const box =
+        document
+          .createElement("div");
+
+
+      box.className =
+        "habitacion";
+
 
       const titulo =
-        document.createElement("h2");
+        document
+          .createElement("h2");
+
 
       titulo.textContent =
         "Habitación " + h;
 
+
       const zona =
-        document.createElement("div");
+        document
+          .createElement("div");
 
-      zona.className = "camas";
 
-      grupos[h].forEach(c => {
+      zona.className =
+        "camas";
 
-        const b =
-          document.createElement("button");
 
-        b.className =
-          "cama " + claseEstado(c.estado);
+      grupos[h]
+        .forEach(c => {
 
-        let relojHTML = "";
 
-        if(
-          c.estado_desde &&
-          mostrarReloj(c.estado)
-        ){
-          relojHTML =
-            "<span class='reloj' " +
-            "data-desde='" +
-            c.estado_desde +
-            "'>⏱️ " +
-            calcularTiempo(c.estado_desde) +
-            "</span>";
-        }
+          const b =
+            document
+              .createElement(
+                "button"
+              );
 
-        b.innerHTML =
-          "Cama " +
-          c.cama +
 
-          "<span class='detalle'>" +
-          estadoTexto(c.estado) +
-          "</span>" +
+          b.className =
+            "cama " +
+            claseEstado(
+              c.estado
+            );
 
-          relojHTML;
 
-        b.onclick = () => abrir(c);
+          let relojHTML = "";
 
-        zona.appendChild(b);
-      });
 
-      box.appendChild(titulo);
-      box.appendChild(zona);
-      cont.appendChild(box);
+          if(
+            c.estado_desde &&
+            mostrarReloj(
+              c.estado
+            )
+          ){
+
+
+            relojHTML =
+
+              "<span class='reloj' " +
+
+              "data-desde='" +
+              c.estado_desde +
+              "'>" +
+
+              "⏱️ " +
+
+              calcularTiempo(
+                c.estado_desde
+              ) +
+
+              "</span>";
+
+          }
+
+
+          b.innerHTML =
+
+            "Cama " +
+            c.cama +
+
+            "<span class='detalle'>" +
+
+            estadoTexto(
+              c.estado
+            ) +
+
+            "</span>" +
+
+            relojHTML;
+
+
+          b.onclick =
+            () => abrir(c);
+
+
+          zona.appendChild(b);
+
+        });
+
+
+      box.appendChild(
+        titulo
+      );
+
+
+      box.appendChild(
+        zona
+      );
+
+
+      cont.appendChild(
+        box
+      );
+
     });
+
 }
 
 
+
 /* =========================
-   CLASE / COLOR
+   COLORES
 ========================= */
+
 
 function claseEstado(e){
 
+
   if(e === "ocupada"){
+
     return "ocupada";
+
   }
+
 
   if(e === "alta_espera"){
+
     return "alta_espera";
+
   }
+
 
   if(e === "liberada"){
+
     return "liberada";
+
   }
+
 
   if(e === "en_limpieza"){
+
     return "limpieza";
+
   }
+
 
   if(e === "reservada"){
+
     return "reservada";
+
   }
 
+
   return "lista";
+
 }
+
 
 
 /* =========================
-   TEXTO DE ESTADOS
+   TEXTO ESTADOS
 ========================= */
+
 
 function estadoTexto(e){
 
+
   if(e === "ocupada"){
+
     return "Ocupada";
+
   }
+
 
   if(e === "alta_espera"){
+
     return "Alta / espera traslado";
+
   }
+
 
   if(e === "liberada"){
+
     return "Liberada / limpiar";
+
   }
+
 
   if(e === "en_limpieza"){
+
     return "En limpieza";
+
   }
+
 
   if(e === "reservada"){
+
     return "Reservada";
+
   }
 
+
   return "Lista";
+
 }
+
 
 
 /* =========================
    RELOJES
 ========================= */
 
+
 function mostrarReloj(estado){
 
+
   return [
+
     "ocupada",
+
     "alta_espera",
+
     "liberada",
+
     "en_limpieza"
+
   ].includes(estado);
+
 }
+
 
 
 function calcularTiempo(desde){
 
+
   if(!desde){
+
     return "";
+
   }
 
+
   const inicio =
-    new Date(desde).getTime();
+    new Date(desde)
+      .getTime();
+
 
   const ahora =
     Date.now();
 
+
   let segundos =
+
     Math.floor(
-      (ahora - inicio) / 1000
+
+      (ahora - inicio)
+      / 1000
+
     );
+
 
   if(segundos < 0){
+
     segundos = 0;
+
   }
+
 
   const horas =
-    Math.floor(segundos / 3600);
 
-  const minutos =
     Math.floor(
-      (segundos % 3600) / 60
+      segundos / 3600
     );
 
+
+  const minutos =
+
+    Math.floor(
+
+      (segundos % 3600)
+      / 60
+
+    );
+
+
   if(horas > 0){
-    return horas +
+
+    return (
+
+      horas +
       " h " +
       minutos +
-      " min";
+      " min"
+
+    );
+
   }
 
-  return minutos + " min";
+
+  return (
+    minutos +
+    " min"
+  );
+
 }
 
 
-/* Actualiza los relojes sin
-   consultar nuevamente Supabase */
 
 function actualizarRelojes(){
 
+
   document
-    .querySelectorAll(".reloj")
+
+    .querySelectorAll(
+      ".reloj"
+    )
+
     .forEach(el => {
+
 
       const desde =
         el.dataset.desde;
 
+
       el.textContent =
+
         "⏱️ " +
-        calcularTiempo(desde);
+
+        calcularTiempo(
+          desde
+        );
+
     });
+
 }
+
 
 
 /* =========================
    MODAL
 ========================= */
 
+
 function abrir(c){
+
 
   seleccion = c;
 
+
   document
-    .getElementById("titulo")
+    .getElementById(
+      "titulo"
+    )
     .textContent =
+
       "Habitación " +
+
       c.habitacion +
+
       " · Cama " +
+
       c.cama;
 
-  document
-    .getElementById("persona")
-    .value = "";
 
   document
-    .getElementById("modal")
-    .classList.add("activo");
+    .getElementById(
+      "persona"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "modal"
+    )
+    .classList
+    .add(
+      "activo"
+    );
+
 }
+
 
 
 function cerrar(){
 
+
   document
-    .getElementById("modal")
-    .classList.remove("activo");
+    .getElementById(
+      "modal"
+    )
+    .classList
+    .remove(
+      "activo"
+    );
+
 }
 
 
+
 /* =========================
-   ENVIAR PUSH
+   HISTORIAL
 ========================= */
+
+
+async function guardarHistorial(
+  habitacion,
+  cama,
+  estado,
+  operador,
+  inicio
+){
+
+
+  /*
+    Primero cerramos cualquier
+    etapa anterior de esa cama
+    que todavía no tenga FIN.
+  */
+
+
+  const cerrarAnterior =
+    await fetch(
+
+      SUPABASE_URL +
+
+      "/rest/v1/historial_camas" +
+
+      "?habitacion=eq." +
+      encodeURIComponent(
+        habitacion
+      ) +
+
+      "&cama=eq." +
+      encodeURIComponent(
+        cama
+      ) +
+
+      "&fin=is.null",
+
+      {
+
+        method:"PATCH",
+
+        headers:{
+
+          "apikey":
+            SUPABASE_KEY,
+
+          "Authorization":
+            "Bearer " +
+            SUPABASE_KEY,
+
+          "Content-Type":
+            "application/json",
+
+          "Prefer":
+            "return=minimal"
+
+        },
+
+        body:
+          JSON.stringify({
+
+            fin:inicio
+
+          })
+
+      }
+
+    );
+
+
+  if(
+    !cerrarAnterior.ok
+  ){
+
+
+    throw new Error(
+
+      "No se pudo cerrar " +
+      "el historial: " +
+
+      await cerrarAnterior
+        .text()
+
+    );
+
+  }
+
+
+
+  /*
+    Ahora creamos el nuevo
+    estado de la cama.
+  */
+
+
+  const crearNuevo =
+    await fetch(
+
+      SUPABASE_URL +
+      "/rest/v1/historial_camas",
+
+      {
+
+        method:"POST",
+
+        headers:{
+
+          "apikey":
+            SUPABASE_KEY,
+
+          "Authorization":
+            "Bearer " +
+            SUPABASE_KEY,
+
+          "Content-Type":
+            "application/json",
+
+          "Prefer":
+            "return=minimal"
+
+        },
+
+        body:
+          JSON.stringify({
+
+            habitacion:
+              habitacion,
+
+            cama:
+              cama,
+
+            estado:
+              estado,
+
+            inicio:
+              inicio,
+
+            fin:
+              null,
+
+            operador:
+              operador
+
+          })
+
+      }
+
+    );
+
+
+  if(
+    !crearNuevo.ok
+  ){
+
+
+    throw new Error(
+
+      "No se pudo registrar " +
+      "el historial: " +
+
+      await crearNuevo
+        .text()
+
+    );
+
+  }
+
+}
+
+
+
+/* =========================
+   ENVIAR NOTIFICACIÓN
+========================= */
+
 
 async function enviarNotificacion(
   title,
   body
 ){
 
+
   try{
+
 
     const respuesta =
       await fetch(
+
         EDGE_NOTIFICATION_URL,
+
         {
+
           method:"POST",
 
           headers:{
+
             "apikey":
               SUPABASE_KEY,
 
@@ -645,84 +1128,155 @@ async function enviarNotificacion(
 
             "Content-Type":
               "application/json"
+
           },
 
-          body:JSON.stringify({
-            title:title,
-            body:body
-          })
+          body:
+            JSON.stringify({
+
+              title:title,
+
+              body:body
+
+            })
+
         }
+
       );
+
 
     if(!respuesta.ok){
 
+
       console.error(
-        "No se pudo enviar la notificación:",
+
+        "No se pudo enviar " +
+        "la notificación:",
+
         await respuesta.text()
+
       );
+
     }
+
 
   }catch(e){
 
+
+    /*
+      Si falla el push,
+      la cama igualmente
+      debe poder cambiar.
+    */
+
+
     console.error(
-      "Error enviando notificación:",
+
+      "Error enviando " +
+      "notificación:",
+
       e
+
     );
+
   }
+
 }
+
 
 
 /* =========================
    CAMBIAR ESTADO
 ========================= */
 
-async function cambiar(estado){
+
+async function cambiar(
+  estado
+){
+
 
   const persona =
+
     document
-      .getElementById("persona")
+
+      .getElementById(
+        "persona"
+      )
+
       .value
+
       .trim();
+
+
 
   if(!persona){
 
+
     alert(
-      "Ingresá tu nombre antes de cambiar el estado."
+
+      "Ingresá tu nombre " +
+      "antes de cambiar " +
+      "el estado."
+
     );
 
+
     return;
+
   }
 
+
+
   if(!seleccion){
+
     return;
+
   }
+
+
 
   const habitacion =
     seleccion.habitacion;
 
+
   const cama =
     seleccion.cama;
 
-  /*
-    Cada cambio inicia un nuevo reloj.
-    Supabase guarda la hora real.
-  */
 
   const ahora =
-    new Date().toISOString();
+    new Date()
+      .toISOString();
+
+
 
   try{
+
+
+    /*
+      PRIMERO actualizamos
+      la cama actual.
+    */
+
 
     const r =
       await fetch(
 
         SUPABASE_URL +
-        "/rest/v1/camas?habitacion=eq." +
-        encodeURIComponent(habitacion) +
+
+        "/rest/v1/camas" +
+
+        "?habitacion=eq." +
+        encodeURIComponent(
+          habitacion
+        ) +
+
         "&cama=eq." +
-        encodeURIComponent(cama),
+        encodeURIComponent(
+          cama
+        ),
 
         {
+
           method:"PATCH",
 
           headers:{
@@ -739,33 +1293,77 @@ async function cambiar(estado){
 
             "Prefer":
               "return=minimal"
+
           },
 
-          body:JSON.stringify({
+          body:
+            JSON.stringify({
 
-            estado:estado,
+              estado:
+                estado,
 
-            responsable:
-              persona,
+              responsable:
+                persona,
 
-            estado_desde:
-              ahora
-          })
+              operador_estado:
+                persona,
+
+              estado_desde:
+                ahora
+
+            })
+
         }
+
       );
+
+
 
     if(!r.ok){
+
+
       throw new Error(
+
         await r.text()
+
       );
+
     }
 
 
-    /* =========================
-       NOTIFICACIONES
-    ========================= */
 
-    if(estado === "alta_espera"){
+    /*
+      DESPUÉS guardamos
+      el historial.
+    */
+
+
+    await guardarHistorial(
+
+      habitacion,
+
+      cama,
+
+      estado,
+
+      persona,
+
+      ahora
+
+    );
+
+
+
+    /* =====================
+       NOTIFICACIONES
+    ===================== */
+
+
+    if(
+      estado ===
+      "alta_espera"
+    ){
+
 
       await enviarNotificacion(
 
@@ -773,14 +1371,24 @@ async function cambiar(estado){
 
         "Habitación " +
         habitacion +
+
         " · Cama " +
         cama +
-        " está en alta / espera traslado."
+
+        " está en alta / " +
+        "espera traslado."
+
       );
+
     }
 
 
-    if(estado === "liberada"){
+
+    if(
+      estado ===
+      "liberada"
+    ){
+
 
       await enviarNotificacion(
 
@@ -788,14 +1396,24 @@ async function cambiar(estado){
 
         "Habitación " +
         habitacion +
+
         " · Cama " +
         cama +
-        " está liberada y requiere limpieza."
+
+        " está liberada y " +
+        "requiere limpieza."
+
       );
+
     }
 
 
-    if(estado === "en_limpieza"){
+
+    if(
+      estado ===
+      "en_limpieza"
+    ){
+
 
       await enviarNotificacion(
 
@@ -803,14 +1421,23 @@ async function cambiar(estado){
 
         "Habitación " +
         habitacion +
+
         " · Cama " +
         cama +
+
         " comenzó la limpieza."
+
       );
+
     }
 
 
-    if(estado === "lista"){
+
+    if(
+      estado ===
+      "lista"
+    ){
+
 
       await enviarNotificacion(
 
@@ -818,135 +1445,234 @@ async function cambiar(estado){
 
         "Habitación " +
         habitacion +
+
         " · Cama " +
         cama +
+
         " está limpia y disponible."
+
       );
+
     }
+
 
 
     cerrar();
 
+
     await cargar();
+
 
 
   }catch(e){
 
+
     alert(
+
       "ERROR: " +
       e.message
+
     );
 
+
     console.error(e);
+
   }
+
 }
+
 
 
 /* =========================
    NOTIFICACIONES TELÉFONO
 ========================= */
 
+
 function urlBase64ToUint8Array(
   base64String
 ){
 
+
   const padding =
+
     "=".repeat(
-      (4 -
-       base64String.length % 4)
-       % 4
+
+      (
+        4 -
+        base64String.length % 4
+      ) % 4
+
     );
 
+
   const base64 =
-    (base64String + padding)
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
+
+    (
+      base64String +
+      padding
+    )
+
+    .replace(
+      /-/g,
+      "+"
+    )
+
+    .replace(
+      /_/g,
+      "/"
+    );
+
 
   const rawData =
     atob(base64);
 
+
   return Uint8Array.from(
 
     [...rawData].map(
-      c => c.charCodeAt(0)
+
+      c =>
+        c.charCodeAt(0)
+
     )
+
   );
+
 }
+
 
 
 async function activarNotificaciones(){
 
+
   try{
 
+
     if(
-      !("Notification" in window) ||
-      !("serviceWorker" in navigator) ||
-      !("PushManager" in window)
+
+      !(
+        "Notification"
+        in window
+      )
+
+      ||
+
+      !(
+        "serviceWorker"
+        in navigator
+      )
+
+      ||
+
+      !(
+        "PushManager"
+        in window
+      )
+
     ){
 
+
       alert(
-        "Este teléfono no admite notificaciones push."
+
+        "Este teléfono " +
+        "no admite " +
+        "notificaciones push."
+
       );
 
+
       return;
+
     }
 
 
+
     const permiso =
+
       await Notification
         .requestPermission();
 
 
-    if(permiso !== "granted"){
+
+    if(
+      permiso !==
+      "granted"
+    ){
+
 
       alert(
-        "No se concedió permiso para las notificaciones."
+
+        "No se concedió " +
+        "permiso para las " +
+        "notificaciones."
+
       );
 
+
       return;
+
     }
 
 
+
     const registro =
+
       await navigator
         .serviceWorker
         .ready;
 
 
+
     let suscripcion =
+
       await registro
         .pushManager
         .getSubscription();
 
 
+
     if(!suscripcion){
 
+
       suscripcion =
+
         await registro
           .pushManager
           .subscribe({
 
-            userVisibleOnly:true,
+            userVisibleOnly:
+              true,
 
             applicationServerKey:
+
               urlBase64ToUint8Array(
                 VAPID_PUBLIC_KEY
               )
+
           });
+
     }
 
 
+
     const datos =
-      suscripcion.toJSON();
+      suscripcion
+        .toJSON();
+
 
 
     const respuesta =
+
       await fetch(
 
         SUPABASE_URL +
-        "/rest/v1/notificaciones?on_conflict=endpoint",
+
+        "/rest/v1/notificaciones" +
+
+        "?on_conflict=endpoint",
 
         {
+
           method:"POST",
 
           headers:{
@@ -963,91 +1689,157 @@ async function activarNotificaciones(){
 
             "Prefer":
               "resolution=merge-duplicates,return=minimal"
+
           },
 
-          body:JSON.stringify({
+          body:
+            JSON.stringify({
 
-            nombre:"Julieta",
+              nombre:
+                "Julieta",
 
-            rol:"coordinacion",
+              rol:
+                "coordinacion",
 
-            endpoint:
-              datos.endpoint,
+              endpoint:
+                datos.endpoint,
 
-            p256dh:
-              datos.keys.p256dh,
+              p256dh:
+                datos.keys.p256dh,
 
-            auth:
-              datos.keys.auth,
+              auth:
+                datos.keys.auth,
 
-            activo:true
-          })
+              activo:
+                true
+
+            })
+
         }
+
       );
 
 
-    if(!respuesta.ok){
+
+    if(
+      !respuesta.ok
+    ){
+
 
       throw new Error(
+
         await respuesta.text()
+
       );
+
     }
 
 
+
     alert(
-      "Teléfono registrado correctamente en Libratsalud 🔔"
+
+      "Teléfono registrado " +
+      "correctamente en " +
+      "Libratsalud 🔔"
+
     );
+
 
 
   }catch(e){
 
+
     alert(
+
       "ERROR: " +
       e.message
+
     );
 
+
     console.error(e);
+
   }
+
 }
+
 
 
 /* =========================
    INICIO
 ========================= */
 
+
 cargar();
 
-/* Sincroniza las camas */
+
+
+/*
+  Sincroniza las camas
+  cada 5 segundos.
+*/
+
 setInterval(
+
   cargar,
+
   5000
+
 );
 
-/* Hace avanzar visualmente
-   los cronómetros */
+
+
+/*
+  Hace avanzar visualmente
+  los relojes.
+*/
+
 setInterval(
+
   actualizarRelojes,
+
   1000
+
 );
 
 
-/* SERVICE WORKER */
+
+/* =========================
+   SERVICE WORKER
+========================= */
+
 
 if(
-  "serviceWorker" in navigator
+  "serviceWorker"
+  in navigator
 ){
 
+
   window.addEventListener(
+
     "load",
+
     () => {
 
+
       navigator
+
         .serviceWorker
-        .register("./sw.js")
-        .catch(console.error);
+
+        .register(
+          "./sw.js"
+        )
+
+        .catch(
+          console.error
+        );
+
     }
+
   );
+
 }
+
 
 </script>
 
