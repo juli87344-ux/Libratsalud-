@@ -3150,20 +3150,17 @@ async function comprobarUbicacionNotificaciones(){
  if(!u.activo || !("geolocation" in navigator)) return;
  navigator.geolocation.getCurrentPosition(async pos=>{
    const distancia=distanciaMetros(pos.coords.latitude,pos.coords.longitude,u.lat,u.lon);
-   const silencio=await leerSilencioConfig();
-   if(distancia>u.radio){
-     await guardarSilencioConfig({...silencio,activo:true,inicio:"00:00",fin:"00:00",ubicacion:u});
-     const e=document.getElementById("estadoUbicacion");if(e)e.textContent="📍 Fuera de la zona configurada · notificaciones silenciadas en este dispositivo.";
-   }else{
-     const c=await leerSilencioConfig();
-     const ahora=new Date();
-     const hh=String(ahora.getHours()).padStart(2,"0")+":"+String(ahora.getMinutes()).padStart(2,"0");
-     const hasta=c.hasta;
-     await guardarSilencioConfig({...c,activo:false,inicio:hh,fin:hh,ubicacion:u,hasta:hasta});
-     const e=document.getElementById("estadoUbicacion");if(e)e.textContent="📍 Dentro de la zona configurada · notificaciones activas.";
-   }
+   const config=await leerSilencioConfig();
+   const fuera=distancia>u.radio;
+   const ubicacion={...u,fuera};
+   await guardarSilencioConfig({...config,ubicacion});
+   const e=document.getElementById("estadoUbicacion");
+   if(e)e.textContent=fuera
+     ?"📍 Fuera de la zona configurada · notificaciones silenciadas en este dispositivo."
+     :"📍 Dentro de la zona configurada · ubicación habilitada.";
  },()=>{});
 }
+
 async function actualizarPanelUbicacion(){
  const u=await leerUbicacionConfig(); const b=document.getElementById("btnUbicacion"),e=document.getElementById("estadoUbicacion");
  if(u.activo){if(b)b.textContent="📍 Ubicación activada";if(e)e.textContent="📍 Activada · radio "+(u.radio||300)+" m · solo mientras la app está abierta.";}
