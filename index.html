@@ -398,6 +398,17 @@ input{
   .antiguedad-estado{width:max-content;padding:3px 6px;border-radius:999px;background:#fff4d8;color:#8b5d08;font-size:9px}
   .reloj{margin-top:6px;font-weight:850}
 }
+
+/* desktop-room-status-v2 */
+@media(min-width:701px){
+  .habitacion{position:relative;overflow:hidden}
+  .habitacion::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#cbd7e1}
+  .habitacion-disponible::before{background:#43a86b}
+  .habitacion-seguimiento::before{background:#e8a23f}
+  .habitacion-ocupada::before{background:#d9534f}
+  .habitacion-alerta-tiempo::before{width:6px;background:#d98b18}
+  .habitacion h2{padding-left:4px}
+}
 </style>
 </head>
 
