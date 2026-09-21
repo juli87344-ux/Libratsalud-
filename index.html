@@ -515,6 +515,22 @@ input{
   #resumenEstados .resumen-item span{font-size:9px;font-weight:900;color:#345a77}
   .buscador-camas{border:1px solid #cfe2f0!important;border-radius:999px!important;background:#fff!important;box-shadow:0 3px 10px rgba(28,91,139,.06)!important}
 }
+
+/* reference-design-mobile-v3 — camas clínicas y estados tipo maqueta */
+@media(max-width:700px){
+  .cama{position:relative;min-height:128px;padding:58px 9px 10px!important;border-radius:12px!important;text-align:left!important;overflow:hidden}
+  .cama::before{content:'🛏';position:absolute;left:50%;top:8px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;width:72px;height:43px;font-size:36px;border:0;background:transparent!important;box-shadow:none!important}
+  .cama::after{content:'';position:absolute;left:12px;right:12px;top:49px;height:1px;background:#dbe9f3}
+  .cama .detalle{display:inline-flex!important;width:auto!important;max-width:100%;padding:4px 7px;border-radius:999px;font-size:8px!important;font-weight:900!important;line-height:1.1}
+  .cama.ocupada .detalle{background:#ffe0e3;color:#b51e28}
+  .cama.alta_espera .detalle{background:#eadcff;color:#6628c7}
+  .cama.liberada .detalle{background:#fff0b7;color:#8c6500}
+  .cama.limpieza .detalle{background:#ffe0cc;color:#b4510a}
+  .cama.lista .detalle{background:#daf5e5;color:#087a45}
+  .cama.reservada .detalle{background:#dceeff;color:#0965b7}
+  .cama .reloj{display:block;margin-top:5px;font-size:10px;font-weight:900;color:#163b60}
+  .franja-estado-cama{height:4px!important;top:0!important;left:0!important;right:0!important;border-radius:12px 12px 0 0!important}
+}
 </style>
 </head>
 
