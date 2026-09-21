@@ -207,10 +207,12 @@ async function cambiar(estado){
    await fetch(SUPABASE_URL+"/rest/v1/historial_camas",{method:"POST",headers,body:JSON.stringify({habitacion:seleccion.habitacion,cama:seleccion.cama,estado,inicio:now,operador:op})});
   }catch(e){console.error("No se pudo registrar historial",e)}
   const notices={
+   ocupada:["🔴 LibraCare · Ocupada","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" pasó a ocupada."],
    alta_espera:["🟣 LibraCare · Alta","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está en alta / espera traslado."],
    liberada:["🔔 LibraCare · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está liberada y requiere limpieza."],
    en_limpieza:["🟠 LibraCare · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" comenzó la limpieza."],
-   lista:["🟢 LibraCare · Lista","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está limpia y disponible."]
+   lista:["🟢 LibraCare · Lista","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está limpia y disponible."],
+   reservada:["🔵 LibraCare · Reservada","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" quedó reservada."]
   };
   if(notices[estado])await enviarNotificacion(notices[estado][0],notices[estado][1]);
   cerrarModal();await cargar();
