@@ -346,6 +346,16 @@ input{
   header h1{font-size:28px;letter-spacing:-.02em}
   header p{max-width:560px}
 }
+
+/* desktop-summary-polish-v1 */
+@media(min-width:701px){
+  #resumenEstados{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+  #resumenEstados .resumen-item{position:relative;overflow:hidden;min-height:92px;padding:12px 10px;border-radius:16px}
+  #resumenEstados .resumen-item::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;background:currentColor;opacity:.18}
+  #resumenEstados .resumen-icono{font-size:17px}
+  #resumenEstados .resumen-numero{font-size:24px;line-height:1.05;margin-top:3px}
+  #resumenEstados .resumen-label{font-size:10px;font-weight:800;margin-top:4px}
+}
 </style>
 </head>
 
