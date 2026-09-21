@@ -996,6 +996,9 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
 .habitacion .cabecera-habitacion h2{margin:0!important}
 .habitacion-cantidad-dinamica{font-size:9px;font-weight:850;color:#52728a;background:#edf5fa;border:1px solid #d7e8f2;border-radius:999px;padding:5px 8px;white-space:nowrap}
 @media(max-width:700px){.habitacion .cabecera-habitacion{position:relative}.habitacion-cantidad-dinamica{font-size:8px;padding:4px 7px}.habitacion .cabecera-habitacion h2{font-size:15px!important}}
+
+/* reference-design-load-guard-v1 — evitar cargas simultáneas */
+.estado-cargando{opacity:.72;pointer-events:none}
 </style>
 </head>
 
@@ -1203,7 +1206,13 @@ let seleccion = null;
 ========================= */
 
 
-async function alternarPantallaCompleta(){const b=document.getElementById('btnPantallaCompleta');try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen();if(b)b.classList.add('activo');}else{await document.exitFullscreen();if(b)b.classList.remove('activo');}}catch(e){}}\ndocument.addEventListener('fullscreenchange',()=>{const b=document.getElementById('btnPantallaCompleta');if(b)b.classList.toggle('activo',!!document.fullscreenElement);});\n\nfunction alternarCompacto(){document.body.classList.toggle('modo-compacto');const b=document.getElementById('btnCompacto');if(b)b.classList.toggle('activo',document.body.classList.contains('modo-compacto'));}\n\nfunction mostrarToast(texto){const el=document.getElementById('mensajeToast');if(!el)return;el.textContent=texto;el.classList.add('visible');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('visible'),1800);}\n\nasync function refrescarManual(btn){if(btn){btn.disabled=true;btn.textContent='↻ Actualizando…';}try{await cargar();mostrarToast('✓ Panel actualizado');}finally{if(btn){btn.disabled=false;btn.textContent='↻ Actualizar';}}}\n\nasync function cargar(){
+async function alternarPantallaCompleta(){const b=document.getElementById('btnPantallaCompleta');try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen();if(b)b.classList.add('activo');}else{await document.exitFullscreen();if(b)b.classList.remove('activo');}}catch(e){}}\ndocument.addEventListener('fullscreenchange',()=>{const b=document.getElementById('btnPantallaCompleta');if(b)b.classList.toggle('activo',!!document.fullscreenElement);});\n\nfunction alternarCompacto(){document.body.classList.toggle('modo-compacto');const b=document.getElementById('btnCompacto');if(b)b.classList.toggle('activo',document.body.classList.contains('modo-compacto'));}\n\nfunction mostrarToast(texto){const el=document.getElementById('mensajeToast');if(!el)return;el.textContent=texto;el.classList.add('visible');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('visible'),1800);}\n\nasync function refrescarManual(btn){if(btn){btn.disabled=true;btn.textContent='↻ Actualizando…';}try{await cargar();mostrarToast('✓ Panel actualizado');}finally{if(btn){btn.disabled=false;btn.textContent='↻ Actualizar';}}}\n\nlet cargaEnCurso = false;
+
+async function cargar(){
+  if(cargaEnCurso) return;
+  cargaEnCurso = true;
+
+  try{
 
   try{
 
@@ -1263,6 +1272,8 @@ async function alternarPantallaCompleta(){const b=document.getElementById('btnPa
 
     console.error(e);
 
+  }finally{
+    cargaEnCurso = false;
   }
 
 }
