@@ -756,6 +756,20 @@ input{
   .filtro:focus-visible,.controles-vista button:focus-visible,.nav-movil-libratsalud button:focus-visible{outline:3px solid rgba(8,120,209,.24)!important;outline-offset:2px!important}
   .nav-movil-libratsalud{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 }
+
+/* reference-design-mobile-v21 — cierre visual del inicio tipo app clínica */
+@media(max-width:700px){
+  header h1{letter-spacing:-.025em!important}
+  header p{font-size:10px!important;letter-spacing:.02em!important}
+  main::before{content:'Gestión de camas';display:flex;align-items:center;min-height:28px}
+  main::after{content:'Libratsalud · seguimiento operativo de camas';display:block;margin:14px 4px 2px;padding:11px 12px;border:1px solid #d8e8f3;border-radius:13px;background:#f8fcff;color:#6b8599;text-align:center;font-size:8px;font-weight:800;letter-spacing:.03em}
+  #habitaciones{margin-top:4px!important}
+  .habitacion h2{color:#143f64!important}
+  .cama{cursor:pointer}
+  .cama:active{transform:scale(.985)!important}
+  .nav-movil-libratsalud button:first-line{font-size:15px}
+  .nav-movil-libratsalud{z-index:9999!important}
+}
 </style>
 </head>
 
