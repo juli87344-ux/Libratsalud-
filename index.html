@@ -1336,10 +1336,9 @@ function restablecerVista(){\n  filtroActual='todas';soloDemoras=false;soloPendi
   Object
     .keys(grupos)
 
-    .sort(
+     .sort(
       (a,b) =>
-        Number(a) -
-        Number(b)
+        (ordenHabitacionDesc ? Number(b) - Number(a) : Number(a) - Number(b))
     )
 
     .forEach(h => {
@@ -1352,7 +1351,7 @@ function restablecerVista(){\n  filtroActual='todas';soloDemoras=false;soloPendi
 
       box.className =
         "habitacion";
-      const camasHab=grupos[hab];
+      const camasHab=grupos[h];
       const tieneDemora=camasHab.some(x=>x.estado_desde && mostrarReloj(x.estado) && ((Date.now()-new Date(x.estado_desde).getTime())/1000)>=1800);
       if(tieneDemora) box.classList.add('habitacion-alerta-tiempo');
       if(camasHab.every(x=>x.estado==='lista')) box.classList.add('habitacion-disponible');
