@@ -1112,6 +1112,21 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
   .responsable-cama,.hora-cambio-cama,.fecha-cambio-cama,.antiguedad-estado{font-size:9px!important}
   .pie-app{margin-top:14px!important}
 }
+
+/* definitive-reference-desktop-v2 — camas y tarjetas como la referencia */
+@media(min-width:901px){
+  .habitacion{min-height:235px!important}
+  .habitacion h2::before{content:'▣';display:inline-grid;place-items:center;width:27px;height:27px;margin-right:7px;border-radius:7px;background:#e5f4fc;color:#1687c9;font-size:15px;vertical-align:middle}
+  .cama{padding-top:101px!important}
+  .cama::before{content:'🏥  🛏️'!important;font-size:43px!important;letter-spacing:3px!important;color:#397ca7!important}
+  .cama::after{content:'CAMA CLÍNICA';position:absolute;top:75px;left:0;right:0;text-align:center;font-size:7px;letter-spacing:.12em;font-weight:900;color:#7894a8}
+  .cama.ocupada{border-top:5px solid #e35c66!important}.cama.alta_espera{border-top:5px solid #8b61c7!important}.cama.liberada{border-top:5px solid #e3bd3e!important}.cama.limpieza{border-top:5px solid #e88742!important}.cama.lista{border-top:5px solid #45b873!important}.cama.reservada{border-top:5px solid #4d98d2!important}
+  .cama.ocupada::before{background:linear-gradient(180deg,#fff8f8,#fce9eb)!important}.cama.alta_espera::before{background:linear-gradient(180deg,#fcf9ff,#eee5fa)!important}.cama.liberada::before{background:linear-gradient(180deg,#fffdf6,#fff4cb)!important}.cama.limpieza::before{background:linear-gradient(180deg,#fff9f5,#ffeadc)!important}.cama.lista::before{background:linear-gradient(180deg,#f8fffa,#e2f7e9)!important}.cama.reservada::before{background:linear-gradient(180deg,#f8fcff,#e4f2fc)!important}
+  .cama .detalle{width:max-content;max-width:100%!important}
+  .estado-lista-cama,.estado-atencion-cama{font-size:8px!important;padding:3px 6px!important}
+  .panel-titulo::before{content:'Estado actual y seguimiento operativo';display:block;position:absolute;margin-top:36px;color:#6d879a;font-size:11px;font-weight:700}
+  .panel-titulo{position:relative!important;padding-bottom:18px!important}
+}
 </style>
 </head>
 
