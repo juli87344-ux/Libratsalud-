@@ -589,6 +589,22 @@ input{
   .filtro:nth-child(7){background:#e4f2ff;border-color:#cde4f8;color:#17649e}
   .filtro.activo{background:#0878d1!important;border-color:#0878d1!important;color:#fff!important;box-shadow:0 4px 12px rgba(8,120,209,.18)!important}
 }
+
+/* reference-design-mobile-v9 — acabado de tarjetas de camas del diseño definitivo */
+@media(max-width:700px){
+  .camas{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .cama{box-shadow:0 4px 12px rgba(24,78,119,.07)!important;border-width:1px!important}
+  .cama.ocupada{background:linear-gradient(180deg,#fff,#fff5f6)!important}
+  .cama.alta_espera{background:linear-gradient(180deg,#fff,#faf6ff)!important}
+  .cama.liberada{background:linear-gradient(180deg,#fff,#fffaf0)!important}
+  .cama.limpieza{background:linear-gradient(180deg,#fff,#fff7f1)!important}
+  .cama.lista{background:linear-gradient(180deg,#fff,#f4fcf7)!important}
+  .cama.reservada{background:linear-gradient(180deg,#fff,#f3f9ff)!important}
+  .cama.ocupada::before{background:#ffe7e9!important}.cama.alta_espera::before{background:#f0e6ff!important}.cama.liberada::before{background:#fff4c9!important}.cama.limpieza::before{background:#ffe9dc!important}.cama.lista::before{background:#e3f7eb!important}.cama.reservada::before{background:#e3f2ff!important}
+  .cama .detalle{margin-top:2px!important}
+  .cama .reloj{background:#edf5fa;border-radius:8px;padding:4px 6px;width:max-content;max-width:100%}
+  .cama.urgente .reloj,.cama.prioridad-demora .reloj{background:#fff0cf;color:#8a5700}
+}
 </style>
 </head>
 
