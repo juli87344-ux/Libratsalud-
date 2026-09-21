@@ -687,6 +687,20 @@ input{
   .resumen-proceso span{font-weight:850!important;color:#45677f!important}
   .total-camas-panel,.resumen-habitaciones{font-weight:800!important}
 }
+
+/* reference-design-mobile-v16 — lectura rápida del estado de cada cama */
+@media(max-width:700px){
+  .cama{gap:2px!important}
+  .cama .detalle{font-size:8.5px!important;letter-spacing:.01em!important}
+  .cama .reloj{font-size:11px!important;padding:5px 7px!important;border:1px solid #dbe8f0!important}
+  .cama.prioridad-demora .reloj,.cama.urgente .reloj{border-color:#efd89e!important;font-weight:950!important}
+  .responsable-cama{margin-top:6px!important;padding-top:6px!important}
+  .hora-cambio-cama{font-weight:800!important}
+  .fecha-cambio-cama{opacity:.9}
+  .estado-lista-cama{background:#dff6e8!important;border:1px solid #c7ead5!important}
+  .estado-atencion-cama{background:#fff2d2!important;border:1px solid #eedcae!important}
+  .habitacion h2{min-height:46px;display:flex;align-items:center}
+}
 </style>
 </head>
 
