@@ -3092,8 +3092,11 @@ async function comprobarUbicacionNotificaciones(){
      await guardarSilencioConfig({...silencio,activo:true,inicio:"00:00",fin:"00:00",ubicacion:u});
      const e=document.getElementById("estadoUbicacion");if(e)e.textContent="📍 Fuera de la zona configurada · notificaciones silenciadas en este dispositivo.";
    }else{
-     const ahora=new Date(); const hh=String(ahora.getHours()).padStart(2,"0")+":"+String(ahora.getMinutes()).padStart(2,"0");
-     await guardarSilencioConfig({...silencio,activo:false,inicio:hh,fin:hh,ubicacion:u});
+     const c=await leerSilencioConfig();
+     const ahora=new Date();
+     const hh=String(ahora.getHours()).padStart(2,"0")+":"+String(ahora.getMinutes()).padStart(2,"0");
+     const hasta=c.hasta;
+     await guardarSilencioConfig({...c,activo:false,inicio:hh,fin:hh,ubicacion:u,hasta:hasta});
      const e=document.getElementById("estadoUbicacion");if(e)e.textContent="📍 Dentro de la zona configurada · notificaciones activas.";
    }
  },()=>{});
