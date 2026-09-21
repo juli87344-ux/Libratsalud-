@@ -303,6 +303,17 @@ input{
   .responsable-cama{margin-top:6px}
   @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.cama:active,.filtro:active,.nav-movil-libratsalud button:active{transform:none}}
 }
+
+/* mobile-landscape-v1 */
+@media(max-width:900px) and (orientation:landscape){
+  body{padding-bottom:66px}
+  main{max-width:100%;padding:9px 12px}
+  #habitaciones{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .habitacion{padding:10px}
+  .cama{min-height:96px}
+  .nav-movil-libratsalud{left:20%;right:20%;bottom:6px}
+  .modal-content{max-height:82vh}
+}
 </style>
 </head>
 
