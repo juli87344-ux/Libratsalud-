@@ -1144,6 +1144,28 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
   .habitacion:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(31,91,132,.10)!important}
   .habitacion{transition:transform .16s ease,box-shadow .16s ease!important}
 }
+
+/* definitive-reference-desktop-v4 — proporciones y lectura del tablero */
+@media(min-width:901px){
+  main{padding-top:14px!important}
+  .panel-titulo strong{font-size:26px!important;letter-spacing:-.025em!important}
+  #habitaciones{grid-auto-rows:1fr!important}
+  .habitacion{display:flex!important;flex-direction:column!important;height:100%!important}
+  .habitacion h2{flex:0 0 auto!important}
+  .camas{flex:1!important}
+  .cama{height:100%!important;min-height:182px!important}
+  .cama .detalle{margin-top:2px!important;line-height:1.1!important}
+  .responsable-cama{padding-top:5px!important;border-top:1px solid #e6eff5!important;margin-top:6px!important}
+  .hora-cambio-cama,.fecha-cambio-cama{color:#6f8799!important;font-weight:750!important}
+  .reloj{font-variant-numeric:tabular-nums!important}
+  .pie-app{background:transparent!important;border:0!important;box-shadow:none!important;color:#688399!important}
+  .pie-app strong{font-size:13px!important}
+}
+@media(min-width:901px) and (max-width:1180px){
+  body{padding-left:108px}
+  body::before{width:108px;padding-left:12px;padding-right:12px;font-size:13px}
+  #habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
 </style>
 </head>
 
