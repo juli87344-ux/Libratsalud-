@@ -790,6 +790,18 @@ input{
   .habitacion-disponible{border-color:#bfe2cc!important}.habitacion-alerta-tiempo{border-color:#ecd59d!important}.habitacion-ocupada{border-color:#ecc4c8!important}
   .habitacion h2{font-weight:950!important}
 }
+
+/* reference-design-mobile-v24 — prioridad visual de cronómetros */
+@media(max-width:700px){
+  .cama .reloj{display:inline-flex!important;align-items:center!important;gap:3px!important;min-height:25px!important}
+  .cama.alta_espera .reloj{background:#f2eaff!important;border-color:#dfcff4!important;color:#6837a6!important}
+  .cama.liberada .reloj{background:#fff4cb!important;border-color:#eadb9f!important;color:#856000!important}
+  .cama.limpieza .reloj{background:#ffe9dc!important;border-color:#efcdb8!important;color:#a65017!important}
+  .cama.ocupada .reloj{background:#fff0f1!important;border-color:#efcdd0!important;color:#a93740!important}
+  .cama.prioridad-demora .reloj{animation:pulsoDemora 1.8s ease-in-out infinite!important}
+  @keyframes pulsoDemora{0%,100%{box-shadow:0 0 0 0 rgba(218,146,25,0)}50%{box-shadow:0 0 0 4px rgba(218,146,25,.10)}}
+  @media(prefers-reduced-motion:reduce){.cama.prioridad-demora .reloj{animation:none!important}}
+}
 </style>
 </head>
 
