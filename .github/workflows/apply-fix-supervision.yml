@@ -1,0 +1,25 @@
+name: Aplicar fix Supervisión
+
+on:
+  push:
+    paths:
+      - "fix_supervision.py"
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ejecutar fix
+        run: python fix_supervision.py
+      - name: Guardar
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Corregir JavaScript de Supervisión"
+          git push
