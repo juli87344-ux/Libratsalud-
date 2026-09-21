@@ -780,6 +780,16 @@ input{
   .btn-actualizar{min-width:34px!important;min-height:32px!important;border-radius:9px!important;background:#e7f3fb!important;color:#176da8!important;border:1px solid #cee3f1!important;box-shadow:none!important}
   .buscador-camas:focus{border-color:#72acd2!important;box-shadow:0 0 0 3px rgba(57,139,194,.12)!important;outline:none!important}
 }
+
+/* reference-design-mobile-v23 — estados más identificables en cada cama */
+@media(max-width:700px){
+  .cama.ocupada{border-color:#f0c9cd!important}.cama.alta_espera{border-color:#dcccf1!important}.cama.liberada{border-color:#eadb9d!important}.cama.limpieza{border-color:#efcdb8!important}.cama.lista{border-color:#c6e6d2!important}.cama.reservada{border-color:#c8deef!important}
+  .cama.ocupada .detalle::before{content:'● ';color:#d93d47}.cama.alta_espera .detalle::before{content:'● ';color:#7b43c5}.cama.liberada .detalle::before{content:'● ';color:#d5a514}.cama.limpieza .detalle::before{content:'● ';color:#e47631}.cama.lista .detalle::before{content:'● ';color:#29985a}.cama.reservada .detalle::before{content:'● ';color:#327fba}
+  .cama .detalle{font-weight:950!important}
+  .cama .reloj::first-letter{font-size:11px}
+  .habitacion-disponible{border-color:#bfe2cc!important}.habitacion-alerta-tiempo{border-color:#ecd59d!important}.habitacion-ocupada{border-color:#ecc4c8!important}
+  .habitacion h2{font-weight:950!important}
+}
 </style>
 </head>
 
