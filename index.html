@@ -1016,6 +1016,13 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
 .mensaje-toast{position:fixed;left:50%;bottom:78px;transform:translate(-50%,12px);opacity:0;pointer-events:none;z-index:9999;background:#123d64;color:#fff;border:1px solid #2d668f;border-radius:12px;padding:10px 15px;font-size:13px;font-weight:850;box-shadow:0 8px 22px rgba(18,61,100,.22);transition:opacity .18s ease,transform .18s ease;white-space:nowrap}
 .mensaje-toast.visible{opacity:1;transform:translate(-50%,0)}
 @media(max-width:700px){.mensaje-toast{bottom:76px;max-width:calc(100vw - 30px);white-space:normal;text-align:center}}
+
+/* reference-design-quiet-hours-v1 — horario de silencio por dispositivo */
+#panelSilencio{margin:8px 15px 0;padding:12px;border:1px solid #d7e8f3;border-radius:12px;background:#f7fbfe;color:#173b5b}
+#panelSilencio .silencio-titulo{font-weight:900;margin-bottom:7px}
+#panelSilencio select,#panelSilencio button{min-height:38px;border:1px solid #cfe3f0;border-radius:9px;background:#fff;color:#173b5b;padding:7px 9px;font-weight:750}
+#panelSilencio .silencio-activo{background:#e7f7ed;border-color:#c8ead6;color:#16744a}
+@media(max-width:700px){#panelSilencio{margin:8px 12px 0}#panelSilencio .silencio-controles{display:grid;grid-template-columns:1fr 1fr;gap:7px}#panelSilencio button{grid-column:1/-1}}
 </style>
 </head>
 
@@ -1041,6 +1048,15 @@ onclick="activarNotificaciones()">
 
 </button>
 
+<div id="panelSilencio">
+  <div class="silencio-titulo">🌙 Notificaciones</div>
+  <div class="silencio-controles">
+    <select id="horaSilencioInicio" aria-label="Inicio del horario de silencio"></select>
+    <select id="horaSilencioFin" aria-label="Fin del horario de silencio"></select>
+    <button id="btnSilencio" onclick="alternarSilencio()">🌙 Silenciar fuera de horario</button>
+  </div>
+  <small id="estadoSilencio">Las notificaciones están activas.</small>
+</div>
 
 <main>
 <button
@@ -2973,6 +2989,50 @@ if(
 }
 
 
+
+const SILENCIO_DB="libratsalud-notificaciones";
+function abrirDBSilencio(){
+  return new Promise((resolve,reject)=>{
+    const r=indexedDB.open(SILENCIO_DB,1);
+    r.onupgradeneeded=()=>r.result.createObjectStore("config");
+    r.onsuccess=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+  });
+}
+async function guardarSilencioConfig(config){
+  const db=await abrirDBSilencio();
+  await new Promise((resolve,reject)=>{const tx=db.transaction("config","readwrite");tx.objectStore("config").put(config,"horario");tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});
+  db.close();
+}
+async function leerSilencioConfig(){
+  const db=await abrirDBSilencio();
+  const valor=await new Promise((resolve,reject)=>{const tx=db.transaction("config","readonly");const r=tx.objectStore("config").get("horario");r.onsuccess=()=>resolve(r.result||{activo:false,inicio:"22:00",fin:"07:00"});r.onerror=()=>reject(r.error);});
+  db.close(); return valor;
+}
+function poblarHorasSilencio(){
+  for(const id of ["horaSilencioInicio","horaSilencioFin"]){
+    const el=document.getElementById(id); if(!el) continue;
+    el.innerHTML="";
+    for(let h=0;h<24;h++){const o=document.createElement("option");o.value=String(h).padStart(2,"0")+":00";o.textContent=o.value;el.appendChild(o);}
+  }
+}
+async function actualizarPanelSilencio(){
+  poblarHorasSilencio();
+  const c=await leerSilencioConfig();
+  const ini=document.getElementById("horaSilencioInicio"),fin=document.getElementById("horaSilencioFin"),b=document.getElementById("btnSilencio"),e=document.getElementById("estadoSilencio");
+  if(ini)ini.value=c.inicio||"22:00"; if(fin)fin.value=c.fin||"07:00";
+  if(b){b.textContent=c.activo?"🔔 Activar notificaciones":"🌙 Silenciar fuera de horario";b.classList.toggle("silencio-activo",!!c.activo);}
+  if(e)e.textContent=c.activo?("Silencio: "+(c.inicio||"22:00")+" a "+(c.fin||"07:00")+" · solo este dispositivo"):"Las notificaciones están activas.";
+}
+async function alternarSilencio(){
+  const actual=await leerSilencioConfig();
+  const inicio=document.getElementById("horaSilencioInicio")?.value||"22:00";
+  const fin=document.getElementById("horaSilencioFin")?.value||"07:00";
+  await guardarSilencioConfig({activo:!actual.activo,inicio,fin});
+  await actualizarPanelSilencio();
+  mostrarToast(!actual.activo?"🌙 Notificaciones silenciadas en este horario":"🔔 Notificaciones activadas");
+}
+window.addEventListener("load",()=>{setTimeout(actualizarPanelSilencio,500);});
 </script>
 
 
