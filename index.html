@@ -1011,6 +1011,11 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
  #modal .opcion{width:100%!important;margin-bottom:7px!important}
  #modal #persona{width:100%!important;box-sizing:border-box;padding:10px!important;font-size:16px!important}
 }
+
+/* reference-design-toast-v1 — confirmaciones discretas */
+.mensaje-toast{position:fixed;left:50%;bottom:78px;transform:translate(-50%,12px);opacity:0;pointer-events:none;z-index:9999;background:#123d64;color:#fff;border:1px solid #2d668f;border-radius:12px;padding:10px 15px;font-size:13px;font-weight:850;box-shadow:0 8px 22px rgba(18,61,100,.22);transition:opacity .18s ease,transform .18s ease;white-space:nowrap}
+.mensaje-toast.visible{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){.mensaje-toast{bottom:76px;max-width:calc(100vw - 30px);white-space:normal;text-align:center}}
 </style>
 </head>
 
