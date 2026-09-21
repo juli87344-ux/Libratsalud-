@@ -1232,7 +1232,15 @@ async function cambiar(
     return;
 
   }
+if(seleccion.estado === estado){
 
+  alert(
+    "Esta cama ya se encuentra en: " +
+    estadoTexto(estado)
+  );
+
+  return;
+}
 
 
   const habitacion =
