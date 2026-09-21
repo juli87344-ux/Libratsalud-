@@ -1166,6 +1166,28 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
   body::before{width:108px;padding-left:12px;padding-right:12px;font-size:13px}
   #habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+
+/* definitive-reference-mobile-v1 — misma identidad de la maqueta en celular */
+@media(max-width:900px){
+  header{background:#fff!important;color:#123d64!important;border-bottom:1px solid #d4e7f2!important;box-shadow:0 2px 9px rgba(24,75,112,.05)!important;padding:12px 14px!important}
+  header h1{color:#0878d1!important;font-size:25px!important}
+  header p{color:#52748d!important;font-size:10px!important}
+  #panelNotificaciones{margin:7px 8px!important}
+  main{background:transparent!important}
+  main::before{color:#123d64!important;font-size:18px!important;font-weight:950!important}
+  .cabecera-sticky{background:transparent!important;box-shadow:none!important}
+  .buscador-camas{background:#fff!important;border:1px solid #cfe1ed!important;border-radius:10px!important}
+  .filtros{gap:6px!important;padding-bottom:8px!important}
+  .filtro{background:#fff!important;border:1px solid #cfe1ed!important;color:#315e7e!important;border-radius:999px!important}
+  .filtro.activo{background:#0878d1!important;color:#fff!important;border-color:#0878d1!important}
+  #habitaciones{gap:10px!important}
+  .habitacion{border:1px solid #cfe3f0!important;border-radius:13px!important;background:linear-gradient(180deg,#fff,#f0faff)!important;box-shadow:0 4px 12px rgba(31,91,132,.06)!important}
+  .habitacion h2{background:transparent!important;color:#123d64!important;font-size:17px!important}
+  .cama{border-radius:11px!important;background:#fff!important;box-shadow:0 2px 7px rgba(31,91,132,.05)!important}
+  .cama::before{content:'🏥  🛏️'!important;font-size:28px!important;letter-spacing:1px!important}
+  .nav-movil-libratsalud{background:#102f50!important;border-top:1px solid #214b70!important}
+  .nav-movil-libratsalud button{color:#e9f5fd!important}
+}
 </style>
 </head>
 
