@@ -202,7 +202,10 @@ input{
   text-align:center;
 }
 
-@media(max-width:900px){.resumen-estados{grid-template-columns:repeat(3,1fr)}.modo-compacto #habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))}#habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))}.leyenda{grid-template-columns:repeat(3,1fr)}}\n@media(max-width:560px){.resumen-estados{grid-template-columns:repeat(2,1fr)}.modo-compacto #habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))}#habitaciones{grid-template-columns:1fr}.leyenda{grid-template-columns:repeat(2,1fr)} main{padding:10px}.habitacion{border-radius:18px}.cama{min-height:126px}}\n</style>
+@media(max-width:900px){.resumen-estados{grid-template-columns:repeat(3,1fr)}.modo-compacto #habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))}#habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))}.leyenda{grid-template-columns:repeat(3,1fr)}}\n@media(max-width:560px){.resumen-estados{grid-template-columns:repeat(2,1fr)}.modo-compacto #habitaciones{grid-template-columns:repeat(2,minmax(0,1fr))}#habitaciones{grid-template-columns:1fr}.leyenda{grid-template-columns:repeat(2,1fr)} main{padding:10px}.habitacion{border-radius:18px}.cama{min-height:126px}}\n
+.franja-estado-cama{height:6px;border-radius:999px;margin:0 0 9px;background:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+.ocupada .franja-estado-cama{background:#d9534f}.alta_espera .franja-estado-cama{background:#8f63c6}.liberada .franja-estado-cama{background:#e8b93f}.limpieza .franja-estado-cama{background:#e8893f}.lista .franja-estado-cama{background:#43a86b}.reservada .franja-estado-cama{background:#4d8fd8}
+</style>
 </head>
 
 
@@ -640,6 +643,7 @@ function restablecerVista(){\n  filtroActual='todas';soloDemoras=false;soloPendi
 
           b.innerHTML =
 
+            "<span class='franja-estado-cama'></span>" +
             "Cama " +
             c.cama +
 
