@@ -672,6 +672,21 @@ input{
   .antiguedad-estado{display:inline-block!important;margin-top:3px!important;padding:2px 5px!important;border-radius:999px!important;background:#eef4f8!important}
   .habitacion-alerta-tiempo{box-shadow:0 5px 16px rgba(205,139,24,.12)!important}
 }
+
+/* reference-design-mobile-v15 — acabado de resumen y habitaciones */
+@media(max-width:700px){
+  #resumenEstados .resumen-item{position:relative;overflow:hidden}
+  #resumenEstados .resumen-item::after{content:'';position:absolute;right:-12px;bottom:-18px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.42)}
+  #resumenEstados .resumen-item strong,#resumenEstados .resumen-item span{position:relative;z-index:1}
+  .habitacion{background:#fff!important}
+  .habitacion h2{box-shadow:inset 0 -1px 0 rgba(38,91,128,.05)}
+  .cama{background-color:#fff!important}
+  .cama:hover{transform:none!important}
+  .cama .detalle{min-height:20px;align-items:center}
+  .reloj{letter-spacing:.01em}
+  .resumen-proceso span{font-weight:850!important;color:#45677f!important}
+  .total-camas-panel,.resumen-habitaciones{font-weight:800!important}
+}
 </style>
 </head>
 
