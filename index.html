@@ -45,6 +45,7 @@
 .toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%) translateY(12px);background:#123b61;color:#fff;padding:9px 13px;border-radius:999px;font-size:11px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:80;white-space:nowrap;box-shadow:0 5px 18px rgba(0,0,0,.18)}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .timer-alert{background:#fff0b8!important;color:#7a5800!important;box-shadow:0 0 0 1px #e8bd35;font-weight:950}.timer-alert:before{content:"⚠ ";}
 .current-state{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid #d5e6ef;border-radius:10px;padding:9px 10px;margin:7px 0 4px;font-size:11px;font-weight:900}.current-state b{font-size:10px;color:#527189;white-space:nowrap}
+.periods{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 12px}.periods button{border:1px solid #cfe1ed;background:#fff;color:#315e7e;border-radius:9px;padding:8px;font-size:10px;font-weight:900}.periods button.active{background:#0c6fae;color:#fff;border-color:#0c6fae}.supercharts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}.chartcard{background:#fff;border:1px solid #d7e7f0;border-radius:12px;padding:10px}.chartcard h3{margin:0 0 8px;font-size:11px;color:#0c4d79}.donut{width:112px;height:112px;border-radius:50%;margin:4px auto;position:relative;background:#eaf1f5}.donut:after{content:"";position:absolute;inset:25px;border-radius:50%;background:#fff}.donutlegend{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px;font-size:8px;font-weight:800}.donutlegend span{display:flex;align-items:center;gap:4px}.donutlegend i{width:8px;height:8px;border-radius:50%;display:inline-block}.timebars{display:flex;flex-direction:column;gap:10px;padding-top:5px}.barrow{font-size:9px;font-weight:900;color:#4e6f86}.bartrack{height:16px;background:#edf3f6;border-radius:999px;overflow:hidden;margin-top:3px}.barfill{height:100%;min-width:2px;border-radius:999px;background:#1683d5}.barfill.clean{background:#ef7818}.barvalue{font-size:9px;font-weight:950;margin-top:2px;text-align:right;color:#315e7e}@media(max-width:560px){.supercharts{grid-template-columns:1fr}.donut{width:104px;height:104px}}
 </style></head>
 <body><div class="app">
 <header class="top"><div class="brandmark">✚</div><div class="logo">Libratsalud<small>Gestión de Camas · Camas listas, pacientes mejor</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn" onclick="abrirAjustes()">🔔</button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
@@ -58,13 +59,14 @@
 </div>
 <div id="toast" class="toast" role="status"></div>
 <div class="modal" id="settingsModal"><div class="sheet"><h2>Notificaciones</h2><div class="settingsnote">Configuración de este dispositivo</div><button class="settingbtn" onclick="activarNotificaciones()">🔔 Activar notificaciones</button><label class="settingrow"><span>🌙 Silenciar hasta mañana</span><input type="checkbox" id="quietTomorrow" onchange="guardarSilencio()"></label><div class="settingrow"><span>Horario de silencio</span><span><input class="timeinput" type="time" id="quietStart" value="22:00" onchange="guardarSilencio()"> a <input class="timeinput" type="time" id="quietEnd" value="07:00" onchange="guardarSilencio()"></span></div><button class="settingbtn secondary" onclick="usarUbicacion()">📍 Usar ubicación para silenciar fuera de la clínica</button><div class="settingsnote" id="locationNote">Opcional · funciona mientras Libratsalud está abierto.</div><button class="close" onclick="cerrarAjustes()">Cerrar</button></div></div>
-<div class="modal" id="superModal"><div class="sheet"><div id="superGate"><h2>Supervisión</h2><div class="settingsnote">Acceso de supervisor</div><input id="superPass" type="password" placeholder="Contraseña"><button class="settingbtn" onclick="validarSupervisor()">Ingresar</button></div><div id="superContent" style="display:none"><h2>Supervisión</h2><div style="font-size:11px;color:#617f96;margin-bottom:10px">Resumen general y disponibilidad actual</div><div class="superstats" id="superStats"></div><div id="superList"></div><button class="close" onclick="cerrarSupervision()">Cerrar</button><button onclick="salirSupervision()" style="width:100%;border:0;background:transparent;padding:10px;font-weight:800;color:#647f92">Cerrar sesión de Supervisión</button></div></div></div>
+<div class="modal" id="superModal"><div class="sheet"><div id="superGate"><h2>Supervisión</h2><div class="settingsnote">Acceso de supervisor</div><input id="superPass" type="password" placeholder="Contraseña"><button class="settingbtn" onclick="validarSupervisor()">Ingresar</button></div><div id="superContent" style="display:none"><h2>Supervisión</h2><div style="font-size:11px;color:#617f96;margin-bottom:10px">Resumen general y estadísticas</div><div class="periods"><button id="periodHoy" onclick="setPeriodoSuper('hoy')">Hoy</button><button id="period7" class="active" onclick="setPeriodoSuper('7')">7 días</button><button id="period30" onclick="setPeriodoSuper('30')">30 días</button></div><div class="superstats" id="superStats"></div><div class="supercharts"><div class="chartcard"><h3>Movimientos por estado</h3><div id="stateDonut" class="donut"></div><div id="donutLegend" class="donutlegend"></div></div><div class="chartcard"><h3>Tiempos promedio</h3><div id="timeBars" class="timebars"></div></div></div><div id="superList"></div><button class="close" onclick="cerrarSupervision()">Cerrar</button><button onclick="salirSupervision()" style="width:100%;border:0;background:transparent;padding:10px;font-weight:800;color:#647f92">Cerrar sesión de Supervisión</button></div></div></div>
 <div class="modal" id="modal"><div class="sheet"><h2 id="modalTitle">Cama</h2><div id="currentState" class="current-state"></div><div style="font-size:11px;color:#617f96">Seleccioná el nuevo estado.</div><input id="operator" placeholder="Nombre de quien realiza el cambio"><div class="state-grid" id="stateButtons"></div><button class="close" onclick="cerrarModal()">Cancelar</button></div></div>
 <script>
 const SUPABASE_URL="https://wxgqfycnjwryidnedbni.supabase.co";
 const SUPABASE_KEY="sb_publishable_XZQEiAZsC2cVk5liN3fu6g_6UN3K9-3";
 const STATES={ocupada:["Ocupada","🔴"],alta_espera:["Alta / Traslado","🟣"],liberada:["Liberada / limpiar","🟡"],en_limpieza:["En limpieza","🟠"],lista:["Lista","🟢"],reservada:["Reservada","🔵"]};
 let camas=[],filtro=localStorage.getItem("libratsalud_filtro")||"todas",seleccion=null,vista=localStorage.getItem("libratsalud_vista")||"pantalla";const cambiosEnCurso=new Set();
+let superPeriodo="7";
 const headers={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"return=minimal"};
 
 const VAPID_PUBLIC_KEY="BE4mcExiOAFq0w1lfLBSaJmMbHGCOyTx_cLnZsCLaEJjrCoCMa4gau11hdqE_Q0wp93qd-qXnTnyJxFqNEK6uvc";
@@ -174,27 +176,46 @@ async function cambiar(estado){
 const SUPERVISOR_PASS="Libratsalud2026";
 function validarSupervisor(){if(document.getElementById("superPass").value!==SUPERVISOR_PASS){alert("Contraseña incorrecta.");return}sessionStorage.setItem("libratsalud_super","1");document.getElementById("superGate").style.display="none";document.getElementById("superContent").style.display="block";cargarSupervision()}
 async function abrirSupervision(){document.getElementById("superModal").classList.add("show");if(sessionStorage.getItem("libratsalud_super")!=="1"){document.getElementById("superGate").style.display="block";document.getElementById("superContent").style.display="none";document.getElementById("superPass").value="";return}document.getElementById("superGate").style.display="none";document.getElementById("superContent").style.display="block";return cargarSupervision()}
+function setPeriodoSuper(p){superPeriodo=p;["Hoy","7","30"].forEach(x=>{const b=document.getElementById("period"+x);if(b)b.classList.toggle("active",String(p).toLowerCase()===String(x).toLowerCase())});cargarSupervision()}
+function inicioPeriodoSuper(){const d=new Date();if(superPeriodo==="hoy"){d.setHours(0,0,0,0);return d}d.setDate(d.getDate()-(Number(superPeriodo)-1));d.setHours(0,0,0,0);return d}
 async function cargarSupervision(){
  const counts=Object.fromEntries(Object.keys(STATES).map(k=>[k,camas.filter(c=>c.estado===k).length]));
  let hist=[];
  try{
-  const r=await fetch(SUPABASE_URL+"/rest/v1/historial_camas?select=*&order=created_at.desc&limit=100",{headers});
+  const desde=inicioPeriodoSuper().toISOString();
+  const r=await fetch(SUPABASE_URL+"/rest/v1/historial_camas?select=*&created_at=gte."+encodeURIComponent(desde)+"&order=created_at.desc&limit=5000",{headers});
   if(r.ok) hist=await r.json();
  }catch(e){console.error("Historial",e)}
  const mins=x=>x.inicio&&x.fin?Math.max(0,Math.round((new Date(x.fin)-new Date(x.inicio))/60000)):null;
  const wait=hist.filter(x=>x.estado==="liberada").map(mins).filter(x=>x!==null);
  const clean=hist.filter(x=>x.estado==="en_limpieza").map(mins).filter(x=>x!==null);
  const avg=a=>a.length?Math.round(a.reduce((p,n)=>p+n,0)/a.length):0;
+ const avgWait=avg(wait),avgClean=avg(clean);
  document.getElementById("superStats").innerHTML=
   '<div class="superstat">Total camas<b>'+camas.length+'</b></div>'+
   '<div class="superstat">Disponibles<b>'+(counts.lista||0)+'</b></div>'+
   '<div class="superstat">Por limpiar<b>'+((counts.liberada||0)+(counts.en_limpieza||0))+'</b></div>'+
-  '<div class="superstat">Espera prom.<b>'+avg(wait)+' min</b></div>'+
-  '<div class="superstat">Limpieza prom.<b>'+avg(clean)+' min</b></div>'+
+  '<div class="superstat">Espera prom.<b>'+avgWait+' min</b></div>'+
+  '<div class="superstat">Limpieza prom.<b>'+avgClean+' min</b></div>'+
   '<div class="superstat">Mayor espera<b>'+(wait.length?Math.max(...wait):0)+' min</b></div>';
+
+ const hc={};Object.keys(STATES).forEach(k=>hc[k]=0);hist.forEach(x=>{if(hc[x.estado]!==undefined)hc[x.estado]++});
+ const totalMoves=Object.values(hc).reduce((a,b)=>a+b,0);
+ const palette={ocupada:"#d83a46",alta_espera:"#8a55c7",liberada:"#d8a800",en_limpieza:"#e67b28",lista:"#2d9a5f",reservada:"#3389c8"};
+ let acc=0,parts=[];
+ Object.keys(STATES).forEach(k=>{const pct=totalMoves?hc[k]/totalMoves*100:0;if(pct>0){parts.push(palette[k]+" "+acc+"% "+(acc+pct)+"%");acc+=pct}});
+ const donut=document.getElementById("stateDonut");if(donut)donut.style.background=parts.length?"conic-gradient("+parts.join(",")+")":"#eaf1f5";
+ const dl=document.getElementById("donutLegend");if(dl)dl.innerHTML=Object.entries(STATES).map(([k,v])=>'<span><i style="background:'+palette[k]+'"></i>'+v[0]+' '+hc[k]+'</span>').join("");
+
+ const maxT=Math.max(avgWait,avgClean,1);
+ const tb=document.getElementById("timeBars");if(tb)tb.innerHTML=
+  '<div class="barrow">Espera para limpieza<div class="bartrack"><div class="barfill" style="width:'+Math.round(avgWait/maxT*100)+'%"></div></div><div class="barvalue">'+avgWait+' min</div></div>'+
+  '<div class="barrow">Limpieza<div class="bartrack"><div class="barfill clean" style="width:'+Math.round(avgClean/maxT*100)+'%"></div></div><div class="barvalue">'+avgClean+' min</div></div>';
+
  const estados=Object.entries(STATES).map(([k,v])=>'<div class="superrow"><span>'+v[1]+' '+v[0]+'</span><b>'+(counts[k]||0)+'</b></div>').join("");
  const actividad=hist.slice(0,20).map(x=>{const m=mins(x);return '<div class="superrow"><span><b>Hab. '+esc(x.habitacion)+' · '+esc(x.cama)+'</b><br><small>'+esc(STATES[x.estado]?.[0]||x.estado)+(m!==null?' · '+m+' min':' · en curso')+'</small></span><span>'+esc(x.operador||"—")+'</span></div>'}).join("");
- document.getElementById("superList").innerHTML='<h3>Estados actuales</h3>'+estados+'<h3>Actividad reciente</h3>'+(actividad||'<div class="status">Sin movimientos recientes.</div>');
+ const periodoTxt=superPeriodo==="hoy"?"Hoy":superPeriodo+" días";
+ document.getElementById("superList").innerHTML='<h3>Estados actuales</h3>'+estados+'<h3>Actividad · '+periodoTxt+'</h3>'+(actividad||'<div class="status">Sin movimientos en este período.</div>');
 }
 function cerrarSupervision(){document.getElementById("superModal").classList.remove("show")}
 function salirSupervision(){sessionStorage.removeItem("libratsalud_super");cerrarSupervision()} 
