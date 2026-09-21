@@ -36,3 +36,4 @@ s=s.replace(
 )
 
 p.write_text(s,encoding="utf-8")
+# ejecutar
