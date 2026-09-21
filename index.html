@@ -251,6 +251,14 @@ input{
   .modal-content{width:100%;max-width:none;max-height:88vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:18px 14px 24px}
   .modal-content button{min-height:46px;font-size:14px}
 }
+
+/* mobile-touch-v1 */
+@media(max-width:700px){
+  button,.filtro{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .cama:active{transform:scale(.98)}
+  .filtro:active,.nav-movil-libratsalud button:active{transform:scale(.96)}
+  .cama:focus-visible,.filtro:focus-visible,button:focus-visible{outline:3px solid rgba(57,128,190,.32);outline-offset:2px}
+}
 </style>
 </head>
 
