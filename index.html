@@ -43,7 +43,7 @@
 .roomstate-ocupada .roomscene{background:linear-gradient(#fff0f1 0 70%,#f3e7e9 70%)}.roomstate-alta_espera .roomscene{background:linear-gradient(#f5efff 0 70%,#ece5f6 70%)}.roomstate-liberada .roomscene{background:linear-gradient(#fff8d7 0 70%,#f2ecd0 70%)}.roomstate-en_limpieza .roomscene{background:linear-gradient(#fff0e5 0 70%,#f2e7df 70%)}.roomstate-lista .roomscene{background:linear-gradient(#eaf8ef 0 70%,#e1eee6 70%)}.roomstate-reservada .roomscene{background:linear-gradient(#eaf5ff 0 70%,#e1ebf3 70%)}
 @media(max-width:700px){.toolbar{display:grid;grid-template-columns:1fr auto;gap:8px}.toolbar>div:first-child{grid-column:1}.toolbar .notify{grid-column:2;grid-row:1;align-self:center}.toolbar .views{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);width:100%}.toolbar .view{width:100%;padding:8px 5px}.toolbar h1{font-size:22px}.roomsub{font-size:9px}}
 @media(max-width:700px){.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible;padding:4px 0 12px}.filter{justify-content:center;width:100%;padding:8px 5px;font-size:9px}.filter strong{min-width:18px;height:18px;font-size:9px}.filter-dot{width:7px;height:7px}}
-.rooms.compacto .bedpic{display:none}.rooms.compacto .operator{display:none}.rooms.compacto .bed{min-height:68px;padding:6px 4px}.rooms.compacto .timer{margin-top:3px;padding:2px 5px}.rooms.compacto .roomscene{height:38px}.rooms.compacto .scene-label{top:6px;font-size:16px}.rooms.compacto .sectionlabel{margin-top:6px}
+.rooms.compacto .bedpic{display:none}.rooms.compacto .operator{display:none}.rooms.compacto .bed{min-height:68px;padding:6px 4px}.rooms.compacto .timer{margin-top:3px;padding:2px 5px}.rooms.compacto .roomscene{height:38px}.rooms.compacto .scene-label{top:6px;font-size:16px}.rooms.compacto .sectionlabel{margin-top:6px}.compact-bed-grid{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.compact-bed{border:1px solid #d5e6ef;border-radius:12px;padding:8px;background:#fff;text-align:left;min-height:70px}.compact-bed b{display:block;font-size:13px;margin-bottom:4px}.compact-bed small{display:block;font-size:9px;font-weight:800;opacity:.8}.compact-bed.ocupada{background:#ffe2e5}.compact-bed.alta_espera{background:#eee2ff}.compact-bed.liberada{background:#fff2bd}.compact-bed.en_limpieza{background:#ffe3d0}.compact-bed.lista{background:#dff6e8}.compact-bed.reservada{background:#deefff}@media(max-width:560px){.compact-bed-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .notify.refresh{font-size:18px;font-weight:950;line-height:1}.notify:disabled{opacity:.5;cursor:default}@media(max-width:700px){.toolbar .refresh{grid-column:2;grid-row:2;justify-self:end}.toolbar .notify:not(.refresh){grid-column:2;grid-row:1}}
 .state-grid button.current{outline:2px solid rgba(12,77,121,.45);box-shadow:inset 0 0 0 2px rgba(255,255,255,.55)}.state-grid button.tap-selected{transform:scale(.985);box-shadow:0 0 0 3px rgba(12,77,121,.22),inset 0 0 0 2px rgba(255,255,255,.7);filter:saturate(1.12) brightness(.98)}.state-grid button.ocupada.tap-selected{outline:3px solid #c52f3d}.state-grid button.alta_espera.tap-selected{outline:3px solid #7a46b4}.state-grid button.liberada.tap-selected{outline:3px solid #d2a600}.state-grid button.en_limpieza.tap-selected{outline:3px solid #dd721f}.state-grid button.lista.tap-selected{outline:3px solid #278b55}.state-grid button.reservada.tap-selected{outline:3px solid #2e7fbd}.state-grid button:disabled{opacity:.72;cursor:default}.state-grid button.current:after{content:"";display:block}
 .toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%) translateY(12px);background:#123b61;color:#fff;padding:9px 13px;border-radius:999px;font-size:11px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:80;white-space:nowrap;box-shadow:0 5px 18px rgba(0,0,0,.18)}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -140,9 +140,11 @@ function setQuickFilter(v){filtro=v;localStorage.setItem("libratsalud_filtro",v)
 function setView(v){
  vista=v;
  localStorage.setItem("libratsalud_vista",v);
+ filtro="todas";
+ localStorage.setItem("libratsalud_filtro","todas");
  ["pantalla","prioridad","compacto"].forEach(x=>{const b=document.getElementById("view"+x[0].toUpperCase()+x.slice(1));if(b)b.classList.toggle("active",x===v)});
  const sub=document.getElementById("roomSub");
- if(sub)sub.textContent=v==="prioridad"?"Ordenadas por prioridad y mayor espera":v==="compacto"?"Vista rápida de camas":"Seguimiento operativo de camas";
+ if(sub)sub.textContent=v==="prioridad"?"Solo camas que requieren atención, ordenadas por urgencia":v==="compacto"?"Vista rápida y reducida de todas las camas":"Seguimiento operativo de camas";
  render();
 }
 function mostrarToast(msg){const el=document.getElementById("toast");if(!el)return;el.textContent=msg;el.classList.add("show");clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove("show"),1800)}
@@ -152,8 +154,16 @@ function render(){
  renderFilters();
  let data=filtro==="todas"?[...camas]:filtro==="por_limpiar"?camas.filter(c=>c.estado==="liberada"||c.estado==="en_limpieza"):camas.filter(c=>c.estado===filtro);
  if(vista==="prioridad"){
-  const p={liberada:0,en_limpieza:1,alta_espera:2,reservada:3,ocupada:4,lista:5};
+  data=camas.filter(c=>["liberada","en_limpieza","alta_espera","reservada"].includes(c.estado));
+  const p={liberada:0,en_limpieza:1,alta_espera:2,reservada:3};
   data.sort((a,b)=>(p[a.estado]??9)-(p[b.estado]??9)||new Date(a.estado_desde||a.actualizado)-new Date(b.estado_desde||b.actualizado));
+ }
+ if(vista==="compacto"){
+  const roomsEl=document.getElementById("rooms");
+  roomsEl.className="rooms compacto";
+  const sorted=[...camas].sort((a,b)=>Number(a.habitacion)-Number(b.habitacion)||String(a.cama).localeCompare(String(b.cama),"es",{numeric:true}));
+  roomsEl.innerHTML='<div class="compact-bed-grid">'+sorted.map(c=>'<button class="compact-bed '+esc(c.estado)+'" onclick="abrirModal(\''+esc(c.habitacion)+'\',\''+esc(c.cama)+'\')"><b>Hab. '+esc(c.habitacion)+' · '+esc(c.cama)+'</b><small>'+(STATES[c.estado]?.[1]||"")+' '+esc(STATES[c.estado]?.[0]||c.estado)+'</small>'+((c.operador_estado||c.responsable)?'<small>👤 '+esc(c.operador_estado||c.responsable)+'</small>':'')+'</button>').join("")+'</div>';
+  return;
  }
  const groups={};data.forEach(c=>(groups[c.habitacion]??=[]).push(c));
  Object.values(groups).forEach(list=>list.sort((a,b)=>String(a.cama).localeCompare(String(b.cama),"es",{numeric:true})));
@@ -169,7 +179,7 @@ function render(){
  const doubles=keys.filter(h=>(roomSizes[h]||0)>1), singles=keys.filter(h=>(roomSizes[h]||0)===1);
  const card=h=>{const bs=groups[h];const delayed=bs.some(c=>c.estado==="liberada"&&Date.now()-new Date(c.estado_desde||c.actualizado).getTime()>=1800000);const order=["liberada","en_limpieza","alta_espera","reservada","ocupada","lista"];const roomState=order.find(st=>bs.some(c=>c.estado===st))||"lista";return '<article class="room roomstate-'+roomState+' '+(delayed?'delayed':'')+'"><div class="roomscene '+((roomSizes[h]||bs.length)>1?'double-room':'single-room')+'"><span class="scene-label">'+esc(h)+'<small>'+((roomSizes[h]||bs.length)===1?'Individual':'Doble')+'</small></span><i class="scene-bed"></i><i class="scene-bed second-bed"></i></div>'+(delayed?'<div class="room-alert"><span class="delaybadge">⚠ +30 min</span></div>':'')+'<div class="beds '+(bs.length===1?'one':'')+'">'+bs.map(c=>'<button class="bed '+esc(c.estado)+'" onclick="abrirModal(\''+esc(c.habitacion)+'\',\''+esc(c.cama)+'\')"><span class="bedpic"></span><span class="bed-name">'+esc(c.cama)+'</span><span class="pill">'+(STATES[c.estado]?.[1]||"")+" "+esc(STATES[c.estado]?.[0]||c.estado)+'</span>'+((c.operador_estado||c.responsable)?'<span class="operator">👤 '+esc(c.operador_estado||c.responsable)+'</span>':'')+'</button>').join("")+'</div></article>'};
  const section=(title,list)=>list.length?'<div class="sectionlabel">'+title+'<small>'+list.length+' habitaciones</small></div>'+list.map(card).join(""):"";
- const html=section("Habitaciones dobles",doubles)+section("Habitaciones individuales",singles);roomsEl.innerHTML=html||'<div class="empty-state">No hay camas en este estado.</div>';
+ const html=section("Habitaciones dobles",doubles)+section("Habitaciones individuales",singles);roomsEl.innerHTML=html||(vista==="prioridad"?'<div class="empty-state">✓ No hay camas que requieran prioridad en este momento.</div>':'<div class="empty-state">No hay camas en este estado.</div>');
 }
 function actualizarEstadoModal(){if(!seleccion)return;const el=document.getElementById("currentState");if(!el)return;const st=STATES[seleccion.estado]||[seleccion.estado,""];el.innerHTML='<span>'+st[1]+' '+esc(st[0])+'</span>'+(seleccion.estado==="lista"?'<b>Disponible</b>':'')}
 function abrirModal(h,c){seleccion=camas.find(x=>String(x.habitacion)===String(h)&&String(x.cama)===String(c));if(!seleccion)return;document.getElementById("modalTitle").textContent="Habitación "+h+" · Cama "+c;actualizarEstadoModal();document.getElementById("operator").value=localStorage.getItem("libratsalud_operador")||"";document.getElementById("stateButtons").innerHTML=Object.entries(STATES).map(([k,v])=>'<button class="'+k+' '+(seleccion.estado===k?'current':'')+'" '+(seleccion.estado===k?'disabled':'onclick="marcarYTocar(this,\''+k+'\')"')+'>'+v[1]+" "+v[0]+(seleccion.estado===k?' · ACTUAL':'')+'</button>').join("");document.getElementById("modal").classList.add("show")}
