@@ -1,7 +1,7 @@
 {
-  "name": "LibraCare Bed",
+  "name": "LibraCare",
   "short_name": "LibraCare",
-  "description": "Sistema de gestión de habitaciones y camas",
+  "description": "Sistema de gestión de camas",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
