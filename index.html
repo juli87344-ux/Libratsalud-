@@ -37,7 +37,7 @@
 <nav class="bottom"><button onclick="scrollTo({top:0,behavior:'smooth'})">⌂<br>Inicio</button><button onclick="document.getElementById('rooms').scrollIntoView({behavior:'smooth'})">🛏️<br>Habitaciones</button><button onclick="abrirSupervision()">▥<br>Supervisión</button></nav>
 </div>
 <div class="modal" id="settingsModal"><div class="sheet"><h2>Notificaciones</h2><div class="settingsnote">Configuración de este dispositivo</div><button class="settingbtn" onclick="activarNotificaciones()">🔔 Activar notificaciones</button><label class="settingrow"><span>🌙 Silenciar hasta mañana</span><input type="checkbox" id="quietTomorrow" onchange="guardarSilencio()"></label><div class="settingrow"><span>Horario de silencio</span><span><input class="timeinput" type="time" id="quietStart" value="22:00" onchange="guardarSilencio()"> a <input class="timeinput" type="time" id="quietEnd" value="07:00" onchange="guardarSilencio()"></span></div><button class="settingbtn secondary" onclick="usarUbicacion()">📍 Usar ubicación para silenciar fuera de la clínica</button><div class="settingsnote" id="locationNote">Opcional · funciona mientras Libratsalud está abierto.</div><button class="close" onclick="cerrarAjustes()">Cerrar</button></div></div>
-<div class="modal" id="superModal"><div class="sheet"><h2>Supervisión</h2><div style="font-size:11px;color:#617f96;margin-bottom:10px">Resumen general y disponibilidad actual</div><div class="superstats" id="superStats"></div><div id="superList"></div><button class="close" onclick="cerrarSupervision()">Cerrar</button></div></div>
+<div class="modal" id="superModal"><div class="sheet"><div id="superGate"><h2>Supervisión</h2><div class="settingsnote">Acceso de supervisor</div><input id="superPass" type="password" placeholder="Contraseña"><button class="settingbtn" onclick="validarSupervisor()">Ingresar</button></div><div id="superContent" style="display:none"><h2>Supervisión</h2><div style="font-size:11px;color:#617f96;margin-bottom:10px">Resumen general y disponibilidad actual</div><div class="superstats" id="superStats"></div><div id="superList"></div><button class="close" onclick="cerrarSupervision()">Cerrar</button></div></div></div>
 <div class="modal" id="modal"><div class="sheet"><h2 id="modalTitle">Cama</h2><div style="font-size:11px;color:#617f96">Seleccioná el nuevo estado.</div><input id="operator" placeholder="Nombre de quien realiza el cambio"><div class="state-grid" id="stateButtons"></div><button class="close" onclick="cerrarModal()">Cancelar</button></div></div>
 <script>
 const SUPABASE_URL="https://wxgqfycnjwryidnedbni.supabase.co";
@@ -91,7 +91,10 @@ async function cambiar(estado){
  }catch(e){alert("No se pudo actualizar la cama.");console.error(e)}
  finally{cambiosEnCurso.delete(key)}
 }
-async function abrirSupervision(){
+const SUPERVISOR_PASS="Libratsalud2026";
+function validarSupervisor(){if(document.getElementById("superPass").value!==SUPERVISOR_PASS){alert("Contraseña incorrecta.");return}sessionStorage.setItem("libratsalud_super","1");document.getElementById("superGate").style.display="none";document.getElementById("superContent").style.display="block";cargarSupervision()}
+async function abrirSupervision(){document.getElementById("superModal").classList.add("show");if(sessionStorage.getItem("libratsalud_super")!=="1"){document.getElementById("superGate").style.display="block";document.getElementById("superContent").style.display="none";document.getElementById("superPass").value="";return}document.getElementById("superGate").style.display="none";document.getElementById("superContent").style.display="block";return cargarSupervision()}
+async function cargarSupervision(){
  const counts=Object.fromEntries(Object.keys(STATES).map(k=>[k,camas.filter(c=>c.estado===k).length]));
  let hist=[];
  try{
@@ -112,7 +115,6 @@ async function abrirSupervision(){
  const estados=Object.entries(STATES).map(([k,v])=>'<div class="superrow"><span>'+v[1]+' '+v[0]+'</span><b>'+(counts[k]||0)+'</b></div>').join("");
  const actividad=hist.slice(0,20).map(x=>{const m=mins(x);return '<div class="superrow"><span><b>Hab. '+esc(x.habitacion)+' · '+esc(x.cama)+'</b><br><small>'+esc(STATES[x.estado]?.[0]||x.estado)+(m!==null?' · '+m+' min':' · en curso')+'</small></span><span>'+esc(x.operador||"—")+'</span></div>'}).join("");
  document.getElementById("superList").innerHTML='<h3>Estados actuales</h3>'+estados+'<h3>Actividad reciente</h3>'+(actividad||'<div class="status">Sin movimientos recientes.</div>');
- document.getElementById("superModal").classList.add("show");
 }
 function cerrarSupervision(){document.getElementById("superModal").classList.remove("show")} 
 document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")cerrarModal()});document.getElementById("superModal").addEventListener("click",e=>{if(e.target.id==="superModal")cerrarSupervision()});document.getElementById("settingsModal").addEventListener("click",e=>{if(e.target.id==="settingsModal")cerrarAjustes()});
