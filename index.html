@@ -42,6 +42,7 @@
 .rooms.compacto .bedpic{display:none}.rooms.compacto .operator{display:none}.rooms.compacto .bed{min-height:68px;padding:6px 4px}.rooms.compacto .timer{margin-top:3px;padding:2px 5px}.rooms.compacto .roomscene{height:38px}.rooms.compacto .scene-label{top:6px;font-size:16px}.rooms.compacto .sectionlabel{margin-top:6px}
 .notify.refresh{font-size:18px;font-weight:950;line-height:1}.notify:disabled{opacity:.5;cursor:default}@media(max-width:700px){.toolbar .refresh{grid-column:2;grid-row:2;justify-self:end}.toolbar .notify:not(.refresh){grid-column:2;grid-row:1}}
 .state-grid button.current{outline:2px solid rgba(12,77,121,.45);box-shadow:inset 0 0 0 2px rgba(255,255,255,.55)}.state-grid button:disabled{opacity:.72;cursor:default}.state-grid button.current:after{content:"";display:block}
+.toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%) translateY(12px);background:#123b61;color:#fff;padding:9px 13px;border-radius:999px;font-size:11px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:80;white-space:nowrap;box-shadow:0 5px 18px rgba(0,0,0,.18)}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style></head>
 <body><div class="app">
 <header class="top"><div class="brandmark">✚</div><div class="logo">Libratsalud<small>Gestión de Camas · Camas listas, pacientes mejor</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn" onclick="abrirAjustes()">🔔</button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
@@ -53,6 +54,7 @@
 </main>
 <nav class="bottom"><button id="navInicio" class="active" onclick="navTo('inicio')">⌂<br>Inicio</button><button id="navHabitaciones" onclick="navTo('habitaciones')">🛏️<br>Habitaciones</button><button id="navSupervision" onclick="navTo('supervision')">▥<br>Supervisión</button><button id="navConfiguracion" onclick="navTo('configuracion')">⚙<br>Configuración</button></nav>
 </div>
+<div id="toast" class="toast" role="status"></div>
 <div class="modal" id="settingsModal"><div class="sheet"><h2>Notificaciones</h2><div class="settingsnote">Configuración de este dispositivo</div><button class="settingbtn" onclick="activarNotificaciones()">🔔 Activar notificaciones</button><label class="settingrow"><span>🌙 Silenciar hasta mañana</span><input type="checkbox" id="quietTomorrow" onchange="guardarSilencio()"></label><div class="settingrow"><span>Horario de silencio</span><span><input class="timeinput" type="time" id="quietStart" value="22:00" onchange="guardarSilencio()"> a <input class="timeinput" type="time" id="quietEnd" value="07:00" onchange="guardarSilencio()"></span></div><button class="settingbtn secondary" onclick="usarUbicacion()">📍 Usar ubicación para silenciar fuera de la clínica</button><div class="settingsnote" id="locationNote">Opcional · funciona mientras Libratsalud está abierto.</div><button class="close" onclick="cerrarAjustes()">Cerrar</button></div></div>
 <div class="modal" id="superModal"><div class="sheet"><div id="superGate"><h2>Supervisión</h2><div class="settingsnote">Acceso de supervisor</div><input id="superPass" type="password" placeholder="Contraseña"><button class="settingbtn" onclick="validarSupervisor()">Ingresar</button></div><div id="superContent" style="display:none"><h2>Supervisión</h2><div style="font-size:11px;color:#617f96;margin-bottom:10px">Resumen general y disponibilidad actual</div><div class="superstats" id="superStats"></div><div id="superList"></div><button class="close" onclick="cerrarSupervision()">Cerrar</button><button onclick="salirSupervision()" style="width:100%;border:0;background:transparent;padding:10px;font-weight:800;color:#647f92">Cerrar sesión de Supervisión</button></div></div></div>
 <div class="modal" id="modal"><div class="sheet"><h2 id="modalTitle">Cama</h2><div style="font-size:11px;color:#617f96">Seleccioná el nuevo estado.</div><input id="operator" placeholder="Nombre de quien realiza el cambio"><div class="state-grid" id="stateButtons"></div><button class="close" onclick="cerrarModal()">Cancelar</button></div></div>
@@ -100,7 +102,8 @@ function setView(v){
  if(sub)sub.textContent=v==="prioridad"?"Ordenadas por prioridad y mayor espera":v==="compacto"?"Vista rápida de camas":"Seguimiento operativo de camas";
  render();
 }
-async function refrescarManual(btn){if(btn){btn.disabled=true;btn.textContent="…"}try{await cargar()}finally{if(btn){btn.disabled=false;btn.textContent="↻"}}}
+function mostrarToast(msg){const el=document.getElementById("toast");if(!el)return;el.textContent=msg;el.classList.add("show");clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove("show"),1800)}
+async function refrescarManual(btn){if(btn){btn.disabled=true;btn.textContent="…"}try{await cargar();mostrarToast("✓ Panel actualizado")}finally{if(btn){btn.disabled=false;btn.textContent="↻"}}}
 async function cargar(){try{const r=await fetch(SUPABASE_URL+"/rest/v1/camas?select=*&order=habitacion,cama",{headers});if(!r.ok)throw new Error(await r.text());camas=await r.json();const st=document.getElementById("status");st.className="status connection-ok";st.textContent="● Sistema conectado · "+camas.length+" camas · Actualizado "+new Date().toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"});render()}catch(e){const st=document.getElementById("status");st.className="status connection-bad";st.textContent="● Sin conexión · se reintentará automáticamente";console.error(e)}}
 function render(){
  renderFilters();
@@ -141,7 +144,7 @@ async function cambiar(estado){
   const r=await fetch(url,{method:"PATCH",headers:patchHeaders,body:JSON.stringify({estado,responsable:op,operador_estado:op,estado_desde:now,actualizado:now})});
   if(!r.ok)throw new Error(await r.text());
   const changed=await r.json();
-  if(!changed.length){alert("Esta cama cambió desde otro dispositivo. Se actualizará la pantalla.");cerrarModal();await cargar();return}
+  if(!changed.length){alert("Esta cama cambió desde otro dispositivo. Se actualizará la pantalla.");cerrarModal();mostrarToast("✓ Cama actualizada");await cargar();return}
   try{
    const closeUrl=SUPABASE_URL+"/rest/v1/historial_camas?habitacion=eq."+encodeURIComponent(seleccion.habitacion)+"&cama=eq."+encodeURIComponent(seleccion.cama)+"&fin=is.null";
    await fetch(closeUrl,{method:"PATCH",headers,body:JSON.stringify({fin:now})});
