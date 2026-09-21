@@ -2177,6 +2177,8 @@ async function enviarNotificacion(
 ========================= */
 
 
+const cambiosEnCurso = new Set();
+
 async function cambiar(
   estado
 ){
@@ -2242,6 +2244,11 @@ if(seleccion.estado === estado){
     new Date()
       .toISOString();
 
+  const claveCama = String(habitacion) + "::" + String(cama);
+  if(cambiosEnCurso.has(claveCama)){
+    return;
+  }
+  cambiosEnCurso.add(claveCama);
 
 
   try{
@@ -2464,7 +2471,6 @@ if(seleccion.estado === estado){
 
   }catch(e){
 
-
     alert(
 
       "ERROR: " +
@@ -2475,6 +2481,8 @@ if(seleccion.estado === estado){
 
     console.error(e);
 
+  }finally{
+    cambiosEnCurso.delete(claveCama);
   }
 
 }
