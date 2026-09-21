@@ -23,3 +23,4 @@ if marker not in s:
     raise SystemExit("No se encontró cargar() esperado")
 s=s.replace(marker,replacement)
 p.write_text(s,encoding="utf-8")
+# ejecutar
