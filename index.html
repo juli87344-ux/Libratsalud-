@@ -990,6 +990,12 @@ async function actualizarEstadoNotificaciones(){
   }catch(e){ console.debug("Estado de notificaciones:",e); }
 }
 window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,700); });
+
+/* reference-design-dynamic-beds-v1 — habitaciones y cantidad de camas dinámicas */
+.habitacion .cabecera-habitacion{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+.habitacion .cabecera-habitacion h2{margin:0!important}
+.habitacion-cantidad-dinamica{font-size:9px;font-weight:850;color:#52728a;background:#edf5fa;border:1px solid #d7e8f2;border-radius:999px;padding:5px 8px;white-space:nowrap}
+@media(max-width:700px){.habitacion .cabecera-habitacion{position:relative}.habitacion-cantidad-dinamica{font-size:8px;padding:4px 7px}.habitacion .cabecera-habitacion h2{font-size:15px!important}}
 </style>
 </head>
 
@@ -1359,13 +1365,25 @@ function restablecerVista(){\n  filtroActual='todas';soloDemoras=false;soloPendi
       else if(camasHab.every(x=>x.estado==='ocupada')) box.classList.add('habitacion-ocupada');
 
 
+      const cabeceraHabitacion =
+        document.createElement("div");
+      cabeceraHabitacion.className = "cabecera-habitacion";
+
       const titulo =
         document
           .createElement("h2");
 
-
       titulo.textContent =
         "Habitación " + h;
+
+      const cantidad =
+        document.createElement("span");
+      cantidad.className = "habitacion-cantidad-dinamica";
+      cantidad.textContent =
+        camasHab.length + (camasHab.length === 1 ? " cama" : " camas");
+
+      cabeceraHabitacion.appendChild(titulo);
+      cabeceraHabitacion.appendChild(cantidad);
 
 
       const zona =
