@@ -373,6 +373,15 @@ input{
   .controles-vista{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:8px}
   .controles-vista button{min-height:36px;border-radius:10px;font-weight:750}
 }
+
+/* desktop-status-depth-v1 */
+@media(min-width:701px){
+  .cama{position:relative;overflow:hidden}
+  .cama::after{content:'';position:absolute;right:-18px;bottom:-18px;width:58px;height:58px;border-radius:50%;background:currentColor;opacity:.045;pointer-events:none}
+  .cama .detalle{font-weight:750}
+  .cama .franja-estado-cama{box-shadow:0 1px 4px rgba(29,55,82,.10)}
+  .estado-lista-cama,.estado-atencion-cama{font-weight:850;letter-spacing:.01em}
+}
 </style>
 </head>
 
