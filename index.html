@@ -47,14 +47,14 @@ header p{
 }
 
 main{
-  max-width:760px;
+  max-width:1180px;
   margin:auto;
   padding:15px;
 }
 
 .leyenda{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(6,1fr);
   gap:8px;
   margin-bottom:16px;
 }
@@ -95,7 +95,7 @@ main{
   color:#172033;
 }
 
-/* COLORES DE ESTADOS */
+ .cama:before{content:'🛏️';position:absolute;top:10px;left:50%;transform:translateX(-50%);font-size:42px;}\n\n/* COLORES DE ESTADOS */
 
 .ocupada{
   background:#ff8585;
@@ -202,7 +202,7 @@ input{
   text-align:center;
 }
 
-</style>
+@media(max-width:800px){.leyenda{grid-template-columns:repeat(3,1fr)}}\n@media(max-width:560px){.leyenda{grid-template-columns:repeat(2,1fr)} main{padding:10px}.habitacion{border-radius:18px}.cama{min-height:126px}}\n</style>
 </head>
 
 
