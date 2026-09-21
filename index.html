@@ -66,7 +66,7 @@ main{
   font-size:13px;
 }
 
-#habitaciones{\n  display:grid;\n  grid-template-columns:repeat(3,minmax(0,1fr));\n  gap:14px;\n  align-items:start;\n}\n\n.habitacion-disponible{border-color:#bfe3ca!important}.habitacion-seguimiento{border-color:#efd58a!important}.habitacion-ocupada{border-color:#efc0c0!important}.habitacion{
+#habitaciones{\n  display:grid;\n  grid-template-columns:repeat(3,minmax(0,1fr));\n  gap:14px;\n  align-items:start;\n}\n\n.habitacion-alerta-tiempo{box-shadow:0 0 0 3px rgba(245,158,11,.16),0 8px 20px rgba(23,52,91,.12)!important}.habitacion-alerta-tiempo h2::before{content:'⚠️ ';}.habitacion-disponible{border-color:#bfe3ca!important}.habitacion-seguimiento{border-color:#efd58a!important}.habitacion-ocupada{border-color:#efc0c0!important}.habitacion{
   background:white;
   border-radius:14px;
   padding:12px;
@@ -560,6 +560,8 @@ function limpiarFiltros(){
       box.className =
         "habitacion";
       const camasHab=grupos[hab];
+      const tieneDemora=camasHab.some(x=>x.estado_desde && mostrarReloj(x.estado) && ((Date.now()-new Date(x.estado_desde).getTime())/1000)>=1800);
+      if(tieneDemora) box.classList.add('habitacion-alerta-tiempo');
       if(camasHab.every(x=>x.estado==='lista')) box.classList.add('habitacion-disponible');
       else if(camasHab.some(x=>['alta_espera','liberada','en_limpieza'].includes(x.estado))) box.classList.add('habitacion-seguimiento');
       else if(camasHab.every(x=>x.estado==='ocupada')) box.classList.add('habitacion-ocupada');
