@@ -816,6 +816,20 @@ input{
   .filtro{touch-action:manipulation!important}
   .buscador-camas{caret-color:#0878d1!important}
 }
+
+/* reference-design-mobile-v26 — resumen superior más fiel al tablero elegido */
+@media(max-width:700px){
+  #resumenEstados{margin-top:3px!important}
+  #resumenEstados .resumen-item{display:flex!important;flex-direction:column!important;justify-content:space-between!important}
+  #resumenEstados .resumen-item span{order:1!important;text-transform:uppercase!important;letter-spacing:.045em!important}
+  #resumenEstados .resumen-item strong{order:2!important;margin-top:7px!important;font-size:25px!important}
+  .resumen-cabecera{border-left:4px solid #3c91c9!important}
+  .total-camas-panel{color:#274f6e!important}
+  .resumen-habitaciones{color:#6b879b!important}
+  .resumen-proceso span{background:#f9fcfe!important;border-color:#dce9f2!important}
+  .contador-visible{color:#315e7e!important}
+  .estado-filtro-info{background:#e6f2fa!important;color:#315e7e!important}
+}
 </style>
 </head>
 
