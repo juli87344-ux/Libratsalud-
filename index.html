@@ -294,6 +294,15 @@ input{
   #resumenEstados,.filtros,.controles-vista{mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 18px),transparent 100%);-webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 18px),transparent 100%)}
   #resumenEstados:focus-within,.filtros:focus-within,.controles-vista:focus-within{mask-image:none;-webkit-mask-image:none}
 }
+
+/* mobile-accessibility-v1 */
+@media(max-width:700px){
+  .cama{line-height:1.25}
+  .cama .detalle{display:block;margin-top:4px}
+  .estado-lista-cama,.estado-atencion-cama{display:inline-block;margin-top:5px;padding:3px 6px;border-radius:999px}
+  .responsable-cama{margin-top:6px}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.cama:active,.filtro:active,.nav-movil-libratsalud button:active{transform:none}}
+}
 </style>
 </head>
 
