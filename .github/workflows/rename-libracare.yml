@@ -1,0 +1,32 @@
+name: Finalizar nombre LibraCare
+
+on:
+  push:
+    paths:
+      - ".github/workflows/rename-libracare.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Actualizar nombre visible
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("index.html")
+          s = p.read_text(encoding="utf-8")
+          s = s.replace("LibraCare Bed", "LibraCare")
+          p.write_text(s, encoding="utf-8")
+          PY
+      - name: Guardar cambio
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Usar LibraCare como nombre visible"
+          git push
