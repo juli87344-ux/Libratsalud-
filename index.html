@@ -1188,6 +1188,21 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
   .nav-movil-libratsalud{background:#102f50!important;border-top:1px solid #214b70!important}
   .nav-movil-libratsalud button{color:#e9f5fd!important}
 }
+
+/* definitive-reference-v5 — jerarquía visual de habitación/cama */
+@media(min-width:901px){
+  .habitacion h2{display:flex!important;align-items:center!important}
+  .habitacion h2::after{content:'Habitación';margin-left:auto;font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#7a95a8;font-weight:850}
+  .cama{cursor:pointer!important}
+  .cama:hover{box-shadow:0 6px 15px rgba(25,76,112,.12)!important}
+  .cama:active{transform:scale(.99)!important}
+  .cama .detalle{box-shadow:inset 0 0 0 1px rgba(255,255,255,.55)!important}
+  .cama.ocupada .detalle{background:#fde8ea!important;color:#9f3039!important}.cama.alta_espera .detalle{background:#efe6fb!important;color:#67399e!important}.cama.liberada .detalle{background:#fff3c5!important;color:#806000!important}.cama.limpieza .detalle{background:#ffe8d9!important;color:#a45118!important}.cama.lista .detalle{background:#e0f6e8!important;color:#237a48!important}.cama.reservada .detalle{background:#e2f1fc!important;color:#286c9e!important}
+}
+@media(max-width:900px){
+  .cama.ocupada{border-top:4px solid #e35c66!important}.cama.alta_espera{border-top:4px solid #8b61c7!important}.cama.liberada{border-top:4px solid #e3bd3e!important}.cama.limpieza{border-top:4px solid #e88742!important}.cama.lista{border-top:4px solid #45b873!important}.cama.reservada{border-top:4px solid #4d98d2!important}
+  .cama.ocupada .detalle{background:#fde8ea!important;color:#9f3039!important}.cama.alta_espera .detalle{background:#efe6fb!important;color:#67399e!important}.cama.liberada .detalle{background:#fff3c5!important;color:#806000!important}.cama.limpieza .detalle{background:#ffe8d9!important;color:#a45118!important}.cama.lista .detalle{background:#e0f6e8!important;color:#237a48!important}.cama.reservada .detalle{background:#e2f1fc!important;color:#286c9e!important}
+}
 </style>
 </head>
 
