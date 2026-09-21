@@ -592,7 +592,7 @@ function limpiarFiltros(){
 
             relojHTML =
 
-              "<span class='reloj' " +
+              "<span class='reloj' data-limite='1800' " +
 
               "data-desde='" +
               c.estado_desde +
@@ -877,6 +877,10 @@ function actualizarRelojes(){
         calcularTiempo(
           desde
         );
+
+      const segundosTranscurridos = Math.floor((Date.now()-new Date(desde).getTime())/1000);
+      const limite = Number(el.dataset.limite || 0);
+      el.classList.toggle("urgencia-tiempo", limite>0 && segundosTranscurridos>=limite);
 
     });
 
