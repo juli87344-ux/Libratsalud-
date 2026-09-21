@@ -409,6 +409,33 @@ input{
   .habitacion-alerta-tiempo::before{width:6px;background:#d98b18}
   .habitacion h2{padding-left:4px}
 }
+
+/* mobile-redesign-real-v1 — nueva pantalla principal */
+@media(max-width:700px){
+  body{background:linear-gradient(180deg,#edf5fb 0,#f7f9fc 230px);color:#18304a}
+  header{margin:0;padding:18px 14px 22px;background:linear-gradient(145deg,#162941,#234c70);border-radius:0 0 24px 24px;box-shadow:0 8px 24px rgba(20,48,76,.18)}
+  header h1{font-size:24px;font-weight:900;letter-spacing:-.03em}
+  header p{font-size:11px;opacity:.78}
+  main{padding:12px 10px 18px}
+  .panel-principal{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+  .resumen-cabecera{margin:7px 2px 9px;padding:0;border:0}
+  #resumenEstados{gap:8px;padding:2px 1px 10px}
+  #resumenEstados .resumen-item{flex:0 0 106px;min-width:106px;min-height:92px;background:rgba(255,255,255,.92);border:1px solid #e2ebf3;box-shadow:0 5px 15px rgba(30,66,98,.07);border-radius:17px}
+  #resumenEstados .resumen-icono{font-size:17px}
+  #resumenEstados .resumen-numero{font-size:23px;font-weight:900;color:#173653}
+  .buscador-wrap{background:transparent;padding:5px 0;position:relative}
+  #buscarHabitacion{min-height:46px;background:#fff;border:1px solid #dce8f1;box-shadow:0 5px 15px rgba(30,66,98,.06);border-radius:15px;padding:0 13px;font-size:13px}
+  .habitacion{background:rgba(255,255,255,.94);border:1px solid #e0e9f1;border-radius:19px;padding:11px;box-shadow:0 7px 20px rgba(30,66,98,.07)}
+  .habitacion h2{position:static;background:transparent!important;backdrop-filter:none;padding:3px 3px 9px;margin:0 0 8px;border-bottom:1px solid #edf2f6;border-radius:0;color:#193b59;font-size:15px;font-weight:900}
+  .camas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .cama{background:#f8fbfd;border:1px solid #e3ebf2;box-shadow:none;border-radius:16px;min-height:126px;padding:10px 9px;text-align:left;color:#203b53;font-weight:900}
+  .cama::before{content:'🛏️';display:block;font-size:23px;line-height:1;margin:1px 0 7px;filter:saturate(.75)}
+  .cama .detalle{font-size:9px;font-weight:800;opacity:.76;margin-top:5px}
+  .franja-estado-cama{height:5px;border-radius:999px;margin:0 0 8px}
+  .responsable-cama,.hora-cambio-cama,.fecha-cambio-cama,.antiguedad-estado{font-size:8px}
+  .reloj{display:inline-block;margin-top:6px;padding:4px 6px;border-radius:8px;background:rgba(255,255,255,.72);font-size:10px}
+  .nav-movil-libratsalud{background:rgba(20,39,61,.97);border:1px solid rgba(255,255,255,.08);box-shadow:0 10px 30px rgba(15,34,54,.30)}
+}
 </style>
 </head>
 
