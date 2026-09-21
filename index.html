@@ -450,6 +450,19 @@ input{
   .nav-movil-libratsalud button{font-size:9px;line-height:1.25}
   .nav-movil-libratsalud button:first-child{background:rgba(255,255,255,.11);color:#fff}
 }
+
+/* mobile-redesign-real-v3 — tarjetas de habitación tipo maqueta */
+@media(max-width:700px){
+  #habitaciones{display:grid;grid-template-columns:1fr;gap:12px}
+  .habitacion{position:relative;overflow:hidden;padding:12px}
+  .habitacion::after{content:'HABITACIÓN';position:absolute;right:12px;top:13px;font-size:7px;font-weight:900;letter-spacing:.12em;color:#9aabba}
+  .habitacion h2{padding-right:72px;font-size:16px}
+  .habitacion-disponible{border-left:4px solid #43a86b}.habitacion-seguimiento{border-left:4px solid #e8a23f}.habitacion-ocupada{border-left:4px solid #d9534f}.habitacion-alerta-tiempo{border-left:5px solid #d98b18}
+  .cama{transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
+  .cama:active{box-shadow:0 3px 10px rgba(30,66,98,.10)}
+  .cama.prioridad-demora{box-shadow:0 0 0 2px rgba(217,139,24,.20),0 7px 18px rgba(217,139,24,.12)}
+  .urgencia-tiempo{background:#fff0cf!important;color:#8a5700!important}
+}
 </style>
 </head>
 
