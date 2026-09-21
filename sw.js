@@ -63,7 +63,7 @@ self.addEventListener("push", event => {
       data.title || "LibraCare",
       {
         body: data.body || "Hay una actualización de habitación.",
-        icon: "./icon-192.png",
+        icon: "./icon-libracare.svg",
         badge: "./icon-192.png",
         tag: data.tag || "libratsalud",
         renotify: true,
