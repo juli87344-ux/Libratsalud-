@@ -862,6 +862,21 @@ input{
   .nav-movil-libratsalud button{border:0!important}
   .nav-movil-libratsalud button:not(:first-child){background:transparent!important}
 }
+
+/* reference-design-mobile-v29 — acabado de controles y tarjetas */
+@media(max-width:700px){
+  .filtros::-webkit-scrollbar,#resumenEstados::-webkit-scrollbar,.controles-vista::-webkit-scrollbar{display:none}
+  .filtros,#resumenEstados,.controles-vista{scrollbar-width:none}
+  .filtro{box-shadow:0 2px 6px rgba(26,76,112,.04)!important}
+  .habitacion{border-color:#cfe3f0!important}
+  .habitacion h2{border-bottom-color:#dceaf3!important}
+  .cama{border-radius:11px!important}
+  .cama::before{border-radius:10px!important}
+  .cama .detalle{border-radius:999px!important}
+  .cama .reloj{border-radius:8px!important}
+  .actualizacion-panel{box-shadow:0 2px 8px rgba(25,80,121,.04)!important}
+  .nav-movil-libratsalud{border-color:rgba(255,255,255,.16)!important}
+}
 </style>
 </head>
 
