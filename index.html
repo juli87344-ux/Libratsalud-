@@ -802,6 +802,20 @@ input{
   @keyframes pulsoDemora{0%,100%{box-shadow:0 0 0 0 rgba(218,146,25,0)}50%{box-shadow:0 0 0 4px rgba(218,146,25,.10)}}
   @media(prefers-reduced-motion:reduce){.cama.prioridad-demora .reloj{animation:none!important}}
 }
+
+/* reference-design-mobile-v25 — legibilidad operativa y tacto */
+@media(max-width:700px){
+  .cama{touch-action:manipulation!important;-webkit-user-select:none;user-select:none}
+  .cama .detalle,.cama .reloj,.responsable-cama,.hora-cambio-cama,.fecha-cambio-cama{pointer-events:none}
+  .cama:focus-visible{outline:3px solid rgba(8,120,209,.28)!important;outline-offset:2px!important}
+  .habitacion h2{line-height:1.1!important}
+  .cama .reloj{white-space:nowrap!important}
+  .responsable-cama{color:#496980!important}
+  .estado-lista-cama,.estado-atencion-cama{white-space:nowrap!important}
+  .nav-movil-libratsalud button{touch-action:manipulation!important}
+  .filtro{touch-action:manipulation!important}
+  .buscador-camas{caret-color:#0878d1!important}
+}
 </style>
 </head>
 
