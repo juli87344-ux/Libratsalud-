@@ -115,6 +115,7 @@ function render(){
   data.sort((a,b)=>(p[a.estado]??9)-(p[b.estado]??9)||new Date(a.estado_desde||a.actualizado)-new Date(b.estado_desde||b.actualizado));
  }
  const groups={};data.forEach(c=>(groups[c.habitacion]??=[]).push(c));
+ Object.values(groups).forEach(list=>list.sort((a,b)=>String(a.cama).localeCompare(String(b.cama),"es",{numeric:true})));
  const roomSizes={};camas.forEach(c=>roomSizes[c.habitacion]=(roomSizes[c.habitacion]||0)+1);
  const roomsEl=document.getElementById("rooms");roomsEl.className="rooms "+vista;
  let keys=Object.keys(groups).sort((a,b)=>Number(a)-Number(b));
