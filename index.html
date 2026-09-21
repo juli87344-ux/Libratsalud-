@@ -436,6 +436,20 @@ input{
   .reloj{display:inline-block;margin-top:6px;padding:4px 6px;border-radius:8px;background:rgba(255,255,255,.72);font-size:10px}
   .nav-movil-libratsalud{background:rgba(20,39,61,.97);border:1px solid rgba(255,255,255,.08);box-shadow:0 10px 30px rgba(15,34,54,.30)}
 }
+
+/* mobile-redesign-real-v2 — identidad visual tipo app */
+@media(max-width:700px){
+  header h1::before{content:'♎';display:inline-grid;place-items:center;width:34px;height:34px;margin-right:8px;border-radius:11px;background:rgba(255,255,255,.13);font-size:20px;vertical-align:middle}
+  header p{margin-left:44px;margin-top:-2px}
+  .resumen-cabecera{font-size:11px;color:#536f88}
+  .cama{position:relative;padding-top:12px}
+  .cama::before{width:38px;height:30px;display:grid;place-items:center;background:#eef5fa;border-radius:10px;font-size:21px;margin-bottom:8px}
+  .cama.ocupada::before{background:#fdeeee}.cama.alta_espera::before{background:#f3edfb}.cama.liberada::before{background:#fff7df}.cama.limpieza::before{background:#fff0e5}.cama.lista::before{background:#eaf8ef}.cama.reservada::before{background:#eaf3fc}
+  .cama .detalle{min-height:22px}
+  .estado-lista-cama,.estado-atencion-cama{width:max-content;max-width:100%;font-size:8px}
+  .nav-movil-libratsalud button{font-size:9px;line-height:1.25}
+  .nav-movil-libratsalud button:first-child{background:rgba(255,255,255,.11);color:#fff}
+}
 </style>
 </head>
 
