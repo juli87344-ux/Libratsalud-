@@ -28,14 +28,13 @@ function leerConfiguracionSilencio(){
   });
 }
 function notificacionesEnSilencio(c){
-  if(!c || !c.activo) return false;
+  if(!c) return false;
+  if(c.ubicacion && c.ubicacion.activo && c.ubicacion.fuera) return true;
+  if(!c.activo) return false;
   const ahora=new Date();
   if(c.hasta){
     const hasta=new Date(c.hasta).getTime();
-    if(Number.isFinite(hasta)){
-      if(Date.now()<hasta) return true;
-      return false;
-    }
+    if(Number.isFinite(hasta)) return Date.now() < hasta;
   }
   const minutos=ahora.getHours()*60+ahora.getMinutes();
   const [ih,im]=(c.inicio||"22:00").split(":").map(Number);
@@ -44,6 +43,7 @@ function notificacionesEnSilencio(c){
   if(inicio===fin) return true;
   return inicio<fin ? minutos>=inicio && minutos<fin : minutos>=inicio || minutos<fin;
 }
+
 self.addEventListener("push", event => {
   let data = {};
 
