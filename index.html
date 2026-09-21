@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LibraCare · Gestión de camas</title>\n<link rel="icon" href="./icon-libracare.svg" type="image/svg+xml">
+<title>LibraCare · Gestión de camas</title>
+<link rel="icon" href="./icon-libracare.svg" type="image/svg+xml">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef7fc;color:#0c3155}button,input{font:inherit}
 .app{min-height:100vh}.top{background:#fff;padding:14px 16px;border-bottom:1px solid #d7e8f3;display:flex;align-items:center;gap:12px}
@@ -47,13 +48,33 @@
 .current-state{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid #d5e6ef;border-radius:10px;padding:9px 10px;margin:7px 0 4px;font-size:11px;font-weight:900}.current-state b{font-size:10px;color:#527189;white-space:nowrap}
 .periods{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 12px}.periods button{border:1px solid #cfe1ed;background:#fff;color:#315e7e;border-radius:9px;padding:8px;font-size:10px;font-weight:900}.periods button.active{background:#0c6fae;color:#fff;border-color:#0c6fae}.supercharts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}.chartcard{background:#fff;border:1px solid #d7e7f0;border-radius:12px;padding:10px}.chartcard h3{margin:0 0 8px;font-size:11px;color:#0c4d79}.donut{width:112px;height:112px;border-radius:50%;margin:4px auto;position:relative;background:#eaf1f5}.donut:after{content:"";position:absolute;inset:25px;border-radius:50%;background:#fff}.donutlegend{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px;font-size:8px;font-weight:800}.donutlegend span{display:flex;align-items:center;gap:4px}.donutlegend i{width:8px;height:8px;border-radius:50%;display:inline-block}.timebars{display:flex;flex-direction:column;gap:10px;padding-top:5px}.barrow{font-size:9px;font-weight:900;color:#4e6f86}.bartrack{height:16px;background:#edf3f6;border-radius:999px;overflow:hidden;margin-top:3px}.barfill{height:100%;min-width:2px;border-radius:999px;background:#1683d5}.barfill.clean{background:#ef7818}.barvalue{font-size:9px;font-weight:950;margin-top:2px;text-align:right;color:#315e7e}@media(max-width:560px){.supercharts{grid-template-columns:1fr}.donut{width:104px;height:104px}.superstats{grid-template-columns:repeat(2,1fr)}}
 .operatorcard{margin-bottom:14px}.operatorbars{display:flex;flex-direction:column;gap:8px}.oprow{font-size:9px;font-weight:900;color:#4e6f86}.opmeta{display:flex;justify-content:space-between;gap:8px;margin-bottom:3px}.optrack{height:13px;background:#edf3f6;border-radius:999px;overflow:hidden}.opfill{height:100%;background:#6f8fb0;border-radius:999px}.opsub{font-size:8px;color:#6d8799;margin-top:2px;text-align:right}
+
+/* pulido-visual-libracare-v1 */
+body{background:linear-gradient(180deg,#f5fbff 0,#edf6fb 100%)}
+.top{background:rgba(255,255,255,.96);backdrop-filter:blur(10px);box-shadow:0 3px 16px rgba(20,67,98,.07)}
+.logo{color:#0b4774;letter-spacing:-.4px}.logo small{font-weight:700;color:#6a8192;letter-spacing:0}
+.content{padding-top:15px}
+.toolbar{background:#fff;border:1px solid #dcebf3;border-radius:16px;padding:11px;box-shadow:0 5px 18px rgba(22,75,110,.05)}
+.toolbar h1{color:#123f63}
+.quickstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:9px 0 11px}
+.quickstat{background:#fff;border:1px solid #d9e8f0;border-radius:13px;padding:9px 8px;min-height:66px;box-shadow:0 3px 12px rgba(23,70,100,.045);display:flex;flex-direction:column;justify-content:center}
+.quickstat span{font-size:9px;font-weight:850;color:#607e92;line-height:1.15}.quickstat b{font-size:22px;line-height:1.05;margin-top:5px;color:#173f5f}
+.quickstat.ocupadas{border-top:4px solid #d83a46}.quickstat.altas{border-top:4px solid #8a55c7}.quickstat.limpiar{border-top:4px solid #d8a800}.quickstat.libres{border-top:4px solid #2d9a5f}
+.status.connection-ok,.status.connection-bad{background:#fff;border:1px solid #dce9f1;border-radius:999px;padding:7px 10px;width:max-content;max-width:100%;box-shadow:0 2px 8px rgba(20,70,100,.04)}
+.room{border-radius:16px;box-shadow:0 5px 16px rgba(24,76,112,.07);transition:transform .14s ease,box-shadow .14s ease}.room:active{transform:scale(.995)}
+.bed{transition:transform .12s ease,filter .12s ease}.bed:active{transform:scale(.98);filter:brightness(.98)}
+.pill{font-size:9px;letter-spacing:.1px}.timer{font-variant-numeric:tabular-nums}
+.bottom{background:rgba(12,54,92,.97);backdrop-filter:blur(10px);box-shadow:0 -4px 16px rgba(5,38,65,.15)}
+.bottom button{min-height:48px}.bottom button.active{background:#1687d5;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+@media(max-width:560px){.quickstats{grid-template-columns:repeat(2,1fr)}.quickstat{min-height:58px}.quickstat b{font-size:20px}.toolbar{padding:9px}.content{padding-left:10px;padding-right:10px}}
+
 </style></head>
 <body><div class="app">
 <header class="top"><div class="brandmark" aria-label="LibraCare">⚖</div><div class="logo">LibraCare<small>Sistema de gestión de camas</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn" onclick="abrirAjustes()">🔔</button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
 <main class="content">
 
 <div class="toolbar"><div><h1>Habitaciones</h1><div class="roomsub" id="roomSub">Seguimiento operativo de camas</div></div><div class="views"><button id="viewPantalla" class="view active" onclick="setView(\'pantalla\')">Pantalla</button><button id="viewPrioridad" class="view" onclick="setView(\'prioridad\')">Prioridad</button><button id="viewCompacto" class="view" onclick="setView(\'compacto\')">Compacto</button></div><button class="notify refresh" id="refreshBtn" onclick="refrescarManual(this)" aria-label="Actualizar">↻</button><button class="notify" id="notifyBtn" onclick="abrirAjustes()">🔔</button></div>
-<div class="filters" id="filters"></div><div class="status" id="status">Conectando…</div><section class="rooms" id="rooms"></section>
+<div class="quickstats" id="quickStats"></div><div class="filters" id="filters"></div><div class="status" id="status">Conectando…</div><section class="rooms" id="rooms"></section>
 <div class="footer">◷ El tiempo cuenta para un mejor cuidado · Organización hoy, bienestar siempre</div>
 </main>
 <nav class="bottom"><button id="navInicio" class="active" onclick="navTo('inicio')">⌂<br>Inicio</button><button id="navHabitaciones" onclick="navTo('habitaciones')">🛏️<br>Habitaciones</button><button id="navSupervision" onclick="navTo('supervision')">▥<br>Supervisión</button><button id="navConfiguracion" onclick="navTo('configuracion')">⚙<br>Configuración</button></nav>
@@ -101,6 +122,12 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden)cargar()})
 
 function renderFilters(){
  const counts={};camas.forEach(c=>counts[c.estado]=(counts[c.estado]||0)+1);
+ const qs=document.getElementById("quickStats");
+ if(qs)qs.innerHTML=
+  '<div class="quickstat ocupadas"><span>Ocupadas</span><b>'+(counts.ocupada||0)+'</b></div>'+ 
+  '<div class="quickstat altas"><span>Alta / traslado</span><b>'+(counts.alta_espera||0)+'</b></div>'+ 
+  '<div class="quickstat limpiar"><span>Por limpiar</span><b>'+((counts.liberada||0)+(counts.en_limpieza||0))+'</b></div>'+ 
+  '<div class="quickstat libres"><span>Libres listas</span><b>'+(counts.lista||0)+'</b></div>';
  const f=[["todas","Todas",camas.length],...Object.entries(STATES).map(([k,v])=>[k,v[0],counts[k]||0])];
  document.getElementById("filters").innerHTML=f.map(([k,t,n])=>'<button class="filter filter-'+k+' '+(filtro===k?'active':'')+'" onclick="setFilter(\''+k+'\')"><span class="filter-dot"></span><span>'+t+'</span><strong>'+n+'</strong></button>').join("");
 }
