@@ -939,6 +939,25 @@ input{
   .estado-atencion-cama{color:#4d6070!important}
   .contador-visible,.total-camas-panel{font-variant-numeric:tabular-nums}
 }
+
+/* reference-design-desktop-v1 — misma identidad clínica que la maqueta */
+@media(min-width:701px){
+  body{background:linear-gradient(180deg,#eef7fc 0,#f7fbfe 100%);color:#173b5b}
+  header{background:linear-gradient(145deg,#f7fcff,#e7f3fb);color:#123d64;border-bottom:1px solid #d4e7f2;box-shadow:0 4px 16px rgba(28,82,123,.08)}
+  header h1{color:#126cc0;font-weight:950;letter-spacing:-.025em}
+  header p{color:#426b86;opacity:1}
+  main{max-width:1240px;padding:18px 20px 30px}
+  .resumen-cabecera{background:#fff;border:1px solid #d8e8f3;border-radius:15px;padding:10px 12px;margin-bottom:9px;box-shadow:0 4px 13px rgba(28,82,123,.05)}
+  .resumen-estados{gap:10px}
+  .resumen-item{border-color:#d8e8f3;border-radius:15px;box-shadow:0 5px 14px rgba(28,82,123,.06)}
+  .buscador-wrap{border-color:#cfe2f0;border-radius:15px;box-shadow:0 4px 12px rgba(28,82,123,.04)}
+  .filtro.activo,.btn-pantalla-completa.activo,.btn-compacto.activo{background:#0878d1;border-color:#0878d1}
+  #habitaciones{gap:15px}
+  .habitacion{border:1px solid #cfe3f0;border-radius:17px;box-shadow:0 5px 16px rgba(28,82,123,.06)}
+  .habitacion h2{color:#123d64}
+  .cama{box-shadow:inset 0 0 0 1px #ffffffaa,0 5px 13px rgba(28,82,123,.07)}
+  .pie-app{border-color:#d8e8f3}
+}
 </style>
 </head>
 
