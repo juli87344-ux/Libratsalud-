@@ -924,6 +924,21 @@ input{
 @media(prefers-reduced-motion:reduce){
   .cama,.filtro,.controles-vista button,.nav-movil-libratsalud button{transition:none!important}
 }
+
+/* reference-design-mobile-v33 — revisión final de lectura y accesibilidad */
+@media(max-width:700px){
+  button,.cama{min-tap-target:44px}
+  button{min-height:40px}
+  .nav-movil-libratsalud button{min-height:52px!important}
+  .filtro{min-height:36px!important}
+  .cama{overflow:hidden!important}
+  .cama .detalle,.responsable-cama,.hora-cambio-cama,.fecha-cambio-cama{word-break:break-word}
+  .cama .reloj{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+  .habitacion h2{color:#173f5e!important}
+  .estado-lista-cama{color:#16744a!important}
+  .estado-atencion-cama{color:#4d6070!important}
+  .contador-visible,.total-camas-panel{font-variant-numeric:tabular-nums}
+}
 </style>
 </head>
 
