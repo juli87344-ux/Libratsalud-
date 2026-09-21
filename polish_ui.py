@@ -55,3 +55,4 @@ else:
     raise SystemExit("No se encontró renderFilters esperado")
 
 p.write_text(s,encoding="utf-8")
+# ejecutar pulido\n
