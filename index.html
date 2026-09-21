@@ -1219,6 +1219,23 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
   #habitaciones::after{content:'El tiempo cuenta para un mejor cuidado';display:block;text-align:center;padding:10px 0 4px;color:#6d879a;font-size:9px;font-weight:800}
   .cama .reloj{font-variant-numeric:tabular-nums!important}
 }
+
+/* definitive-reference-v7 — pulido para primera revisión en vivo */
+@media(min-width:901px){
+  header{position:relative!important;z-index:70!important}
+  header h1{margin:0!important}
+  header p{margin:3px 0 0!important}
+  .habitacion h2{white-space:nowrap!important}
+  .camas:has(.cama:only-child){grid-template-columns:minmax(0,1fr)!important}
+  .camas:has(.cama:only-child) .cama{max-width:58%!important;margin:0 auto!important;width:100%!important}
+  .cama .detalle{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+}
+@media(max-width:900px){
+  .camas:has(.cama:only-child){grid-template-columns:1fr!important}
+  .camas:has(.cama:only-child) .cama{width:min(62%,220px)!important;margin:0 auto!important}
+  .habitacion h2{border-bottom:1px solid #dcebf4!important}
+  .cama .detalle{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+}
 </style>
 </head>
 
