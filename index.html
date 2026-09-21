@@ -564,6 +564,16 @@ input{
   .indicador-conexion.online{color:#0b7b49}
   .indicador-conexion.offline{color:#b63c3c}
 }
+
+/* reference-design-mobile-v7 — navegación inferior del diseño definitivo */
+@media(max-width:700px){
+  .nav-movil-libratsalud{left:8px!important;right:8px!important;bottom:8px!important;width:auto!important;border:1px solid rgba(255,255,255,.12);border-radius:17px!important;padding:5px 5px calc(5px + env(safe-area-inset-bottom))!important;box-shadow:0 8px 26px rgba(8,38,67,.28);overflow:hidden}
+  .nav-movil-libratsalud button{position:relative;border-radius:12px!important;min-height:47px!important;color:#cfe2f1!important;font-size:9px!important;font-weight:850!important;line-height:1.25!important}
+  .nav-movil-libratsalud button:first-child{background:#1c5f92!important;color:#fff!important}
+  .nav-movil-libratsalud button:active{background:#276c9f!important;color:#fff!important}
+  body{padding-bottom:86px!important}
+  .volver-arriba{bottom:92px!important}
+}
 </style>
 </head>
 
