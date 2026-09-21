@@ -30,6 +30,13 @@ function leerConfiguracionSilencio(){
 function notificacionesEnSilencio(c){
   if(!c || !c.activo) return false;
   const ahora=new Date();
+  if(c.hasta){
+    const hasta=new Date(c.hasta).getTime();
+    if(Number.isFinite(hasta)){
+      if(Date.now()<hasta) return true;
+      return false;
+    }
+  }
   const minutos=ahora.getHours()*60+ahora.getMinutes();
   const [ih,im]=(c.inicio||"22:00").split(":").map(Number);
   const [fh,fm]=(c.fin||"07:00").split(":").map(Number);
