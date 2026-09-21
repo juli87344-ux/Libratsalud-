@@ -656,6 +656,22 @@ input{
   .habitacion h2{letter-spacing:-.01em}
   .habitacion::after{font-size:6.5px!important}
 }
+
+/* reference-design-mobile-v14 — distribución compacta de habitación */
+@media(max-width:700px){
+  .habitacion{overflow:visible!important}
+  .habitacion h2{position:relative!important}
+  .camas{align-items:stretch!important}
+  .cama{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important}
+  .cama::before{align-self:center!important}
+  .cama .detalle{align-self:flex-start!important}
+  .cama .reloj{margin-top:6px!important}
+  .responsable-cama{width:100%!important}
+  .estado-lista-cama,.estado-atencion-cama{align-self:flex-start!important}
+  .hora-cambio-cama{margin-top:4px!important}
+  .antiguedad-estado{display:inline-block!important;margin-top:3px!important;padding:2px 5px!important;border-radius:999px!important;background:#eef4f8!important}
+  .habitacion-alerta-tiempo{box-shadow:0 5px 16px rgba(205,139,24,.12)!important}
+}
 </style>
 </head>
 
