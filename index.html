@@ -338,6 +338,14 @@ input{
 @media(min-width:701px) and (max-width:1099px){
   #habitaciones{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 }
+
+/* desktop-header-polish-v1 */
+@media(min-width:701px){
+  header{position:relative;padding:22px 24px;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 5px 18px rgba(17,34,55,.10)}
+  header::after{content:'Gestión de camas · Panel operativo';position:absolute;right:24px;top:24px;font-size:11px;font-weight:750;letter-spacing:.03em;color:rgba(255,255,255,.66);background:rgba(255,255,255,.07);padding:7px 10px;border-radius:999px}
+  header h1{font-size:28px;letter-spacing:-.02em}
+  header p{max-width:560px}
+}
 </style>
 </head>
 
