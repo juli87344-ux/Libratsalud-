@@ -617,6 +617,22 @@ input{
   .franja-estado-cama{display:none!important}
   footer{margin:12px 4px 5px!important;padding:12px!important;border-radius:14px!important;background:#f8fcff!important;border:1px solid #d8e8f3!important;color:#55738a!important}
 }
+
+/* reference-design-mobile-v11 — pulido final del panel principal */
+@media(max-width:700px){
+  main{padding:10px 9px 4px!important}
+  main::before{padding-left:2px}
+  #resumenEstados{scroll-snap-type:x proximity}
+  #resumenEstados .resumen-item{scroll-snap-align:start}
+  .habitacion{border-radius:15px!important;box-shadow:0 5px 16px rgba(28,82,123,.08)!important}
+  .cama{min-width:0!important;word-break:normal;box-shadow:0 3px 10px rgba(28,82,123,.06)!important}
+  .cama::before{filter:saturate(.75)}
+  .cama .detalle{white-space:normal!important;text-align:center}
+  .responsable-cama{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hora-cambio-cama,.fecha-cambio-cama{display:inline-block;margin-right:4px}
+  .actualizacion-panel{margin:6px 0!important}
+  .nav-movil-libratsalud button{letter-spacing:.01em}
+}
 </style>
 </head>
 
