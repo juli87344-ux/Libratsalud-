@@ -1,0 +1,39 @@
+name: Corregir métricas Supervisión
+on:
+  push:
+    paths:
+      - ".github/workflows/fix-supervision.yml"
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Corregir JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8")
+          bad="""  '<div class="superstat">Mayor espera<b>'+(wait.length?Math.max(...wait):0)+' min</b></div>'+\\n  '<div class="superstat">Limpiezas finalizadas<b>'+hist.filter(x=>x.estado==="en_limpieza"&&x.fin).length+'</b></div>'+\\n  '<div class="superstat">Demoras +30 min<b>'+hist.filter(x=>x.estado==="liberada"&&mins(x)!==null&&mins(x)>=30).length+'</b></div>';"""
+          good="""  '<div class="superstat">Mayor espera<b>'+(wait.length?Math.max(...wait):0)+' min</b></div>'+
+  '<div class="superstat">Limpiezas finalizadas<b>'+hist.filter(x=>x.estado==="en_limpieza"&&x.fin).length+'</b></div>'+
+  '<div class="superstat">Demoras +30 min<b>'+hist.filter(x=>x.estado==="liberada"&&mins(x)!==null&&mins(x)>=30).length+'</b></div>';"""
+          if bad not in s:
+              raise SystemExit("No se encontró el patrón a corregir")
+          p.write_text(s.replace(bad,good),encoding="utf-8")
+          PY
+      - name: Validar que no queden saltos literales
+        run: |
+          if grep -q "\\n  '<div class=\"superstat\">" index.html; then
+            echo "Quedó un salto literal inválido"
+            exit 1
+          fi
+      - name: Guardar corrección
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Corregir métricas de Supervisión"
+          git push
