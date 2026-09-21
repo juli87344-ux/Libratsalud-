@@ -908,6 +908,22 @@ input{
   .controles-vista{min-height:42px!important}
   footer{font-size:8px!important;line-height:1.45!important}
 }
+
+/* reference-design-mobile-v32 — cierre visual del inicio */
+@media(max-width:700px){
+  body{background:linear-gradient(180deg,#eef7fc 0,#f7fbfe 42%,#eef7fc 100%)!important}
+  header{border-bottom:1px solid #d7e8f3!important}
+  .resumen-cabecera,.habitacion,.actualizacion-panel{background:#fff!important}
+  .habitacion{box-shadow:0 5px 14px rgba(27,78,116,.055)!important}
+  .cama{box-shadow:0 3px 9px rgba(27,78,116,.055)!important}
+  .cama:active{transform:scale(.985)!important}
+  .filtro:active,.controles-vista button:active,.nav-movil-libratsalud button:active{transform:scale(.97)!important}
+  .buscador-camas:focus{outline:none!important;box-shadow:0 0 0 3px rgba(13,111,184,.12)!important;border-color:#7db7dd!important}
+  .nav-movil-libratsalud{box-shadow:0 -4px 18px rgba(13,56,93,.18)!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .cama,.filtro,.controles-vista button,.nav-movil-libratsalud button{transition:none!important}
+}
 </style>
 </head>
 
