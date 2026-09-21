@@ -1,11 +1,23 @@
-const LIBRATSALUD_SW_VERSION = "libratsalud-sw-v5";
+const LIBRATSALUD_SW_VERSION = "libratsalud-sw-v6";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil((async()=>{
+    await self.clients.claim();
+    const lista=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    for(const cliente of lista){
+      try{
+        const u=new URL(cliente.url);
+        if(u.origin===self.location.origin && u.searchParams.get("appv")!=="6"){
+          u.searchParams.set("appv","6");
+          await cliente.navigate(u.toString());
+        }
+      }catch(e){}
+    }
+  })());
 });
 
 
