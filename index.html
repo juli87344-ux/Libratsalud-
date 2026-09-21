@@ -574,6 +574,21 @@ input{
   body{padding-bottom:86px!important}
   .volver-arriba{bottom:92px!important}
 }
+
+/* reference-design-mobile-v8 — buscador y filtros compactos del diseño definitivo */
+@media(max-width:700px){
+  .buscador-camas{position:relative;margin:8px 0 6px!important;min-height:42px!important;padding-left:38px!important;font-size:12px!important;color:#234d6d!important}
+  .buscador-camas::placeholder{color:#86a0b3!important}
+  .filtros{gap:6px!important;padding-bottom:7px!important}
+  .filtro{min-height:32px!important;padding:7px 10px!important;white-space:nowrap!important}
+  .filtro:nth-child(2){background:#fff1f2;border-color:#ffd5d8;color:#a72a33}
+  .filtro:nth-child(3){background:#f1e8ff;border-color:#e1d2fb;color:#6a35ad}
+  .filtro:nth-child(4){background:#fff5cf;border-color:#f1df9f;color:#866200}
+  .filtro:nth-child(5){background:#ffe9dc;border-color:#f4d1bb;color:#a95013}
+  .filtro:nth-child(6){background:#e3f7eb;border-color:#ccebd9;color:#167449}
+  .filtro:nth-child(7){background:#e4f2ff;border-color:#cde4f8;color:#17649e}
+  .filtro.activo{background:#0878d1!important;border-color:#0878d1!important;color:#fff!important;box-shadow:0 4px 12px rgba(8,120,209,.18)!important}
+}
 </style>
 </head>
 
