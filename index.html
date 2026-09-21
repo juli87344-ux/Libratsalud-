@@ -1844,195 +1844,157 @@ async function abrirSupervision(){
 function mostrarSupervision(historial){
 
   const pantalla = document.createElement("div");
-
   pantalla.id = "pantallaSupervision";
-
   pantalla.style.cssText = `
-    position:fixed;
-    inset:0;
-    z-index:9999;
-    background:#f4f6f9;
-    overflow:auto;
-    padding:16px;
+    position:fixed; inset:0; z-index:9999; background:#f4f6f9;
+    overflow:auto; padding:16px;
   `;
 
+  const ahora = new Date();
 
-  let contenido = `
+  const duracionSegundos = (inicio, fin) => {
+    if(!inicio) return null;
+    const x = new Date(inicio).getTime();
+    const y = fin ? new Date(fin).getTime() : Date.now();
+    return Math.max(0, Math.floor((y-x)/1000));
+  };
 
-    <div style="
-      max-width:800px;
-      margin:auto;
-    ">
+  const formatoDuracion = segundos => {
+    if(segundos === null || !Number.isFinite(segundos)) return "-";
+    const h = Math.floor(segundos/3600);
+    const m = Math.floor((segundos%3600)/60);
+    const sec = segundos%60;
+    if(h>0) return h+" h "+m+" min";
+    if(m>0) return m+" min "+sec+" s";
+    return sec+" s";
+  };
 
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:10px;
-        margin-bottom:18px;
-      ">
+  const inicioSemana = new Date(ahora);
+  const dia = (ahora.getDay()+6)%7;
+  inicioSemana.setHours(0,0,0,0);
+  inicioSemana.setDate(inicioSemana.getDate()-dia);
+  const inicioMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
 
-        <div>
-          <h1 style="margin:0;">
-            🔐 Supervisión
-          </h1>
+  const mismoDia = fecha => {
+    const d = new Date(fecha);
+    return d.getFullYear()===ahora.getFullYear() &&
+      d.getMonth()===ahora.getMonth() &&
+      d.getDate()===ahora.getDate();
+  };
 
-          <div style="
-            font-size:13px;
-            color:#666;
-            margin-top:4px;
-          ">
-            Historial de camas
-          </div>
-        </div>
+  const filtrarPeriodo = periodo => {
+    if(periodo==="hoy") return historial.filter(r => r.inicio && mismoDia(r.inicio));
+    if(periodo==="semana") return historial.filter(r => r.inicio && new Date(r.inicio)>=inicioSemana);
+    return historial.filter(r => r.inicio && new Date(r.inicio)>=inicioMes);
+  };
 
-        <button
-          onclick="cerrarSupervision()"
-          style="
-            border:0;
-            border-radius:10px;
-            padding:11px 15px;
-            font-weight:700;
-            cursor:pointer;
-          "
-        >
-          ✕ Cerrar
-        </button>
+  const calcularEstadisticas = registros => {
+    const limpiezas = registros.filter(r => r.estado==="en_limpieza" && r.fin);
+    const altas = registros.filter(r => r.estado==="alta_espera" && r.fin);
+    const esperas = registros.filter(r => r.estado==="liberada" && r.fin);
 
-      </div>
-  `;
+    const promedio = lista => {
+      if(!lista.length) return null;
+      return Math.round(lista.reduce((acc,r) =>
+        acc + duracionSegundos(r.inicio,r.fin),0)/lista.length);
+    };
 
-
-  if(historial.length === 0){
-
-    contenido += `
-
-      <div style="
-        background:white;
-        padding:20px;
-        border-radius:14px;
-        text-align:center;
-      ">
-        Todavía no hay registros.
-      </div>
-
-    `;
-
-  }else{
-
-    historial.forEach(registro => {
-
-      const inicio =
-        registro.inicio
-        ? new Date(registro.inicio)
-            .toLocaleString("es-AR")
-        : "-";
-
-      const fin =
-        registro.fin
-        ? new Date(registro.fin)
-            .toLocaleString("es-AR")
-        : "Estado actual";
-
-
-      let duracion = "En curso";
-
-      if(registro.inicio && registro.fin){
-
-        const segundos =
-          Math.max(
-            0,
-            Math.floor(
-              (
-                new Date(registro.fin) -
-                new Date(registro.inicio)
-              ) / 1000
-            )
-          );
-
-        const horas =
-          Math.floor(segundos / 3600);
-
-        const minutos =
-          Math.floor(
-            (segundos % 3600) / 60
-          );
-
-        const segundosRestantes =
-          segundos % 60;
-
-        duracion =
-          horas > 0
-          ? horas + " h " +
-            minutos + " min"
-          : minutos > 0
-          ? minutos + " min " +
-            segundosRestantes + " s"
-          : segundosRestantes + " s";
-      }
-
-
-      contenido += `
-
-        <div style="
-          background:white;
-          border-radius:14px;
-          padding:14px;
-          margin-bottom:10px;
-          box-shadow:0 2px 8px #00000010;
-        ">
-
-          <div style="
-            font-weight:800;
-            font-size:17px;
-            margin-bottom:7px;
-          ">
-            🛏️ Habitación ${registro.habitacion}
-            · Cama ${registro.cama}
-          </div>
-
-          <div>
-            <strong>Estado:</strong>
-            ${estadoTexto(registro.estado)}
-          </div>
-
-          <div>
-            <strong>Operador:</strong>
-            ${registro.operador || "Sin registrar"}
-          </div>
-
-          <div>
-            <strong>Inicio:</strong>
-            ${inicio}
-          </div>
-
-          <div>
-            <strong>Fin:</strong>
-            ${fin}
-          </div>
-
-          <div style="
-            margin-top:7px;
-            font-weight:800;
-          ">
-            ⏱️ Duración: ${duracion}
-          </div>
-
-        </div>
-
-      `;
+    const operadores = {};
+    limpiezas.forEach(r => {
+      const nombre = r.operador || "Sin registrar";
+      operadores[nombre] = (operadores[nombre] || 0) + 1;
     });
-  }
 
+    return {
+      totalLimpiezas: limpiezas.length,
+      promedioEspera: promedio(esperas),
+      promedioLimpieza: promedio(limpiezas),
+      promedioAlta: promedio(altas),
+      mayorEspera: esperas.length ? Math.max(...esperas.map(r => duracionSegundos(r.inicio,r.fin))) : null,
+      operadores
+    };
+  };
 
-  contenido += `
+  pantalla.innerHTML = `
+    <div style="max-width:900px;margin:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+        <div>
+          <h1 style="margin:0;">🔐 Supervisión</h1>
+          <div style="font-size:13px;color:#666;margin-top:4px;">Historial y estadísticas de camas</div>
+        </div>
+        <button onclick="cerrarSupervision()" style="border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer;">✕ Cerrar</button>
+      </div>
+
+      <div style="background:white;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #00000010;">
+        <div style="font-size:18px;font-weight:800;margin-bottom:10px;">📊 Estadísticas</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;">
+          <button class="btnPeriodo" data-periodo="hoy" style="padding:9px 12px;border:0;border-radius:9px;cursor:pointer;font-weight:700;">Hoy</button>
+          <button class="btnPeriodo" data-periodo="semana" style="padding:9px 12px;border:0;border-radius:9px;cursor:pointer;font-weight:700;">Esta semana</button>
+          <button class="btnPeriodo" data-periodo="mes" style="padding:9px 12px;border:0;border-radius:9px;cursor:pointer;font-weight:700;">Este mes</button>
+        </div>
+        <div id="resumenEstadisticas"></div>
+      </div>
+
+      <div style="font-size:18px;font-weight:800;margin:18px 0 10px;">📋 Historial reciente</div>
+      <div id="listaHistorial"></div>
     </div>
   `;
 
-
-  pantalla.innerHTML = contenido;
-
   document.body.appendChild(pantalla);
+  let periodoActual = "hoy";
+
+  function renderEstadisticas(){
+    const e = calcularEstadisticas(filtrarPeriodo(periodoActual));
+    const operadorHTML = Object.keys(e.operadores).length
+      ? Object.entries(e.operadores).sort((x,y)=>y[1]-x[1]).map(([nombre,cantidad]) =>
+        '<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #eee;"><span>'+nombre+'</span><strong>'+cantidad+' limpieza'+(cantidad===1?'':'s')+'</strong></div>'
+      ).join("")
+      : '<div style="color:#777;">Sin limpiezas registradas en este período.</div>';
+
+    document.getElementById("resumenEstadisticas").innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;">
+        <div style="background:#f4f6f9;padding:12px;border-radius:11px;"><div style="font-size:12px;color:#666;">Limpiezas realizadas</div><div style="font-size:22px;font-weight:800;">${e.totalLimpiezas}</div></div>
+        <div style="background:#f4f6f9;padding:12px;border-radius:11px;"><div style="font-size:12px;color:#666;">Espera promedio para limpieza</div><div style="font-size:18px;font-weight:800;">${formatoDuracion(e.promedioEspera)}</div></div>
+        <div style="background:#f4f6f9;padding:12px;border-radius:11px;"><div style="font-size:12px;color:#666;">Duración promedio de limpieza</div><div style="font-size:18px;font-weight:800;">${formatoDuracion(e.promedioLimpieza)}</div></div>
+        <div style="background:#f4f6f9;padding:12px;border-radius:11px;"><div style="font-size:12px;color:#666;">Alta → liberación promedio</div><div style="font-size:18px;font-weight:800;">${formatoDuracion(e.promedioAlta)}</div></div>
+        <div style="background:#f4f6f9;padding:12px;border-radius:11px;grid-column:1/-1;"><div style="font-size:12px;color:#666;">⚠️ Mayor espera para limpieza</div><div style="font-size:18px;font-weight:800;">${formatoDuracion(e.mayorEspera)}</div></div>
+      </div>
+      <div style="margin-top:15px;font-weight:800;">🧹 Limpiezas por operador</div>
+      <div style="margin-top:5px;">${operadorHTML}</div>
+    `;
+
+    document.querySelectorAll(".btnPeriodo").forEach(btn => {
+      btn.style.background = btn.dataset.periodo===periodoActual ? "#18243a" : "#e8ebef";
+      btn.style.color = btn.dataset.periodo===periodoActual ? "white" : "#172033";
+    });
+  }
+
+  document.querySelectorAll(".btnPeriodo").forEach(btn => {
+    btn.onclick = () => { periodoActual=btn.dataset.periodo; renderEstadisticas(); };
+  });
+
+  const lista = document.getElementById("listaHistorial");
+  if(!historial.length){
+    lista.innerHTML='<div style="background:white;padding:20px;border-radius:14px;text-align:center;">Todavía no hay registros.</div>';
+  }else{
+    lista.innerHTML = historial.map(registro => {
+      const inicio = registro.inicio ? new Date(registro.inicio).toLocaleString("es-AR") : "-";
+      const fin = registro.fin ? new Date(registro.fin).toLocaleString("es-AR") : "Estado actual";
+      const duracion = formatoDuracion(duracionSegundos(registro.inicio,registro.fin));
+      return `
+        <div style="background:white;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px #00000010;">
+          <div style="font-weight:800;font-size:17px;margin-bottom:7px;">🛏️ Habitación ${registro.habitacion} · Cama ${registro.cama}</div>
+          <div><strong>Estado:</strong> ${estadoTexto(registro.estado)}</div>
+          <div><strong>Operador:</strong> ${registro.operador || "Sin registrar"}</div>
+          <div><strong>Inicio:</strong> ${inicio}</div>
+          <div><strong>Fin:</strong> ${fin}</div>
+          <div style="margin-top:7px;font-weight:800;">⏱️ Duración: ${duracion}</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  renderEstadisticas();
 }
 
 
