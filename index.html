@@ -3205,7 +3205,9 @@ function cerrarSupervision(){
    INICIO
 ========================= */
 
-cargar();
+window.addEventListener("load", () => {
+  cargar();
+});
 
 setInterval(
   () => {
