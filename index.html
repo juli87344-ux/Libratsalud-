@@ -1266,7 +1266,16 @@ let seleccion = null;
 ========================= */
 
 
-async function alternarPantallaCompleta(){const b=document.getElementById('btnPantallaCompleta');try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen();if(b)b.classList.add('activo');}else{await document.exitFullscreen();if(b)b.classList.remove('activo');}}catch(e){}}\ndocument.addEventListener('fullscreenchange',()=>{const b=document.getElementById('btnPantallaCompleta');if(b)b.classList.toggle('activo',!!document.fullscreenElement);});\n\nfunction alternarCompacto(){document.body.classList.toggle('modo-compacto');const b=document.getElementById('btnCompacto');if(b)b.classList.toggle('activo',document.body.classList.contains('modo-compacto'));}\n\nfunction mostrarToast(texto){const el=document.getElementById('mensajeToast');if(!el)return;el.textContent=texto;el.classList.add('visible');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('visible'),1800);}\n\nasync function refrescarManual(btn){if(btn){btn.disabled=true;btn.textContent='↻ Actualizando…';}try{await cargar();mostrarToast('✓ Panel actualizado');}finally{if(btn){btn.disabled=false;btn.textContent='↻ Actualizar';}}}\n\nlet cargaEnCurso = false;
+async function alternarPantallaCompleta(){const b=document.getElementById('btnPantallaCompleta');try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen();if(b)b.classList.add('activo');}else{await document.exitFullscreen();if(b)b.classList.remove('activo');}}catch(e){}}
+document.addEventListener('fullscreenchange',()=>{const b=document.getElementById('btnPantallaCompleta');if(b)b.classList.toggle('activo',!!document.fullscreenElement);});
+
+function alternarCompacto(){document.body.classList.toggle('modo-compacto');const b=document.getElementById('btnCompacto');if(b)b.classList.toggle('activo',document.body.classList.contains('modo-compacto'));}
+
+function mostrarToast(texto){const el=document.getElementById('mensajeToast');if(!el)return;el.textContent=texto;el.classList.add('visible');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove('visible'),1800);}
+
+async function refrescarManual(btn){if(btn){btn.disabled=true;btn.textContent='↻ Actualizando…';}try{await cargar();mostrarToast('✓ Panel actualizado');}finally{if(btn){btn.disabled=false;btn.textContent='↻ Actualizar';}}}
+
+let cargaEnCurso = false;
 
 async function cargar(){
   if(cargaEnCurso) return;
@@ -1343,7 +1352,9 @@ async function cargar(){
 ========================= */
 
 
-function actualizarResumen(){\n  const totalPanel=document.getElementById('totalCamasPanel');\n  if(totalPanel) totalPanel.textContent='· '+camas.length+' camas';
+function actualizarResumen(){
+  const totalPanel=document.getElementById('totalCamasPanel');
+  if(totalPanel) totalPanel.textContent='· '+camas.length+' camas';
   const totalHab=document.getElementById('totalHabitacionesPanel');
   const habitacionesUnicas=new Set(camas.map(c=>String(c.habitacion))).size;
   if(totalHab) totalHab.textContent='· '+habitacionesUnicas+' habitaciones';
@@ -1361,8 +1372,35 @@ function actualizarResumen(){\n  const totalPanel=document.getElementById('total
   const estadoOp=document.getElementById('estadoOperativo');
   const pendientes=camas.filter(c=>['alta_espera','liberada','en_limpieza'].includes(c.estado)).length;
   if(estadoOp) estadoOp.innerHTML=pendientes?'<b>'+pendientes+'</b> cama'+(pendientes===1?'':'s')+' requieren seguimiento':'<b>Sin pendientes operativos</b>';
-  const btnPend=document.getElementById('btnPendientes');if(btnPend)btnPend.style.display=pendientes?'inline-block':'none';\n  const estados=[['ocupada','Ocupadas'],['alta_espera','Alta/Traslado'],['liberada','Liberadas'],['en_limpieza','En limpieza'],['lista','Listas'],['reservada','Reservadas']];\n  const el=document.getElementById('resumenEstados');\n  if(!el) return;\n  el.innerHTML=estados.map(([estado,label])=>{const total=camas.filter(c=>c.estado===estado).length;const iconos={ocupada:'🔴',alta_espera:'🟣',liberada:'🟡',en_limpieza:'🟠',lista:'🟢',reservada:'🔵'};return `<div class="resumen-item"><div class="resumen-icono">${iconos[estado]}</div><div class="resumen-numero">${total}</div><div class="resumen-label">${label}</div></div>`}).join('');\n}\n\nlet filtroActual='todas';\nlet soloDemoras=false;\nlet soloPendientes=false;\nlet ordenarPorDemora=false;\nlet ordenHabitacionDesc=false;\nfunction alternarOrdenHabitacion(){ordenHabitacionDesc=!ordenHabitacionDesc;const b=document.getElementById('btnOrdenHabitacion');if(b){b.classList.toggle('activo',ordenHabitacionDesc);b.textContent=ordenHabitacionDesc?'321 Invertido':'123 Normal';}mostrar();}\nfunction alternarOrdenDemora(){ordenarPorDemora=!ordenarPorDemora;const b=document.getElementById('btnOrdenDemora');if(b)b.classList.toggle('activo',ordenarPorDemora);mostrar();}\nfunction alternarPendientes(){soloPendientes=!soloPendientes;soloDemoras=false;const b=document.getElementById('btnPendientes');if(b)b.classList.toggle('activo',soloPendientes);mostrar();}\nfunction alternarSoloDemoras(){soloDemoras=!soloDemoras;const b=document.getElementById('btnSoloDemoras');if(b)b.classList.toggle('activo',soloDemoras);mostrar();}\nlet busquedaActual='';\nfunction buscarCamas(valor){busquedaActual=(valor||'').trim().toLowerCase();mostrar();}
-function restablecerVista(){\n  filtroActual='todas';soloDemoras=false;soloPendientes=false;ordenarPorDemora=false;ordenHabitacionDesc=false;busquedaActual='';\n  document.body.classList.remove('modo-compacto');\n  const input=document.getElementById('buscarHabitacion');if(input)input.value='';\n  document.querySelectorAll('.filtro').forEach((b,i)=>b.classList.toggle('activo',i===0));\n  ['btnSoloDemoras','btnPendientes','btnOrdenDemora','btnCompacto'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('activo');});\n  const bo=document.getElementById('btnOrdenHabitacion');if(bo){bo.classList.remove('activo');bo.textContent='123 Normal';}\n  mostrar();mostrarToast('✓ Vista restablecida');\n}\n\nfunction limpiarFiltros(){
+  const btnPend=document.getElementById('btnPendientes');if(btnPend)btnPend.style.display=pendientes?'inline-block':'none';
+  const estados=[['ocupada','Ocupadas'],['alta_espera','Alta/Traslado'],['liberada','Liberadas'],['en_limpieza','En limpieza'],['lista','Listas'],['reservada','Reservadas']];
+  const el=document.getElementById('resumenEstados');
+  if(!el) return;
+  el.innerHTML=estados.map(([estado,label])=>{const total=camas.filter(c=>c.estado===estado).length;const iconos={ocupada:'🔴',alta_espera:'🟣',liberada:'🟡',en_limpieza:'🟠',lista:'🟢',reservada:'🔵'};return `<div class="resumen-item"><div class="resumen-icono">${iconos[estado]}</div><div class="resumen-numero">${total}</div><div class="resumen-label">${label}</div></div>`}).join('');
+}
+
+let filtroActual='todas';
+let soloDemoras=false;
+let soloPendientes=false;
+let ordenarPorDemora=false;
+let ordenHabitacionDesc=false;
+function alternarOrdenHabitacion(){ordenHabitacionDesc=!ordenHabitacionDesc;const b=document.getElementById('btnOrdenHabitacion');if(b){b.classList.toggle('activo',ordenHabitacionDesc);b.textContent=ordenHabitacionDesc?'321 Invertido':'123 Normal';}mostrar();}
+function alternarOrdenDemora(){ordenarPorDemora=!ordenarPorDemora;const b=document.getElementById('btnOrdenDemora');if(b)b.classList.toggle('activo',ordenarPorDemora);mostrar();}
+function alternarPendientes(){soloPendientes=!soloPendientes;soloDemoras=false;const b=document.getElementById('btnPendientes');if(b)b.classList.toggle('activo',soloPendientes);mostrar();}
+function alternarSoloDemoras(){soloDemoras=!soloDemoras;const b=document.getElementById('btnSoloDemoras');if(b)b.classList.toggle('activo',soloDemoras);mostrar();}
+let busquedaActual='';
+function buscarCamas(valor){busquedaActual=(valor||'').trim().toLowerCase();mostrar();}
+function restablecerVista(){
+  filtroActual='todas';soloDemoras=false;soloPendientes=false;ordenarPorDemora=false;ordenHabitacionDesc=false;busquedaActual='';
+  document.body.classList.remove('modo-compacto');
+  const input=document.getElementById('buscarHabitacion');if(input)input.value='';
+  document.querySelectorAll('.filtro').forEach((b,i)=>b.classList.toggle('activo',i===0));
+  ['btnSoloDemoras','btnPendientes','btnOrdenDemora','btnCompacto'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('activo');});
+  const bo=document.getElementById('btnOrdenHabitacion');if(bo){bo.classList.remove('activo');bo.textContent='123 Normal';}
+  mostrar();mostrarToast('✓ Vista restablecida');
+}
+
+function limpiarFiltros(){
   filtroActual='todas';
   busquedaActual='';
   const input=document.getElementById('buscarHabitacion');
@@ -1371,9 +1409,17 @@ function restablecerVista(){\n  filtroActual='todas';soloDemoras=false;soloPendi
   const primero=document.querySelector('.filtro');
   if(primero) primero.classList.add('activo');
   mostrar();
-}\nfunction filtrarCamas(estado,boton){filtroActual=estado;document.querySelectorAll('.filtro').forEach(b=>b.classList.remove('activo'));if(boton)boton.classList.add('activo');mostrar();}\n\nfunction mostrar(){\n\n  actualizarResumen();\n  const esDemorada=c=>c.estado_desde && mostrarReloj(c.estado) && ((Date.now()-new Date(c.estado_desde).getTime())/1000)>=1800;
+}
+function filtrarCamas(estado,boton){filtroActual=estado;document.querySelectorAll('.filtro').forEach(b=>b.classList.remove('activo'));if(boton)boton.classList.add('activo');mostrar();}
+
+function mostrar(){
+
+  actualizarResumen();
+  const esDemorada=c=>c.estado_desde && mostrarReloj(c.estado) && ((Date.now()-new Date(c.estado_desde).getTime())/1000)>=1800;
   let visibles=camas.filter(c => (filtroActual==='todas' || c.estado===filtroActual) && (!busquedaActual || String(c.habitacion).toLowerCase().includes(busquedaActual) || String(c.cama).toLowerCase().includes(busquedaActual)) && (!soloDemoras || esDemorada(c)) && (!soloPendientes || ['alta_espera','liberada','en_limpieza'].includes(c.estado)));
-  if(ordenarPorDemora){visibles=[...visibles].sort((a,b)=>{const ta=a.estado_desde?new Date(a.estado_desde).getTime():Date.now();const tb=b.estado_desde?new Date(b.estado_desde).getTime():Date.now();return ta-tb;});}\n  const contador=document.getElementById('contadorVisible');\n  if(contador) contador.textContent=visibles.length+' camas visibles';
+  if(ordenarPorDemora){visibles=[...visibles].sort((a,b)=>{const ta=a.estado_desde?new Date(a.estado_desde).getTime():Date.now();const tb=b.estado_desde?new Date(b.estado_desde).getTime():Date.now();return ta-tb;});}
+  const contador=document.getElementById('contadorVisible');
+  if(contador) contador.textContent=visibles.length+' camas visibles';
   const infoFiltro=document.getElementById('estadoFiltroInfo');
   if(infoFiltro){if(soloPendientes){infoFiltro.textContent='Mostrando camas que requieren seguimiento';}else {const nombres={todas:'todas las camas',ocupada:'camas ocupadas',alta_espera:'alta / espera traslado',liberada:'camas liberadas',en_limpieza:'camas en limpieza',lista:'camas listas',reservada:'camas reservadas'};infoFiltro.textContent=soloDemoras?'Mostrando únicamente demoras':'Mostrando '+(nombres[filtroActual]||'camas');}}
 
@@ -2731,7 +2777,9 @@ const CLAVE_SUPERVISION = "Libratsalud2026";
 async function abrirSupervision(){
 
   const clave = prompt(
-    "🔐 Supervisión\n\nIngresá la clave:"
+    "🔐 Supervisión
+
+Ingresá la clave:"
   );
 
   if(clave === null){
@@ -2767,7 +2815,8 @@ async function abrirSupervision(){
   }catch(e){
 
     alert(
-      "No se pudo cargar Supervisión:\n" +
+      "No se pudo cargar Supervisión:
+" +
       e.message
     );
 
