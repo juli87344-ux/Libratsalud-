@@ -144,7 +144,8 @@ function setView(v){
  if(sub)sub.textContent=v==="prioridad"?"Ordenadas por prioridad y mayor espera":v==="compacto"?"Vista rápida de camas":"Seguimiento operativo de camas";
  render();
 }
-function vibrarConfirmacion(){try{if("vibrate" in navigator)navigator.vibrate([140,80,140])}catch(e){}}\nfunction mostrarToast(msg){const el=document.getElementById("toast");if(!el)return;el.textContent=msg;el.classList.add("show");clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove("show"),1800)}
+function vibrarConfirmacion(){try{if("vibrate" in navigator)navigator.vibrate([140,80,140])}catch(e){}}
+function mostrarToast(msg){const el=document.getElementById("toast");if(!el)return;el.textContent=msg;el.classList.add("show");clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove("show"),1800)}
 async function refrescarManual(btn){if(btn){btn.disabled=true;btn.textContent="…"}try{await cargar();mostrarToast("✓ Panel actualizado")}finally{if(btn){btn.disabled=false;btn.textContent="↻"}}}
 async function cargar(){try{const r=await fetch(SUPABASE_URL+"/rest/v1/camas?select=*&order=habitacion,cama",{headers,cache:"no-store"});if(!r.ok)throw new Error(await r.text());camas=await r.json();const st=document.getElementById("status");st.className="status connection-ok";st.textContent="● Sistema conectado · "+camas.length+" camas · Actualizado "+new Date().toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"});render()}catch(e){const st=document.getElementById("status");st.className="status connection-bad";st.textContent="● Sin conexión · se reintentará automáticamente";console.error(e)}}
 function render(){
@@ -176,6 +177,7 @@ function cerrarModal(){document.getElementById("modal").classList.remove("show")
 async function enviarNotificacion(title,body){try{const r=await fetch(EDGE_NOTIFICATION_URL,{method:"POST",headers:{"apikey":SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({title,body})});if(!r.ok)console.error("No se pudo enviar la notificación",await r.text())}catch(e){console.error("Error enviando notificación",e)}}
 async function cambiar(estado){
  if(!seleccion||seleccion.estado===estado)return cerrarModal();
+ vibrarConfirmacion();
  const op=document.getElementById("operator").value.trim();
  if(!op){alert("Ingresá el nombre de quien realiza el cambio.");return}localStorage.setItem("libratsalud_operador",op);
  const key=String(seleccion.habitacion)+"|"+String(seleccion.cama);
