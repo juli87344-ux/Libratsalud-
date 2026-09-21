@@ -41,19 +41,7 @@ function leerConfiguracionSilencio(){
 }
 function notificacionesEnSilencio(c){
   if(!c) return false;
-  if(c.ubicacion && c.ubicacion.activo && c.ubicacion.fuera) return true;
-  if(!c.activo) return false;
-  const ahora=new Date();
-  if(c.hasta){
-    const hasta=new Date(c.hasta).getTime();
-    if(Number.isFinite(hasta)) return Date.now() < hasta;
-  }
-  const minutos=ahora.getHours()*60+ahora.getMinutes();
-  const [ih,im]=(c.inicio||"22:00").split(":").map(Number);
-  const [fh,fm]=(c.fin||"07:00").split(":").map(Number);
-  const inicio=ih*60+im, fin=fh*60+fm;
-  if(inicio===fin) return true;
-  return inicio<fin ? minutos>=inicio && minutos<fin : minutos>=inicio || minutos<fin;
+  return !!(c.ubicacion && c.ubicacion.activo && c.ubicacion.fuera);
 }
 
 self.addEventListener("push", event => {
