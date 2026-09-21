@@ -542,6 +542,17 @@ input{
   .habitacion-ocupada h2{background:linear-gradient(90deg,#ffedef,#fff8f8)}
   .camas{gap:8px!important}
 }
+
+/* reference-design-mobile-v5 — jerarquía de información tipo panel clínico */
+@media(max-width:700px){
+  main::before{content:'Gestión de camas';display:block;margin:2px 1px 8px;color:#123d64;font-size:18px;font-weight:950;letter-spacing:-.02em}
+  #resumenEstados::before{content:'Estado general';position:sticky;left:0;align-self:center;min-width:82px;color:#416987;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.07em}
+  .panel-habitaciones::before,#habitaciones::before{content:'Habitaciones';grid-column:1/-1;display:block;margin:2px 1px 0;color:#123d64;font-size:17px;font-weight:950}
+  .responsable-cama{display:block;margin-top:5px;padding-top:5px;border-top:1px dashed #d9e6ef;color:#526f86!important;font-size:8px!important;font-weight:800!important}
+  .hora-cambio-cama,.fecha-cambio-cama,.antiguedad-estado{font-size:8px!important;color:#71899c!important}
+  .estado-lista-cama{display:inline-block;margin-top:5px;padding:3px 6px;border-radius:999px;background:#e1f7e9;color:#087a45!important;font-size:8px!important;font-weight:900!important}
+  .estado-atencion-cama{display:inline-block;margin-top:5px;padding:3px 6px;border-radius:999px;background:#fff1cf;color:#93620a!important;font-size:8px!important;font-weight:900!important}
+}
 </style>
 </head>
 
