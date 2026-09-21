@@ -36,6 +36,13 @@ self.addEventListener("notificationclick", event => {
   event.notification.close();
 
   event.waitUntil(
-    clients.openWindow("./")
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then(lista => {
+      for (const cliente of lista) {
+        if ("focus" in cliente) {
+          return cliente.focus();
+        }
+      }
+      return clients.openWindow("./");
+    })
   );
 });
