@@ -1794,7 +1794,262 @@ async function activarNotificaciones(){
 const CLAVE_SUPERVISION = "Libratsalud2026";
 
 function abrirSupervision(){
+const CLAVE_SUPERVISION = "Libratsalud2026";
 
+async function abrirSupervision(){
+
+  const clave = prompt(
+    "🔐 Supervisión\n\nIngresá la clave:"
+  );
+
+  if(clave === null){
+    return;
+  }
+
+  if(clave !== CLAVE_SUPERVISION){
+    alert("❌ Clave incorrecta.");
+    return;
+  }
+
+  try{
+
+    const respuesta = await fetch(
+      SUPABASE_URL +
+      "/rest/v1/historial_camas?select=*&order=inicio.desc&limit=100",
+      {
+        headers:{
+          "apikey":SUPABASE_KEY,
+          "Authorization":"Bearer " + SUPABASE_KEY
+        }
+      }
+    );
+
+    if(!respuesta.ok){
+      throw new Error(await respuesta.text());
+    }
+
+    const historial = await respuesta.json();
+
+    mostrarSupervision(historial);
+
+  }catch(e){
+
+    alert(
+      "No se pudo cargar Supervisión:\n" +
+      e.message
+    );
+
+    console.error(e);
+  }
+}
+
+
+function mostrarSupervision(historial){
+
+  const pantalla = document.createElement("div");
+
+  pantalla.id = "pantallaSupervision";
+
+  pantalla.style.cssText = `
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:#f4f6f9;
+    overflow:auto;
+    padding:16px;
+  `;
+
+
+  let contenido = `
+
+    <div style="
+      max-width:800px;
+      margin:auto;
+    ">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+        margin-bottom:18px;
+      ">
+
+        <div>
+          <h1 style="margin:0;">
+            🔐 Supervisión
+          </h1>
+
+          <div style="
+            font-size:13px;
+            color:#666;
+            margin-top:4px;
+          ">
+            Historial de camas
+          </div>
+        </div>
+
+        <button
+          onclick="cerrarSupervision()"
+          style="
+            border:0;
+            border-radius:10px;
+            padding:11px 15px;
+            font-weight:700;
+            cursor:pointer;
+          "
+        >
+          ✕ Cerrar
+        </button>
+
+      </div>
+  `;
+
+
+  if(historial.length === 0){
+
+    contenido += `
+
+      <div style="
+        background:white;
+        padding:20px;
+        border-radius:14px;
+        text-align:center;
+      ">
+        Todavía no hay registros.
+      </div>
+
+    `;
+
+  }else{
+
+    historial.forEach(registro => {
+
+      const inicio =
+        registro.inicio
+        ? new Date(registro.inicio)
+            .toLocaleString("es-AR")
+        : "-";
+
+      const fin =
+        registro.fin
+        ? new Date(registro.fin)
+            .toLocaleString("es-AR")
+        : "Estado actual";
+
+
+      let duracion = "En curso";
+
+      if(registro.inicio && registro.fin){
+
+        const segundos =
+          Math.max(
+            0,
+            Math.floor(
+              (
+                new Date(registro.fin) -
+                new Date(registro.inicio)
+              ) / 1000
+            )
+          );
+
+        const horas =
+          Math.floor(segundos / 3600);
+
+        const minutos =
+          Math.floor(
+            (segundos % 3600) / 60
+          );
+
+        const segundosRestantes =
+          segundos % 60;
+
+        duracion =
+          horas > 0
+          ? horas + " h " +
+            minutos + " min"
+          : minutos > 0
+          ? minutos + " min " +
+            segundosRestantes + " s"
+          : segundosRestantes + " s";
+      }
+
+
+      contenido += `
+
+        <div style="
+          background:white;
+          border-radius:14px;
+          padding:14px;
+          margin-bottom:10px;
+          box-shadow:0 2px 8px #00000010;
+        ">
+
+          <div style="
+            font-weight:800;
+            font-size:17px;
+            margin-bottom:7px;
+          ">
+            🛏️ Habitación ${registro.habitacion}
+            · Cama ${registro.cama}
+          </div>
+
+          <div>
+            <strong>Estado:</strong>
+            ${estadoTexto(registro.estado)}
+          </div>
+
+          <div>
+            <strong>Operador:</strong>
+            ${registro.operador || "Sin registrar"}
+          </div>
+
+          <div>
+            <strong>Inicio:</strong>
+            ${inicio}
+          </div>
+
+          <div>
+            <strong>Fin:</strong>
+            ${fin}
+          </div>
+
+          <div style="
+            margin-top:7px;
+            font-weight:800;
+          ">
+            ⏱️ Duración: ${duracion}
+          </div>
+
+        </div>
+
+      `;
+    });
+  }
+
+
+  contenido += `
+    </div>
+  `;
+
+
+  pantalla.innerHTML = contenido;
+
+  document.body.appendChild(pantalla);
+}
+
+
+function cerrarSupervision(){
+
+  const pantalla =
+    document.getElementById(
+      "pantallaSupervision"
+    );
+
+  if(pantalla){
+    pantalla.remove();
+  }
+}
   const clave = prompt(
     "🔐 Supervisión\n\nIngresá la clave:"
   );
