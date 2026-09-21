@@ -37,7 +37,7 @@ header p{
   font-size:13px;
 }
 
-.atajos-panel{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:999px;background:#edf5fb;color:#58738c;font-size:9px;font-weight:750}.indicador-autoactualiza{font-size:9px;color:#9aabba;margin-top:2px}.ultima-actualizacion{font-size:10px;color:#8ca0b3;margin-top:3px}.ultima-actualizacion.ok::before{content:'● ';color:#35a36f}.ultima-actualizacion.error::before{content:'● ';color:#d9534f}.fecha-actual{font-size:12px;color:#6f8095;margin-top:7px;font-weight:650}\n\n#btnNotificaciones{
+.atajos-panel{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:999px;background:#edf5fb;color:#58738c;font-size:9px;font-weight:750}.indicador-autoactualiza{font-size:9px;color:#9aabba;margin-top:2px}.actualizacion-relativa{font-size:9px;color:#91a2b2;margin-top:1px}.ultima-actualizacion{font-size:10px;color:#8ca0b3;margin-top:3px}.ultima-actualizacion.ok::before{content:'● ';color:#35a36f}.ultima-actualizacion.error::before{content:'● ';color:#d9534f}.fecha-actual{font-size:12px;color:#6f8095;margin-top:7px;font-weight:650}\n\n#btnNotificaciones{
   margin:12px 15px 0;
   padding:11px 15px;
   border:0;
@@ -1534,7 +1534,7 @@ if(seleccion.estado === estado){
     cerrar();
 
 
-    await actualizarConexion();\nactualizarFecha();\nsetInterval(actualizarFecha,30000);\n\ncargar();
+    await actualizarConexion();\nactualizarFecha();\nsetInterval(actualizarFecha,30000);\nsetInterval(actualizarTiempoCarga,1000);\n\ncargar();
 
 
 
