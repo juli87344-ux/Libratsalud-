@@ -2342,10 +2342,7 @@ if(seleccion.estado === estado){
 
     await actualizarConexion();
 actualizarFecha();
-setInterval(actualizarFecha,30000);
-setInterval(actualizarTiempoCarga,1000);
-
-cargar();
+await cargar();
 
 
 
