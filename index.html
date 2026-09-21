@@ -1127,6 +1127,23 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
   .panel-titulo::before{content:'Estado actual y seguimiento operativo';display:block;position:absolute;margin-top:36px;color:#6d879a;font-size:11px;font-weight:700}
   .panel-titulo{position:relative!important;padding-bottom:18px!important}
 }
+
+/* definitive-reference-desktop-v3 — filtros y panel como maqueta */
+@media(min-width:901px){
+  .cabecera-sticky{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:10px!important}
+  .panel-titulo{flex:1 1 100%!important}
+  .busqueda-linea{order:2!important;flex:1 1 340px!important;margin:0!important}
+  .buscador-wrap{height:42px!important;border-radius:11px!important;background:#fff!important;border:1px solid #cfe1ed!important;box-shadow:0 2px 7px rgba(31,91,132,.04)!important}
+  .barra-filtros{order:3!important;flex:1 1 100%!important;margin:0!important;padding:0 0 4px!important}
+  .filtro{background:#fff!important;border-color:#cfe1ed!important;color:#315e7e!important;box-shadow:0 2px 6px rgba(31,91,132,.04)!important}
+  .filtro.activo{background:#0878d1!important;border-color:#0878d1!important;color:#fff!important}
+  .controles-vista{order:4!important;display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important;width:100%!important;padding:7px 0 10px!important}
+  .controles-vista button,.btn-refrescar,.btn-compacto,.btn-pantalla-completa,.btn-orden-demora{background:#fff!important;border:1px solid #cfe1ed!important;color:#315e7e!important;border-radius:9px!important}
+  .estado-sistema{background:#e8f7ee!important;border-color:#c6ead3!important;color:#268552!important}
+  #habitaciones{padding-top:3px!important}
+  .habitacion:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(31,91,132,.10)!important}
+  .habitacion{transition:transform .16s ease,box-shadow .16s ease!important}
+}
 </style>
 </head>
 
