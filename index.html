@@ -229,7 +229,22 @@ onclick="activarNotificaciones()">
 
 
 <main>
-
+<button
+  onclick="abrirSupervision()"
+  style="
+    width:100%;
+    margin:10px 0 15px;
+    padding:12px;
+    border:0;
+    border-radius:10px;
+    background:#18243a;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+  "
+>
+  🔐 Supervisión
+</button>
 
 <div class="leyenda">
 
@@ -1772,7 +1787,34 @@ async function activarNotificaciones(){
 }
 
 
+/* =========================
+   SUPERVISIÓN
+========================= */
 
+const CLAVE_SUPERVISION = "Libratsalud2026";
+
+function abrirSupervision(){
+
+  const clave = prompt(
+    "🔐 Supervisión\n\nIngresá la clave:"
+  );
+
+  if(clave === null){
+    return;
+  }
+
+  if(clave !== CLAVE_SUPERVISION){
+
+    alert("❌ Clave incorrecta.");
+
+    return;
+  }
+
+  alert(
+    "✅ Acceso autorizado.\n\n" +
+    "Panel de Supervisión en preparación."
+  );
+}
 /* =========================
    INICIO
 ========================= */
