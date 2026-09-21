@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LibraCare Bed · Gestión de camas</title>
+<title>LibraCare · Gestión de camas</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef7fc;color:#0c3155}button,input{font:inherit}
 .app{min-height:100vh}.top{background:#fff;padding:14px 16px;border-bottom:1px solid #d7e8f3;display:flex;align-items:center;gap:12px}
@@ -49,7 +49,7 @@
 .operatorcard{margin-bottom:14px}.operatorbars{display:flex;flex-direction:column;gap:8px}.oprow{font-size:9px;font-weight:900;color:#4e6f86}.opmeta{display:flex;justify-content:space-between;gap:8px;margin-bottom:3px}.optrack{height:13px;background:#edf3f6;border-radius:999px;overflow:hidden}.opfill{height:100%;background:#6f8fb0;border-radius:999px}.opsub{font-size:8px;color:#6d8799;margin-top:2px;text-align:right}
 </style></head>
 <body><div class="app">
-<header class="top"><div class="brandmark">✚</div><div class="logo">LibraCare Bed<small>Gestión de Camas · Camas listas, pacientes mejor</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn" onclick="abrirAjustes()">🔔</button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
+<header class="top"><div class="brandmark">✚</div><div class="logo">LibraCare<small>Gestión de Camas · Camas listas, pacientes mejor</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn" onclick="abrirAjustes()">🔔</button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
 <main class="content">
 
 <div class="toolbar"><div><h1>Habitaciones</h1><div class="roomsub" id="roomSub">Seguimiento operativo de camas</div></div><div class="views"><button id="viewPantalla" class="view active" onclick="setView(\'pantalla\')">Pantalla</button><button id="viewPrioridad" class="view" onclick="setView(\'prioridad\')">Prioridad</button><button id="viewCompacto" class="view" onclick="setView(\'compacto\')">Compacto</button></div><button class="notify refresh" id="refreshBtn" onclick="refrescarManual(this)" aria-label="Actualizar">↻</button><button class="notify" id="notifyBtn" onclick="abrirAjustes()">🔔</button></div>
@@ -59,7 +59,7 @@
 <nav class="bottom"><button id="navInicio" class="active" onclick="navTo('inicio')">⌂<br>Inicio</button><button id="navHabitaciones" onclick="navTo('habitaciones')">🛏️<br>Habitaciones</button><button id="navSupervision" onclick="navTo('supervision')">▥<br>Supervisión</button><button id="navConfiguracion" onclick="navTo('configuracion')">⚙<br>Configuración</button></nav>
 </div>
 <div id="toast" class="toast" role="status"></div>
-<div class="modal" id="settingsModal"><div class="sheet"><h2>Notificaciones</h2><div class="settingsnote">Configuración de este dispositivo</div><button class="settingbtn" onclick="activarNotificaciones()">🔔 Activar notificaciones</button><label class="settingrow"><span>🌙 Silenciar hasta mañana</span><input type="checkbox" id="quietTomorrow" onchange="guardarSilencio()"></label><div class="settingrow"><span>Horario de silencio</span><span><input class="timeinput" type="time" id="quietStart" value="22:00" onchange="guardarSilencio()"> a <input class="timeinput" type="time" id="quietEnd" value="07:00" onchange="guardarSilencio()"></span></div><button class="settingbtn secondary" onclick="usarUbicacion()">📍 Usar ubicación para silenciar fuera de la clínica</button><div class="settingsnote" id="locationNote">Opcional · funciona mientras LibraCare Bed está abierto.</div><button class="close" onclick="cerrarAjustes()">Cerrar</button></div></div>
+<div class="modal" id="settingsModal"><div class="sheet"><h2>Notificaciones</h2><div class="settingsnote">Configuración de este dispositivo</div><button class="settingbtn" onclick="activarNotificaciones()">🔔 Activar notificaciones</button><label class="settingrow"><span>🌙 Silenciar hasta mañana</span><input type="checkbox" id="quietTomorrow" onchange="guardarSilencio()"></label><div class="settingrow"><span>Horario de silencio</span><span><input class="timeinput" type="time" id="quietStart" value="22:00" onchange="guardarSilencio()"> a <input class="timeinput" type="time" id="quietEnd" value="07:00" onchange="guardarSilencio()"></span></div><button class="settingbtn secondary" onclick="usarUbicacion()">📍 Usar ubicación para silenciar fuera de la clínica</button><div class="settingsnote" id="locationNote">Opcional · funciona mientras LibraCare está abierto.</div><button class="close" onclick="cerrarAjustes()">Cerrar</button></div></div>
 <div class="modal" id="superModal"><div class="sheet"><div id="superGate"><h2>Supervisión</h2><div class="settingsnote">Acceso de supervisor</div><input id="superPass" type="password" placeholder="Contraseña"><button class="settingbtn" onclick="validarSupervisor()">Ingresar</button></div><div id="superContent" style="display:none"><h2>Supervisión</h2><div style="font-size:11px;color:#617f96;margin-bottom:10px">Resumen general y estadísticas</div><div class="periods"><button id="periodHoy" onclick="setPeriodoSuper('hoy')">Hoy</button><button id="period7" class="active" onclick="setPeriodoSuper('7')">7 días</button><button id="period30" onclick="setPeriodoSuper('30')">30 días</button></div><div class="superstats" id="superStats"></div><div class="supercharts"><div class="chartcard"><h3>Movimientos por estado</h3><div id="stateDonut" class="donut"></div><div id="donutLegend" class="donutlegend"></div></div><div class="chartcard"><h3>Tiempos promedio</h3><div id="timeBars" class="timebars"></div></div></div><div class="chartcard operatorcard"><h3>Actividad por operador</h3><div id="operatorBars" class="operatorbars"></div></div><div id="superList"></div><button class="close" onclick="cerrarSupervision()">Cerrar</button><button onclick="salirSupervision()" style="width:100%;border:0;background:transparent;padding:10px;font-weight:800;color:#647f92">Cerrar sesión de Supervisión</button></div></div></div>
 <div class="modal" id="modal"><div class="sheet"><h2 id="modalTitle">Cama</h2><div id="currentState" class="current-state"></div><div style="font-size:11px;color:#617f96">Seleccioná el nuevo estado.</div><input id="operator" placeholder="Nombre de quien realiza el cambio"><div class="state-grid" id="stateButtons"></div><button class="close" onclick="cerrarModal()">Cancelar</button></div></div>
 <script>
@@ -164,10 +164,10 @@ async function cambiar(estado){
    await fetch(SUPABASE_URL+"/rest/v1/historial_camas",{method:"POST",headers,body:JSON.stringify({habitacion:seleccion.habitacion,cama:seleccion.cama,estado,inicio:now,operador:op})});
   }catch(e){console.error("No se pudo registrar historial",e)}
   const notices={
-   alta_espera:["🟣 LibraCare Bed · Alta","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está en alta / espera traslado."],
-   liberada:["🔔 LibraCare Bed · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está liberada y requiere limpieza."],
-   en_limpieza:["🟠 LibraCare Bed · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" comenzó la limpieza."],
-   lista:["🟢 LibraCare Bed · Lista","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está limpia y disponible."]
+   alta_espera:["🟣 LibraCare · Alta","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está en alta / espera traslado."],
+   liberada:["🔔 LibraCare · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está liberada y requiere limpieza."],
+   en_limpieza:["🟠 LibraCare · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" comenzó la limpieza."],
+   lista:["🟢 LibraCare · Lista","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está limpia y disponible."]
   };
   if(notices[estado])await enviarNotificacion(notices[estado][0],notices[estado][1]);
   cerrarModal();await cargar();
