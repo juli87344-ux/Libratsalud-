@@ -877,6 +877,21 @@ input{
   .actualizacion-panel{box-shadow:0 2px 8px rgba(25,80,121,.04)!important}
   .nav-movil-libratsalud{border-color:rgba(255,255,255,.16)!important}
 }
+
+/* reference-design-mobile-v30 — identidad clínica consistente */
+@media(max-width:700px){
+  :root{--ls-azul:#0d6fb8;--ls-azul-oscuro:#123d64;--ls-borde:#d7e8f3;--ls-fondo:#eef7fc}
+  header h1,main::before,#habitaciones::before{color:var(--ls-azul-oscuro)!important}
+  .filtro.activo{background:var(--ls-azul)!important;border-color:var(--ls-azul)!important}
+  .habitacion,.resumen-cabecera,.actualizacion-panel{border-color:var(--ls-borde)!important}
+  .cama{font-variant-numeric:tabular-nums}
+  .cama .detalle{line-height:1.15!important}
+  .cama .reloj{font-weight:950!important}
+  .responsable-cama::first-letter{font-size:9px}
+  .nav-movil-libratsalud{background:linear-gradient(180deg,#164f7e,#10385d)!important}
+  .nav-movil-libratsalud button:first-child{background:#2474aa!important}
+  footer{box-shadow:0 3px 10px rgba(25,80,121,.04)!important}
+}
 </style>
 </head>
 
