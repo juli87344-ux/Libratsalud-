@@ -741,6 +741,21 @@ input{
   .camas{grid-template-columns:1fr!important}
   .cama{min-height:124px!important}
 }
+
+/* reference-design-mobile-v20 — profundidad y consistencia del tablero clínico */
+@media(max-width:700px){
+  body{background:linear-gradient(180deg,#eef7fc 0,#f7fbfe 48%,#edf6fb 100%)!important}
+  header{border-bottom:1px solid #cfe4f2!important}
+  main::before{margin-top:5px!important}
+  #resumenEstados .resumen-item strong{font-variant-numeric:tabular-nums}
+  .habitacion{outline:1px solid rgba(255,255,255,.75);outline-offset:-2px}
+  .cama{outline:1px solid rgba(255,255,255,.65);outline-offset:-2px}
+  .cama .reloj{font-variant-numeric:tabular-nums}
+  .hora-cambio-cama,.fecha-cambio-cama{font-variant-numeric:tabular-nums}
+  .filtro,.controles-vista button,.btn-solo-demoras{-webkit-tap-highlight-color:transparent}
+  .filtro:focus-visible,.controles-vista button:focus-visible,.nav-movil-libratsalud button:focus-visible{outline:3px solid rgba(8,120,209,.24)!important;outline-offset:2px!important}
+  .nav-movil-libratsalud{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+}
 </style>
 </head>
 
