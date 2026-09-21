@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="LibraCare">
+  <defs>
+    <linearGradient id="ring" x1="70" y1="70" x2="440" y2="440" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08b7a8"/>
+      <stop offset="1" stop-color="#0a5ea8"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="190" y1="105" x2="315" y2="315" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f2c84b"/>
+      <stop offset=".5" stop-color="#c59116"/>
+      <stop offset="1" stop-color="#8e6410"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="#ffffff"/>
+  <circle cx="256" cy="256" r="205" fill="none" stroke="url(#ring)" stroke-width="24"/>
+  <g fill="#0b3d6d">
+    <rect x="105" y="285" width="300" height="46" rx="18"/>
+    <rect x="103" y="222" width="34" height="142" rx="16"/>
+    <rect x="380" y="279" width="28" height="88" rx="14"/>
+    <rect x="156" y="250" width="104" height="31" rx="15" transform="rotate(10 156 250)"/>
+    <path d="M237 265h124c24 0 38 11 44 26H235z"/>
+  </g>
+  <g stroke="url(#gold)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M256 102v166"/>
+    <path d="M186 144h140"/>
+    <path d="M205 144l-40 77m80-77l-40 77"/>
+    <path d="M307 144l-40 77m80-77l-40 77"/>
+  </g>
+  <g fill="url(#gold)">
+    <circle cx="256" cy="101" r="18"/>
+    <rect x="222" y="257" width="68" height="18" rx="9"/>
+    <path d="M151 221h108c-6 32-28 49-54 49s-48-17-54-49z"/>
+    <path d="M253 221h108c-6 32-28 49-54 49s-48-17-54-49z"/>
+  </g>
+  <path d="M337 307l35 35 67-83" fill="none" stroke="#0bb7a7" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
