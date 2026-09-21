@@ -1203,6 +1203,22 @@ window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,7
   .cama.ocupada{border-top:4px solid #e35c66!important}.cama.alta_espera{border-top:4px solid #8b61c7!important}.cama.liberada{border-top:4px solid #e3bd3e!important}.cama.limpieza{border-top:4px solid #e88742!important}.cama.lista{border-top:4px solid #45b873!important}.cama.reservada{border-top:4px solid #4d98d2!important}
   .cama.ocupada .detalle{background:#fde8ea!important;color:#9f3039!important}.cama.alta_espera .detalle{background:#efe6fb!important;color:#67399e!important}.cama.liberada .detalle{background:#fff3c5!important;color:#806000!important}.cama.limpieza .detalle{background:#ffe8d9!important;color:#a45118!important}.cama.lista .detalle{background:#e0f6e8!important;color:#237a48!important}.cama.reservada .detalle{background:#e2f1fc!important;color:#286c9e!important}
 }
+
+/* definitive-reference-v6 — acabado previo a revisión visual */
+@media(min-width:901px){
+  body{min-height:100vh!important}
+  main{margin:0 auto!important}
+  #habitaciones::before{content:'Habitaciones';grid-column:1/-1;font-size:24px;font-weight:950;color:#102f50;padding:4px 2px 1px}
+  #habitaciones::after{content:'El tiempo cuenta para un mejor cuidado';grid-column:1/-1;text-align:center;padding:12px 0 3px;color:#6d879a;font-size:12px;font-weight:800}
+  .habitacion:nth-last-child(-n+5){background:linear-gradient(180deg,#fff,#f4fbff)!important}
+  .cama .reloj{display:inline-flex!important;align-items:center!important;gap:4px!important;border-radius:7px!important;font-weight:900!important}
+  .cama .reloj::before{content:'⏱';font-size:11px}
+}
+@media(max-width:900px){
+  #habitaciones::before{content:'Habitaciones';display:block;font-size:18px;font-weight:950;color:#102f50;padding:3px 2px 5px}
+  #habitaciones::after{content:'El tiempo cuenta para un mejor cuidado';display:block;text-align:center;padding:10px 0 4px;color:#6d879a;font-size:9px;font-weight:800}
+  .cama .reloj{font-variant-numeric:tabular-nums!important}
+}
 </style>
 </head>
 
