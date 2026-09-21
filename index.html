@@ -37,6 +37,7 @@
 .status.connection-ok{display:flex;align-items:center;min-height:18px;font-weight:800}
 .empty-state{grid-column:1/-1;background:#fff;border:1px dashed #bfd7e6;border-radius:12px;padding:24px 14px;text-align:center;color:#5f7f95;font-size:12px;font-weight:800}
 .roomstate-ocupada .roomscene{background:linear-gradient(#fff0f1 0 70%,#f3e7e9 70%)}.roomstate-alta_espera .roomscene{background:linear-gradient(#f5efff 0 70%,#ece5f6 70%)}.roomstate-liberada .roomscene{background:linear-gradient(#fff8d7 0 70%,#f2ecd0 70%)}.roomstate-en_limpieza .roomscene{background:linear-gradient(#fff0e5 0 70%,#f2e7df 70%)}.roomstate-lista .roomscene{background:linear-gradient(#eaf8ef 0 70%,#e1eee6 70%)}.roomstate-reservada .roomscene{background:linear-gradient(#eaf5ff 0 70%,#e1ebf3 70%)}
+@media(max-width:700px){.toolbar{display:grid;grid-template-columns:1fr auto;gap:8px}.toolbar>div:first-child{grid-column:1}.toolbar .notify{grid-column:2;grid-row:1;align-self:center}.toolbar .views{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);width:100%}.toolbar .view{width:100%;padding:8px 5px}.toolbar h1{font-size:22px}.roomsub{font-size:9px}}
 </style></head>
 <body><div class="app">
 <header class="top"><div class="brandmark">✚</div><div class="logo">Libratsalud<small>Gestión de Camas · Camas listas, pacientes mejor</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn" onclick="abrirAjustes()">🔔</button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
