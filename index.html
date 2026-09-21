@@ -975,6 +975,21 @@ input{
 /* reference-design-notifications-v1 — estado visible de notificaciones */
 #btnNotificaciones.notificaciones-activas{background:#e2f7eb!important;color:#16744a!important;border:1px solid #c8ead6!important}
 @media(max-width:700px){#btnNotificaciones{width:calc(100% - 24px);margin:10px 12px 0;min-height:44px;border-radius:12px!important}#btnNotificaciones.notificaciones-activas{font-weight:900}}
+
+/* reference-design-notifications-v2 — detectar suscripción existente al abrir */
+async function actualizarEstadoNotificaciones(){
+  const boton=document.getElementById("btnNotificaciones");
+  if(!boton || !("serviceWorker" in navigator)) return;
+  try{
+    const registro=await navigator.serviceWorker.ready;
+    const suscripcion=await registro.pushManager.getSubscription();
+    if(suscripcion){
+      boton.textContent="🔔 Notificaciones activadas";
+      boton.classList.add("notificaciones-activas");
+    }
+  }catch(e){ console.debug("Estado de notificaciones:",e); }
+}
+window.addEventListener("load",()=>{ setTimeout(actualizarEstadoNotificaciones,700); });
 </style>
 </head>
 
