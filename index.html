@@ -2892,9 +2892,15 @@ function cerrarSupervision(){
 cargar();
 
 setInterval(
-  cargar,
+  () => {
+    if(!document.hidden) cargar();
+  },
   5000
 );
+
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden) cargar();
+});
 
 
 /*
