@@ -830,6 +830,24 @@ input{
   .contador-visible{color:#315e7e!important}
   .estado-filtro-info{background:#e6f2fa!important;color:#315e7e!important}
 }
+
+/* reference-design-mobile-v27 — estructura final del tablero clínico */
+@media(max-width:700px){
+  main{max-width:100%!important}
+  .habitacion{contain:layout paint;isolation:isolate}
+  .habitacion h2{position:sticky;top:0;z-index:2}
+  .camas{padding-top:1px!important}
+  .cama{min-height:138px!important}
+  .cama .detalle{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .cama .reloj{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .responsable-cama{line-height:1.25!important}
+  .hora-cambio-cama,.fecha-cambio-cama{line-height:1.2!important}
+  .nav-movil-libratsalud{max-width:520px!important;margin:0 auto!important}
+}
+@media(min-width:391px) and (max-width:700px){
+  .cama{min-height:142px!important}
+  .habitacion{padding-bottom:12px!important}
+}
 </style>
 </head>
 
