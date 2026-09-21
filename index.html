@@ -848,6 +848,20 @@ input{
   .cama{min-height:142px!important}
   .habitacion{padding-bottom:12px!important}
 }
+
+/* reference-design-mobile-v28 — separación clara de áreas operativas */
+@media(max-width:700px){
+  .resumen-cabecera{box-shadow:0 5px 15px rgba(25,80,121,.06)!important}
+  .filtros{border-bottom:1px solid #dceaf3!important;margin-bottom:7px!important}
+  .controles-vista{margin-bottom:11px!important}
+  #habitaciones::before{padding:2px 2px 5px!important;border-bottom:2px solid #d9eaf5!important}
+  .habitacion+.habitacion{margin-top:1px!important}
+  .habitacion h2{background-color:#f5faff!important}
+  .cama{transition:transform .1s ease,box-shadow .1s ease!important}
+  .cama:active{box-shadow:0 2px 7px rgba(28,82,123,.08)!important}
+  .nav-movil-libratsalud button{border:0!important}
+  .nav-movil-libratsalud button:not(:first-child){background:transparent!important}
+}
 </style>
 </head>
 
