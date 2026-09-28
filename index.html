@@ -91,9 +91,12 @@ html[data-theme="dark"] .bed.en_limpieza,html[data-theme="dark"] .state-grid .en
 html[data-theme="dark"] .bed.lista,html[data-theme="dark"] .state-grid .lista{background:#17683e;color:#fff}
 html[data-theme="dark"] .bed.reservada,html[data-theme="dark"] .state-grid .reservada{background:#155f91;color:#fff}
 html[data-theme="dark"] .bed .pill{background:rgba(0,0,0,.24);color:#fff}
+/* configuracion-desktop-v1 */
+.config-desktop span{display:none}
+@media(min-width:800px){.config-desktop{display:flex;align-items:center;gap:6px;padding:9px 12px}.config-desktop span{display:inline;font-size:11px;font-weight:900}}
 </style></head>
 <body><div class="app">
-<header class="top"><div class="brandmark" aria-label="LibraCare">⚖</div><div class="logo">LibraCare<small>Sistema de gestión de camas</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn" onclick="abrirAjustes()">🔔</button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
+<header class="top"><div class="brandmark" aria-label="LibraCare">⚖</div><div class="logo">LibraCare<small>Sistema de gestión de camas</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn config-desktop" onclick="abrirAjustes()">⚙ <span>Configuración</span></button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
 <main class="content">
 
 <div class="toolbar"><div><h1>Habitaciones</h1><div class="roomsub" id="roomSub">Seguimiento operativo de camas</div></div><div class="views"><button id="viewPantalla" class="view active" onclick="setView('pantalla')">Pantalla</button><button id="viewPrioridad" class="view" onclick="setView('prioridad')">Prioridad</button><button id="viewCompacto" class="view" onclick="setView('compacto')">Compacto</button></div><button class="notify refresh" id="refreshBtn" onclick="refrescarManual(this)" aria-label="Actualizar">↻</button><button class="notify" id="notifyBtn" onclick="abrirAjustes()">🔔</button></div>
