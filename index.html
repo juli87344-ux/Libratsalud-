@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LibraCare · Gestión de camas</title>
+<title>SEPTIBRA · Gestión de camas hospitalarias</title>
 <link rel="manifest" href="./manifest.json?v=5">
 <link rel="icon" href="./icon-libracare.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon-192.png">
@@ -96,7 +96,7 @@ html[data-theme="dark"] .bed .pill{background:rgba(0,0,0,.24);color:#fff}
 @media(min-width:800px){.config-desktop{display:flex;align-items:center;gap:6px;padding:9px 12px}.config-desktop span{display:inline;font-size:11px;font-weight:900}}
 </style></head>
 <body><div class="app">
-<header class="top"><div class="brandmark" aria-label="LibraCare">⚖</div><div class="logo">LibraCare<small>Sistema de gestión de camas</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn config-desktop" onclick="abrirAjustes()">⚙ <span>Configuración</span></button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
+<header class="top"><div class="brandmark" aria-label="SEPTIBRA">⚖</div><div class="logo">SEPTIBRA<small>Sistema de gestión de camas</small></div><div class="spacer"></div><div class="topactions"><div class="clock" id="clock"></div><button class="headbtn config-desktop" onclick="abrirAjustes()">⚙ <span>Configuración</span></button><button class="headbtn" onclick="abrirSupervision()">☰</button></div></header>
 <main class="content">
 
 <div class="toolbar"><div><h1>Habitaciones</h1><div class="roomsub" id="roomSub">Seguimiento operativo de camas</div></div><div class="views"><button id="viewPantalla" class="view active" onclick="setView('pantalla')">Pantalla</button><button id="viewPrioridad" class="view" onclick="setView('prioridad')">Prioridad</button><button id="viewCompacto" class="view" onclick="setView('compacto')">Compacto</button></div><button class="notify refresh" id="refreshBtn" onclick="refrescarManual(this)" aria-label="Actualizar">↻</button><button class="notify" id="notifyBtn" onclick="abrirAjustes()">🔔</button></div>
@@ -154,7 +154,7 @@ async function estadoNotificaciones(){
   if(!("serviceWorker" in navigator)||!("PushManager" in window)){pintar(false);return}
   try{const reg=await navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"});const sub=await reg.pushManager.getSubscription();pintar(!!sub)}catch(e){pintar(false)}
 }
-async function activarNotificaciones(){if(!("serviceWorker" in navigator)||!("PushManager" in window)){alert("Este dispositivo no permite notificaciones push.");return}try{const permiso=await Notification.requestPermission();if(permiso!=="granted"){alert("Las notificaciones no fueron habilitadas.");return}const reg=await navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"});await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:vapidBytes(VAPID_PUBLIC_KEY)});const j=sub.toJSON();const payload={nombre:"Dispositivo LibraCare",rol:"operativo",endpoint:j.endpoint,p256dh:j.keys&&j.keys.p256dh,auth:j.keys&&j.keys.auth,activo:true};let r=await fetch(SUPABASE_URL+"/rest/v1/notificaciones",{method:"POST",headers:{...headers,"Prefer":"return=minimal"},body:JSON.stringify(payload)});if(r.status===409){r=await fetch(SUPABASE_URL+"/rest/v1/notificaciones?endpoint=eq."+encodeURIComponent(j.endpoint),{method:"PATCH",headers:{...headers,"Prefer":"return=minimal"},body:JSON.stringify({p256dh:payload.p256dh,auth:payload.auth,activo:true,nombre:payload.nombre,rol:payload.rol})})}if(!r.ok)throw new Error(await r.text());await estadoNotificaciones();alert("Notificaciones activadas en este dispositivo.")}catch(e){console.error(e);alert("No se pudieron activar las notificaciones.")}}
+async function activarNotificaciones(){if(!("serviceWorker" in navigator)||!("PushManager" in window)){alert("Este dispositivo no permite notificaciones push.");return}try{const permiso=await Notification.requestPermission();if(permiso!=="granted"){alert("Las notificaciones no fueron habilitadas.");return}const reg=await navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"});await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:vapidBytes(VAPID_PUBLIC_KEY)});const j=sub.toJSON();const payload={nombre:"Dispositivo SEPTIBRA",rol:"operativo",endpoint:j.endpoint,p256dh:j.keys&&j.keys.p256dh,auth:j.keys&&j.keys.auth,activo:true};let r=await fetch(SUPABASE_URL+"/rest/v1/notificaciones",{method:"POST",headers:{...headers,"Prefer":"return=minimal"},body:JSON.stringify(payload)});if(r.status===409){r=await fetch(SUPABASE_URL+"/rest/v1/notificaciones?endpoint=eq."+encodeURIComponent(j.endpoint),{method:"PATCH",headers:{...headers,"Prefer":"return=minimal"},body:JSON.stringify({p256dh:payload.p256dh,auth:payload.auth,activo:true,nombre:payload.nombre,rol:payload.rol})})}if(!r.ok)throw new Error(await r.text());await estadoNotificaciones();alert("Notificaciones activadas en este dispositivo.")}catch(e){console.error(e);alert("No se pudieron activar las notificaciones.")}}
 async function desactivarNotificaciones(){if(!("serviceWorker" in navigator)||!("PushManager" in window)){alert("Este dispositivo no permite notificaciones push.");return}try{const reg=await navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"});await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(!sub){await estadoNotificaciones();alert("Las notificaciones ya están desactivadas en este dispositivo.");return}const endpoint=sub.endpoint;try{await fetch(SUPABASE_URL+"/rest/v1/notificaciones?endpoint=eq."+encodeURIComponent(endpoint),{method:"PATCH",headers:{...headers,"Prefer":"return=minimal"},body:JSON.stringify({activo:false})})}catch(e){console.error("No se pudo desactivar el registro remoto",e)}await sub.unsubscribe();await estadoNotificaciones();alert("Notificaciones desactivadas en este dispositivo.")}catch(e){console.error(e);alert("No se pudieron desactivar las notificaciones.")}}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
 function elapsed(iso){if(!iso)return"";const ms=Math.max(0,Date.now()-new Date(iso).getTime()),m=Math.floor(ms/60000),h=Math.floor(m/60);return h?String(h).padStart(2,"0")+" h "+String(m%60).padStart(2,"0")+" min":String(m).padStart(2,"0")+" min"}
@@ -251,12 +251,12 @@ async function cambiar(estado){
    await fetch(SUPABASE_URL+"/rest/v1/historial_camas",{method:"POST",headers,body:JSON.stringify({habitacion:seleccion.habitacion,cama:seleccion.cama,estado,inicio:now,operador:op})});
   }catch(e){console.error("No se pudo registrar historial",e)}
   const notices={
-   ocupada:["🔴 LibraCare · Ocupada","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" pasó a ocupada."],
-   alta_espera:["🟣 LibraCare · Alta","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está en alta / espera traslado."],
-   liberada:["🔔 LibraCare · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está liberada y requiere limpieza."],
-   en_limpieza:["🟠 LibraCare · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" comenzó la limpieza."],
-   lista:["🟢 LibraCare · Lista","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está limpia y disponible."],
-   reservada:["🔵 LibraCare · Reservada","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" quedó reservada."]
+   ocupada:["🔴 SEPTIBRA · Ocupada","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" pasó a ocupada."],
+   alta_espera:["🟣 SEPTIBRA · Alta","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está en alta / espera traslado."],
+   liberada:["🔔 SEPTIBRA · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está liberada y requiere limpieza."],
+   en_limpieza:["🟠 SEPTIBRA · Limpieza","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" comenzó la limpieza."],
+   lista:["🟢 SEPTIBRA · Lista","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" está limpia y disponible."],
+   reservada:["🔵 SEPTIBRA · Reservada","Habitación "+seleccion.habitacion+" · Cama "+seleccion.cama+" quedó reservada."]
   };
   if(notices[estado])await enviarNotificacion(notices[estado][0],notices[estado][1]);
   cerrarModal();await cargar();
