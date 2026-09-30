@@ -1,6 +1,6 @@
 {
-  "name": "LibraCare",
-  "short_name": "LibraCare",
+  "name": "SEPTIBRA",
+  "short_name": "SEPTIBRA",
   "description": "Sistema de gestión de camas",
   "start_url": "./?appv=6",
   "scope": "./",
