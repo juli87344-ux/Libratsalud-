@@ -1,7 +1,7 @@
 {
   "name": "SEPTIBRA",
   "short_name": "SEPTIBRA",
-  "description": "Sistema de gestión de camas",
+  "description": "Gestión de camas hospitalarias",
   "start_url": "./?appv=6",
   "scope": "./",
   "display": "standalone",
@@ -9,21 +9,15 @@
   "theme_color": "#17243d",
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
+      "src": "./icon-libracare.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "./icon-libracare.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "maskable"
     }
   ],
