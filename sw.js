@@ -51,7 +51,7 @@ self.addEventListener("push", event => {
     data = event.data ? event.data.json() : {};
   } catch (e) {
     data = {
-      title: "LibraCare",
+      title: "SEPTIBRA",
       body: event.data ? event.data.text() : "Nueva actualización"
     };
   }
@@ -60,7 +60,7 @@ self.addEventListener("push", event => {
     leerConfiguracionSilencio().then(config=>{
       if(notificacionesEnSilencio(config)) return;
       return self.registration.showNotification(
-      data.title || "LibraCare",
+      data.title || "SEPTIBRA",
       {
         body: data.body || "Hay una actualización de habitación.",
         icon: "./icon-libracare.svg",
